@@ -1,0 +1,16 @@
+[tools]
+flux2 = "2.10.0"
+
+[tasks."flux:sync:ks"]
+description = "Reconcile the Flux configuration for a specific cluster."
+usage = """
+arg "<cluster>" help="The name of the cluster to apply the configuration to."
+arg "<name>" help="The name of the configuration to apply."
+flag "-S --with-source" help="Include the source configuration in the reconciliation." default="false"
+"""
+run = """
+export KUBECONFIG="{{ config_root }}/kube/clusters/{{ usage.cluster }}/kubeconfig"
+flux reconcile kustomization "{{ usage.name }}" \
+  --namespace flux-system \
+  --with-source="{{ usage.with_source }}"
+"""

@@ -1,0 +1,39 @@
+[tools]
+"aqua:postfinance/topf" = "0.6.2"
+talosctl = "1.14.5"
+
+[tasks."talos:apply"]
+secrets = ["SOPS_AGE_KEY"]
+description = "Apply the Talos configuration for a specific cluster."
+usage = """
+arg "<cluster>" help="The name of the cluster to apply the configuration to."
+arg "<...args>" default="" help="Additional arguments to pass to the topf apply command."
+"""
+run = """
+cd "{{ config_root }}/kube/clusters/{{ usage.cluster }}/talos"
+topf apply {{ usage.args }}
+"""
+
+[tasks."talos:talosconfig"]
+secrets = ["SOPS_AGE_KEY"]
+description = "Generate a Talos configuration file for a specific cluster."
+usage = """
+arg "<cluster>" help="The name of the cluster to apply the configuration to."
+arg "<...args>" default="" help="Additional arguments to pass to the topf apply command."
+"""
+run = """
+cd "{{ config_root }}/kube/clusters/{{ usage.cluster }}/talos"
+topf talosconfig {{ usage.args }} > "../talosconfig"
+"""
+
+[tasks."talos:kubeconfig"]
+secrets = ["SOPS_AGE_KEY"]
+description = "Generate a Kubernetes configuration file for a specific cluster."
+usage = """
+arg "<cluster>" help="The name of the cluster to apply the configuration to."
+arg "<...args>" default="" help="Additional arguments to pass to the topf apply command."
+"""
+run = """
+cd "{{ config_root }}/kube/clusters/{{ usage.cluster }}/talos"
+topf kubeconfig --validity 3600h {{ usage.args }} > "../kubeconfig"
+"""
