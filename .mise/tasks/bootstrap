@@ -8,6 +8,7 @@ set -euo pipefail
 #USAGE flag "-K --skip-kube" help="Skip the Kubernetes installation step"
 
 cluster="${usage_cluster_name?}"
+export CLUSTER_NAME="${cluster}"
 root_dir="$(pwd)"
 bootstrap_dir="${root_dir}/kube/bootstrap"
 core_dir="${root_dir}/kube/deploy/core"
@@ -54,7 +55,7 @@ if [ "${usage_skip_kube:-false}" = "false" ]; then
     kubectl get namespace "${ns_name}" >/dev/null 2>&1 || kubectl create namespace "${ns_name}"
   done
 
-  helmfile -f "${bootstrap_dir}/helmfile.d/01-core.yaml" template | kubectl apply --server-side --field-manager flux-client-side-apply -f -
+  helmfile -f "${bootstrap_dir}/helmfile.d/01-core.yaml.gotmpl" template | kubectl apply --server-side --field-manager flux-client-side-apply -f -
 fi
 
 echo "Bootstrap completed for cluster ${usage_cluster_name}"
