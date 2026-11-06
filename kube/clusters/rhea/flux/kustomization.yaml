@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ks.yaml
+
+  - ../../../deploy/core/kube-system/cilium/
+  - ../../../deploy/core/kube-system/coredns/
+  - ../../../deploy/core/cert-manager/cert-manager/
+  - ../../../deploy/core/flux-system/flux-operator/
+  - ../../../deploy/core/flux-system/flux-instance/

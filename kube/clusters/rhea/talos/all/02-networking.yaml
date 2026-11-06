@@ -1,0 +1,39 @@
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 1.1.1.1
+    protocol: DoH
+    tlsServerName: cloudflare-dns.com
+  - address: 9.9.9.9
+    protocol: DoH
+    tlsServerName: dns.quad9.net
+
+---
+apiVersion: v1alpha1
+kind: TimeSyncConfig
+ntp:
+  useNTS: true
+  servers:
+    - time.cloudflare.com
+
+---
+# we use cilium, not flannel
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete
+
+---
+# we deploy our own coredns install
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false
+
+---
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - 10.244.0.0/16
+serviceSubnets:
+  - 10.96.0.0/12

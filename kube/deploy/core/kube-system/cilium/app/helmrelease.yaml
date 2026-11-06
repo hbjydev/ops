@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://flux.jank.ing/helmrelease/v2/github/cilium/cilium/v1.20.4/install/kubernetes/cilium
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+  namespace: kube-system
+  annotations:
+    meta.helm.sh/release-name: cilium
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: Helm
+spec:
+  interval: "5m"
+  timeout: "1h"
+  chartRef:
+    kind: OCIRepository
+    name: cilium
+  values:
+    ipam:
+      mode: kubernetes
+    kubeProxyReplacement: true
+
+    # [pref] disable envoy
+    envoy:
+      enabled: false
+    ingressController:
+      enabled: false
+
+    # [o11y] enable hubble
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+
+    # [perf] scale operator to 1 replica
+    operator:
+      replicas: 1
+
+    # needed for talos
+    securityContext:
+      capabilities:
+        ciliumAgent: [CHOWN, KILL, NET_ADMIN, NET_RAW, IPC_LOCK, SYS_ADMIN, SYS_RESOURCE, DAC_OVERRIDE, FOWNER, SETGID, SETUID]
+        cleanCiliumState: [NET_ADMIN, SYS_ADMIN, SYS_RESOURCE]
+    cgroup:
+      autoMount:
+        enabled: true
+      hostRoot: /sys/fs/cgroup

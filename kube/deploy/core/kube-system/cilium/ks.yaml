@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: core-kube-system-cilium-app
+  namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/name: "cilium"
+    kustomization.flux.home.arpa/helmpatches: "false"
+spec:
+  path: ./kube/deploy/core/kube-system/cilium/app
+  dependsOn: []
+  targetNamespace: kube-system

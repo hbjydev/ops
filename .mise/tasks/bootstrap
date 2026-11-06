@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+#MISE description="Bootstrap a Kubernetes cluster"
+#MISE dir="{{ config_root }}"
+#USAGE arg "<cluster_name>" help="Name of the cluster to bootstrap"
+#USAGE flag "-T --skip-talos" help="Skip the Talos installation step"
+#USAGE flag "-K --skip-kube" help="Skip the Kubernetes installation step"
+
+cluster="${usage_cluster_name?}"
+root_dir="$(pwd)"
+bootstrap_dir="${root_dir}/kube/bootstrap"
+core_dir="${root_dir}/kube/deploy/core"
+cluster_dir="${root_dir}/kube/clusters/${cluster}"
+talos_dir="${root_dir}/kube/clusters/${cluster}/talos"
+flux_dir="${root_dir}/kube/clusters/${cluster}/flux"
+
+export TALOSCONFIG="${cluster_dir}/talosconfig"
+export KUBECONFIG="${cluster_dir}/kubeconfig"
+
+if [ ! -d "${cluster_dir}" ]; then
+  echo "Cluster directory for ${cluster} does not exist"
+  exit 1
+fi
+if [ ! -d "${talos_dir}" ]; then
+  echo "Talos directory for ${cluster} does not exist"
+  exit 1
+fi
+if [ ! -d "${flux_dir}" ]; then
+  echo "Flux directory for ${cluster} does not exist"
+  exit 1
+fi
+
+if [ ! -f "${TALOSCONFIG}" ]; then
+  echo "Talos config file does not exist, generating a new one"
+  cd "${talos_dir}" && fnox exec -- topf talosconfig > $TALOSCONFIG
+fi
+if [ ! -f "${KUBECONFIG}" ]; then
+  echo "Kubeconfig file does not exist, generating a new one"
+  cd "${talos_dir}" && fnox exec -- topf kubeconfig --validity 3600h > $KUBECONFIG
+fi
+
+if [ "${usage_skip_talos:-false}" = "false" ]; then
+  echo "TODO: Bootstrap Talos installation for cluster ${usage_cluster_name}"
+  exit 1
+fi
+
+if [ "${usage_skip_kube:-false}" = "false" ]; then
+  echo "Bootstrap Kubernetes installation for cluster ${usage_cluster_name}"
+
+  ns_set=$(find "${core_dir}" -mindepth 1 -maxdepth 1 -type d)
+  for ns in $ns_set; do
+    ns_name=$(basename "$ns")
+    kubectl get namespace "${ns_name}" >/dev/null 2>&1 || kubectl create namespace "${ns_name}"
+  done
+
+  helmfile -f "${bootstrap_dir}/helmfile.d/01-core.yaml" template | kubectl apply --server-side --field-manager flux-client-side-apply -f -
+fi
+
+echo "Bootstrap completed for cluster ${usage_cluster_name}"

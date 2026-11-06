@@ -1,0 +1,8 @@
+default_provider = "op"
+
+[providers.op]
+type = "1password"
+vault = "ops"
+
+[secrets]
+SOPS_AGE_KEY = { provider = "op", value = "age/password" }

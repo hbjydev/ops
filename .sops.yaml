@@ -1,0 +1,11 @@
+---
+creation_rules:
+  - path_regex: \.sops\.yaml$
+    age: >-
+      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+  - path_regex: talos\/secrets\.yaml$
+    age: >-
+      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+  - path_regex: talos\/.+\/.+\.yaml$
+    age: >-
+      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
