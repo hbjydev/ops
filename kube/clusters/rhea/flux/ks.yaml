@@ -55,6 +55,11 @@ spec:
           value:
             name: cluster-config
             namespace: flux-system
+        - op: add
+          path: /spec/dependsOn/-
+          value:
+            name: cluster-core
+            namespace: flux-system
       target:
         group: kustomize.toolkit.fluxcd.io
         version: v1
@@ -255,7 +260,7 @@ spec:
         - op: add
           path: /spec/dependsOn/-
           value:
-            name: cluster-config
+            name: cluster-core
             namespace: flux-system
       target:
         group: kustomize.toolkit.fluxcd.io
