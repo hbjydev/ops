@@ -1,0 +1,14 @@
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+clusterDNS:
+  - 172.19.0.53
+defaultRuntimeSeccompProfileEnabled: true
+config:
+  featureGates:
+    ResourceHealthStatus: true
+  serializeImagePulls: false
+  allowedUnsafeSysctls:
+    - net.ipv6.conf.*
+    - net.ipv4.conf.*
+  maxPods: 256
