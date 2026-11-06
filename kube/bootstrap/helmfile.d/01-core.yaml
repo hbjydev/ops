@@ -48,4 +48,3 @@ releases:
             path: kube/clusters/{{ requiredEnv "CLUSTER_NAME" }}/flux
     needs:
       - flux-system/flux-operator
-
