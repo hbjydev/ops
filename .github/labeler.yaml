@@ -1,0 +1,34 @@
+---
+cluster/phoebe:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/clusters/phoebe/**/*
+cluster/rhea:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/clusters/rhea/**/*
+kube/core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/deploy/core/**/*
+kube/apps:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/deploy/apps/**/*
+area/kube:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/**/*
+area/bootstrap:
+  - changed-files:
+      - any-glob-to-any-file:
+          - kube/bootstrap/**/*
+area/ci:
+  - changed-files:
+      - any-glob-to-any-file: ".forgejo/**/*"
+      - any-glob-to-any-file: ".github/**/*"
+area/renovate:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .renovate/**/*
+          - .renovaterc.json5
