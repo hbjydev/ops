@@ -4,5 +4,7 @@ fnox = { version = "1.47.0", workflow = "release.yml" }
 helmfile = { version = "1.8.2", workflow = "releaser.yaml" }
 kubectl = "1.37.2"
 sops = "3.13.3"
+usage = { version = "7.2.0", workflow = "publish-cli.yml" }
+yq = "4.54.1"
 
 [secrets.fnox]

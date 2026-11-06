@@ -4,6 +4,7 @@ talosVersion: 1.14.5
 clusterEndpoint: https://193.160.32.161:6443
 clusterName: rhea
 schematicId: '@schematic.yaml'
+secretsProvider: '../../../../scripts/topf-secret'
 
 nodes:
   - host: rhea-controlplane-01
