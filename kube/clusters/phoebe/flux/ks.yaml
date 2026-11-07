@@ -7,6 +7,7 @@ metadata:
   namespace: flux-system
   labels:
     kustomization.flux.home.arpa/default: no-deps
+    wait.flux.home.arpa/disabled: 'true'
 spec:
   interval: 1h
   path: ./kube/clusters/phoebe/flux
