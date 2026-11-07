@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: cluster-config
   namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/default: no-deps
 spec:
   interval: 1h
   path: ./kube/clusters/phoebe/flux
@@ -212,6 +214,8 @@ kind: Kustomization
 metadata:
   name: cluster-core
   namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/default: no-deps
 spec:
   interval: 1h
   path: ./kube/deploy/core
