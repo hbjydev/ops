@@ -10,3 +10,4 @@ metadata:
 spec:
   path: ./kube/deploy/core/flux-system/flux-operator/app
   dependsOn: []
+  targetNamespace: flux-system
