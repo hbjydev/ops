@@ -1,0 +1,21 @@
+secretsExporter:
+  includeNamespaces:
+    - cert-manager
+  includeSecrets:
+    - service-ca
+  configMapKeys:
+    - root.pem
+  includeConfigMaps:
+    - pki-root
+
+prometheusServiceMonitor:
+  create: true
+  extraLabels:
+    release: monitoring
+
+prometheusRules:
+  create: true
+  extraLabels:
+    release: monitoring
+  alertExtraLabels:
+    component: pki

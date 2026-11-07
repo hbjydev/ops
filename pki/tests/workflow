@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+set -euo pipefail
+umask 077
+
+source_dir="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)"
+test_dir="$(mktemp -d "${TMPDIR:-/tmp}/ops-pki-test.XXXXXXXX")"
+trap 'rm -rf -- "$test_dir"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+export PATH="$source_dir/tests/bin:$PATH"
+export PKI_TEST_VAULTS="$test_dir/vaults"
+export TMPDIR="$test_dir/tmp"
+mkdir -p "$TMPDIR" "$test_dir/workspace/.mise"
+cp "$source_dir/pki" "$source_dir/root.json" "$source_dir/signing.json" "$test_dir/workspace/"
+cp "$source_dir/.mise/config.toml" "$test_dir/workspace/.mise/"
+cd "$test_dir/workspace"
+
+fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
+pass() { printf 'PASS: %s\n' "$*"; }
+expect_failure() {
+  if "$@" >> "$test_dir/output" 2>&1; then
+    fail 'An operation that must fail succeeded.'
+  fi
+}
+
+./pki --help > "$test_dir/help"
+grep -q intermediate "$test_dir/help"
+./pki intermediate --help > "$test_dir/help"
+grep -q -- --generation "$test_dir/help"
+expect_failure ./pki intermediate
+expect_failure ./pki root --generation '../escape'
+expect_failure ./pki root --unknown
+pass 'usage help and argument validation'
+
+./pki root > "$test_dir/output" 2>&1
+./pki intermediate phoebe >> "$test_dir/output" 2>&1
+openssl x509 -in certs/root-v1.pem -noout -ext basicConstraints | grep -q pathlen:1
+openssl x509 -in certs/ca-phoebe-v1.pem -noout -ext basicConstraints | grep -q pathlen:0
+cat certs/ca-phoebe-v1.pem certs/root-v1.pem > "$test_dir/expected-chain"
+cmp certs/ca-phoebe-v1-chain.pem "$test_dir/expected-chain"
+jq -j '.fields[] | select(.label == "private-key") | .value' \
+  "$PKI_TEST_VAULTS/cluster-phoebe/ca-phoebe-v1.json" > "$test_dir/issuer.key"
+printf '%s\n' '{"CN":"test","hosts":["test.example"],"key":{"algo":"ecdsa","size":256}}' |
+  cfssl gencert -ca certs/ca-phoebe-v1.pem -ca-key "$test_dir/issuer.key" - \
+    2> "$test_dir/cfssl-log" | jq -j '.cert' > "$test_dir/leaf.pem"
+openssl verify -CAfile certs/root-v1.pem -untrusted certs/ca-phoebe-v1.pem "$test_dir/leaf.pem" > /dev/null
+pass 'root, intermediate, and service certificate chain'
+
+cp "$PKI_TEST_VAULTS/ops-pki/root-v1.json" "$test_dir/original.json"
+expect_failure ./pki root
+expect_failure ./pki intermediate phoebe
+cmp "$PKI_TEST_VAULTS/ops-pki/root-v1.json" "$test_dir/original.json"
+pass 'duplicate generations leave existing authorities unchanged'
+
+cp certs/root-v1.pem "$test_dir/root.pem"
+rm certs/root-v1.pem certs/root-v1-chain.pem
+./pki public ops-pki root-v1 >> "$test_dir/output" 2>&1
+cmp certs/root-v1.pem "$test_dir/root.pem"
+printf 'different\n' > certs/root-v1-chain.pem
+expect_failure ./pki public ops-pki root-v1
+grep -qx different certs/root-v1-chain.pem
+cp "$test_dir/root.pem" certs/root-v1-chain.pem
+pass 'public restoration and overwrite protection'
+
+cp root.json "$test_dir/root.json"
+jq '.ca.expiry = "24h"' root.json > "$test_dir/short-root.json"
+cp "$test_dir/short-root.json" root.json
+./pki root --generation short >> "$test_dir/output" 2>&1
+expect_failure ./pki intermediate rhea --root root-short
+[[ ! -e "$PKI_TEST_VAULTS/cluster-rhea/ca-rhea-v1.json" ]]
+cp "$test_dir/root.json" root.json
+pass 'intermediate cannot outlive root'
+
+expect_failure env PKI_TEST_OP_FAILURE=true ./pki root --generation unavailable
+expect_failure env PKI_TEST_BAD_JSON=true ./pki root --generation malformed
+expect_failure env PKI_TEST_BAD_READBACK=true ./pki root --generation readback
+[[ ! -e certs/root-unavailable.pem && ! -e certs/root-malformed.pem && ! -e certs/root-readback.pem ]]
+[[ ! -e "$PKI_TEST_VAULTS/ops-pki/root-malformed.json" ]]
+pass '1Password failures stop creation or public export'
+
+# Exercise the documented mise entry point as well as the usage script.
+if ! MISE_STATE_DIR="$test_dir/mise-state" MISE_YES=1 mise run intermediate:create phoebe --generation v2 >> "$test_dir/output" 2>&1; then
+  tail -n 10 "$test_dir/output" >&2
+  fail 'The mise entry point failed.'
+fi
+[[ -e certs/ca-phoebe-v2.pem ]]
+pass 'mise forwards arguments to usage'
+
+if grep -R -q 'PRIVATE KEY' certs "$test_dir/output"; then
+  fail 'A private key or tool diagnostic reached public output.'
+fi
+[[ -z "$(find "$TMPDIR" -mindepth 1 -maxdepth 1 -name 'ops-pki.*' -print -quit)" ]]
+pass 'no private keys in public output and no temporary signing files left behind'

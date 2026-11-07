@@ -1,0 +1,183 @@
+#!/usr/bin/env -S usage bash
+# shellcheck shell=bash
+# vim: ft=bash
+#USAGE cmd "root" help="Create a root CA" {
+#USAGE   flag "--generation <generation>" default="v1" help="New root generation"
+#USAGE }
+#USAGE cmd "intermediate" help="Create a cluster CA" {
+#USAGE   arg "<cluster>" help="Cluster name"
+#USAGE   flag "--generation <generation>" default="v1" help="New intermediate generation"
+#USAGE   flag "--root <root>" default="root-v1" help="Root item in the ops-pki vault"
+#USAGE }
+#USAGE cmd "public" help="Restore public certificates from 1Password" {
+#USAGE   arg "<vault>" help="1Password vault"
+#USAGE   arg "<item>" help="Authority item"
+#USAGE }
+
+set +x
+set -euo pipefail
+umask 077
+
+pki_dir="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
+root_vault=ops-pki
+
+die() {
+  printf '%s\n' "$*" >&2
+  exit 1
+}
+
+run() {
+  # Never echo input or tool diagnostics: either can contain private keys.
+  if ! "$@" 2>/dev/null; then
+    die "$1 ${2:-} failed. Make sure that the tool and its credentials are available."
+  fi
+}
+
+identifier() {
+  [[ "$1" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ && ${#1} -le 63 ]] ||
+    die 'Use at most 63 lowercase letters, digits, and hyphens.'
+}
+
+case "${usage_cmd:-}" in
+  root)
+    identifier "${usage_generation?}"
+    title="root-${usage_generation}"
+    vault="$root_vault"
+    ;;
+  intermediate)
+    identifier "${usage_cluster?}"
+    identifier "${usage_generation?}"
+    identifier "${usage_root?}"
+    title="ca-${usage_cluster}-${usage_generation}"
+    vault="cluster-${usage_cluster}"
+    ;;
+  public)
+    identifier "${usage_vault?}"
+    title="${usage_item?}"
+    vault="$usage_vault"
+    ;;
+  *) die 'Choose root, intermediate, or public. Run ./pki --help for usage.' ;;
+esac
+identifier "$title"
+
+scratch="$(mktemp -d "${TMPDIR:-/tmp}/ops-pki.XXXXXXXX")"
+trap 'rm -rf -- "$scratch"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'printf "%s\n" "Operation failed. Temporary files will be removed." >&2' ERR
+
+available() {
+  local items existing
+  items="$(run op item list --vault "$vault" --format json)"
+  existing="$(run jq -r --arg title "$title" 'any(.[]; .title == $title)' <<< "$items")"
+  if [[ "$existing" == true ]]; then
+    die "$vault/$title already exists. Use a new generation, or restore its public certificates."
+  fi
+  [[ ! -e "$pki_dir/certs/$title.pem" && ! -e "$pki_dir/certs/$title-chain.pem" ]] ||
+    die "Public certificate for $title already exists. Use a new generation."
+}
+
+read_field() {
+  run op read --no-newline "op://$1/$2/$3" > "$4"
+}
+
+save_public() {
+  local field target
+  mkdir -p "$pki_dir/certs"
+  # Inspect both destinations before writing either one.
+  for field in certificate chain; do
+    target="$pki_dir/certs/$title.pem"
+    [[ "$field" != chain ]] || target="$pki_dir/certs/$title-chain.pem"
+    if [[ -e "$target" ]] && ! cmp -s "$scratch/$field" "$target"; then
+      die "$target contains a different certificate. Refusing to overwrite it."
+    fi
+  done
+  cp "$scratch/certificate" "$pki_dir/certs/$title.pem"
+  cp "$scratch/chain" "$pki_dir/certs/$title-chain.pem"
+  chmod 644 "$pki_dir/certs/$title.pem" "$pki_dir/certs/$title-chain.pem"
+}
+
+matches_key() {
+  run openssl x509 -in "$1" -pubkey -noout > "$scratch/cert-public.pem"
+  run openssl pkey -in "$2" -pubout > "$scratch/key-public.pem"
+  cmp -s "$scratch/cert-public.pem" "$scratch/key-public.pem" ||
+    die 'The certificate does not match its private key.'
+}
+
+extract_bundle() {
+  run jq -ej '.cert | select(type == "string" and length > 0)' "$scratch/bundle.json" > "$scratch/certificate"
+  run jq -ej '.key | select(type == "string" and length > 0)' "$scratch/bundle.json" > "$scratch/private-key"
+  matches_key "$scratch/certificate" "$scratch/private-key"
+}
+
+store() {
+  local item_id field
+  # --rawfile keeps the key out of argv. The item travels to op over stdin.
+  run jq -n --arg title "$title" \
+    --rawfile cert "$scratch/certificate" \
+    --rawfile key "$scratch/private-key" \
+    --rawfile chain "$scratch/chain" '{
+      title: $title,
+      category: "SECURE_NOTE",
+      fields: [
+        {id: "certificate", label: "certificate", type: "STRING", value: $cert},
+        {id: "private-key", label: "private-key", type: "CONCEALED", value: $key},
+        {id: "chain", label: "chain", type: "STRING", value: $chain}
+      ]
+    }' | run op item create --vault "$vault" --format json - > "$scratch/created.json"
+  item_id="$(run jq -er '.id | select(type == "string" and length > 0)' "$scratch/created.json")"
+  for field in certificate private-key chain; do
+    read_field "$vault" "$item_id" "$field" "$scratch/readback"
+    cmp -s "$scratch/readback" "$scratch/$field" ||
+      die "1Password readback failed for $vault/$title. Inspect the saved item before retrying."
+  done
+  save_public
+  printf 'Saved %s/%s. Public certificates: pki/certs/%s*.pem\n' "$vault" "$title" "$title"
+}
+
+create_root() {
+  available
+  run jq --arg cn "hayden.moe root ${usage_generation}" '.CN = $cn' "$pki_dir/root.json" |
+    run cfssl gencert -initca - > "$scratch/bundle.json"
+  extract_bundle
+  run openssl verify -CAfile "$scratch/certificate" "$scratch/certificate" > /dev/null
+  cp "$scratch/certificate" "$scratch/chain"
+  store
+}
+
+create_intermediate() {
+  local expiry hours
+  available
+  read_field "$root_vault" "$usage_root" certificate "$scratch/root.pem"
+  expiry="$(run jq -er '.signing.profiles["cluster-ca"].expiry' "$pki_dir/signing.json")"
+  [[ "$expiry" =~ ^[1-9][0-9]*h$ ]] || die 'Use a positive whole number of hours for the cluster-ca expiry.'
+  hours="${expiry%h}"
+  # Bound the arithmetic before converting hours to seconds.
+  [[ ${#hours} -le 8 ]] || die 'The intermediate lifetime exceeds the supported range.'
+  if ! openssl x509 -in "$scratch/root.pem" -noout -checkend "$((hours * 3600))" > /dev/null 2>&1; then
+    die 'The root is unreadable or expires before the requested intermediate. Shorten its lifetime or migrate to a new root.'
+  fi
+  read_field "$root_vault" "$usage_root" private-key "$scratch/root-key.pem"
+  matches_key "$scratch/root.pem" "$scratch/root-key.pem"
+  run jq -n --arg cluster "$usage_cluster" --arg generation "$usage_generation" '{
+    CN: ($cluster + " service ca " + $generation),
+    key: {algo: "ecdsa", size: 256},
+    names: [{O: "hayden.moe", OU: $cluster}]
+  }' | run cfssl gencert -ca "$scratch/root.pem" -ca-key "$scratch/root-key.pem" \
+    -config "$pki_dir/signing.json" -profile cluster-ca - > "$scratch/bundle.json"
+  extract_bundle
+  run openssl verify -CAfile "$scratch/root.pem" "$scratch/certificate" > /dev/null
+  cat "$scratch/certificate" "$scratch/root.pem" > "$scratch/chain"
+  store
+}
+
+case "$usage_cmd" in
+  root) create_root ;;
+  intermediate) create_intermediate ;;
+  public)
+    read_field "$vault" "$title" certificate "$scratch/certificate"
+    read_field "$vault" "$title" chain "$scratch/chain"
+    save_public
+    printf 'Restored public certificates for %s/%s.\n' "$vault" "$title"
+    ;;
+esac

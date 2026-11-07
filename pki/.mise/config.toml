@@ -1,0 +1,30 @@
+[tools]
+cfssl = "1.7.1"
+jq = "1.8.2"
+
+[tasks."root:create"]
+description = "Create a root CA and save its key in 1Password"
+dir = "{{ config_root }}"
+usage = '''
+flag "--generation <generation>" default="v1"
+'''
+run = './pki root --generation "${usage_generation}"'
+
+[tasks."intermediate:create"]
+description = "Create a cluster CA and save its key in 1Password"
+dir = "{{ config_root }}"
+usage = '''
+arg "<cluster>"
+flag "--generation <generation>" default="v1"
+flag "--root <root>" default="root-v1"
+'''
+run = './pki intermediate "${usage_cluster}" --generation "${usage_generation}" --root "${usage_root}"'
+
+[tasks."public:restore"]
+description = "Restore public certificates from 1Password"
+dir = "{{ config_root }}"
+usage = '''
+arg "<vault>"
+arg "<item>"
+'''
+run = './pki public "${usage_vault}" "${usage_item}"'

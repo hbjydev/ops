@@ -1,0 +1,7 @@
+*.pem
+!certs/*.pem
+*.key
+*-key.pem
+*.csr
+private/
+.work/

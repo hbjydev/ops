@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Test double. Never forwards requests to the real 1Password CLI.
+set -euo pipefail
+umask 077
+: "${PKI_TEST_VAULTS:?}"
+
+[[ "$*" != *'PRIVATE KEY'* ]] || exit 90
+if [[ "${PKI_TEST_OP_FAILURE:-}" == true ]]; then
+  printf 'PRIVATE KEY diagnostic that must stay hidden\n' >&2
+  exit 1
+fi
+
+case "$1 $2" in
+  'item list')
+    [[ "$3" == --vault && "$5" == --format && "$6" == json ]]
+    if [[ "${PKI_TEST_BAD_JSON:-}" == true ]]; then
+      printf 'invalid json\n'
+      exit 0
+    fi
+    mkdir -p "$PKI_TEST_VAULTS/$4"
+    shopt -s nullglob
+    files=("$PKI_TEST_VAULTS/$4/"*.json)
+    jq -s 'map({title})' "${files[@]}" < /dev/null
+    ;;
+  'item create')
+    [[ "$3" == --vault && "$5" == --format && "$6" == json && "$7" == - ]]
+    item="$(cat)"
+    title="$(jq -er '.title' <<< "$item")"
+    jq -e '.fields[] | select(.label == "private-key" and .type == "CONCEALED")' <<< "$item" > /dev/null
+    [[ ! -e "$PKI_TEST_VAULTS/$4/$title.json" ]]
+    printf '%s\n' "$item" > "$PKI_TEST_VAULTS/$4/$title.json"
+    jq -n --arg id "$title" '{id: $id}'
+    ;;
+  'read --no-newline')
+    reference="${3#op://}"
+    vault="${reference%%/*}"
+    reference="${reference#*/}"
+    title="${reference%%/*}"
+    field="${reference#*/}"
+    if [[ "${PKI_TEST_BAD_READBACK:-}" == true && "$field" == private-key ]]; then
+      printf 'wrong value'
+    else
+      jq -ej --arg field "$field" '.fields[] | select(.label == $field) | .value' "$PKI_TEST_VAULTS/$vault/$title.json"
+    fi
+    ;;
+  *) printf 'Unexpected test op invocation\n' >&2; exit 1 ;;
+esac

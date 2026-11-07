@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pki-authorities
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: pki-authorities
+      rules:
+        - alert: IntermediateCAExpiring
+          expr: x509_cert_not_after{secret_namespace="cert-manager",secret_name="service-ca"} - time() < 180 * 86400
+          for: 1h
+          labels:
+            severity: warning
+            component: pki
+          annotations:
+            summary: A certificate in the service CA chain expires within 180 days.
+            description: Follow the intermediate replacement procedure in pki/README.md. Inspect the certificate before acting.
+        - alert: IntermediateCAExpiryCritical
+          expr: x509_cert_not_after{secret_namespace="cert-manager",secret_name="service-ca"} - time() < 90 * 86400
+          for: 15m
+          labels:
+            severity: critical
+            component: pki
+          annotations:
+            summary: A certificate in the service CA chain expires within 90 days.
+            description: Replace the authority before new service certificates outlive it. Follow pki/README.md.
+        - alert: RootCAExpiring
+          expr: x509_cert_not_after{configmap_namespace="cert-manager",configmap_name="pki-root"} - time() < 365 * 86400
+          for: 1h
+          labels:
+            severity: warning
+            component: pki
+          annotations:
+            summary: A trusted root expires within 365 days.
+            description: Start the root replacement procedure in pki/README.md.
+        - alert: RootCAExpiryCritical
+          expr: x509_cert_not_after{configmap_namespace="cert-manager",configmap_name="pki-root"} - time() < 180 * 86400
+          for: 15m
+          labels:
+            severity: critical
+            component: pki
+          annotations:
+            summary: A trusted root expires within 180 days.
+            description: Complete the root trust migration described in pki/README.md.
+        - alert: PKIAuthorityMetricsMissing
+          expr: absent(x509_cert_not_after{secret_namespace="cert-manager",secret_name="service-ca"}) or absent(x509_cert_not_after{configmap_namespace="cert-manager",configmap_name="pki-root"})
+          for: 15m
+          labels:
+            severity: critical
+            component: pki
+          annotations:
+            summary: An expected authority has no expiry metrics.
+            description: Inspect the source certificate, exporter access, and Prometheus target. Follow pki/README.md.

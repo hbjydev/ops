@@ -2,6 +2,8 @@
 
 A new way for me to manage & deploy a multi-cluster Kubernetes environment.
 
+The [PKI setup guide](pki/README.md) covers CFSSL authority creation, 1Password key storage, certificate replacement, and expiry alerts.
+
 ## Repo Structure
 
 ```
