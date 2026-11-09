@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-eso-to-1password
+  namespace: external-secrets
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: external-secrets
+  egress:
+    - toFQDNs:
+        - matchPattern: '*.1password.com'
+        - matchPattern: '*.1passwordservices.com'
+        - matchPattern: '*.1passwordusercontent.com'
+    - toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
