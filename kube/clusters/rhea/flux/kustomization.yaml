@@ -6,3 +6,4 @@ resources:
   - apps.yaml
   - clusterinfo.yaml
   - flux-instance.yaml
+  - secrets.yaml

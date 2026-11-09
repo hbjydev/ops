@@ -1,6 +1,19 @@
 [tools]
 flux2 = "2.10.0"
 
+[tasks."flux:inject-key"]
+description = "Inject the SOPS Age key into the cluster for decrypting secrets."
+usage = """
+arg "<cluster>" help="The name of the cluster to apply the configuration to."
+"""
+run = """
+token="$(op read "op://cluster-${usage_cluster?}/bs-sops/password")"
+kubectl create secret generic sops-age \
+  --namespace flux-system \
+  --from-literal=key="$token" \
+  --dry-run=client -o yaml | kubectl apply -f -
+"""
+
 [tasks."flux:sync:ks"]
 description = "Reconcile the Flux configuration for a specific cluster."
 usage = """
