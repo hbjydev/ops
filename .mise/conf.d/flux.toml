@@ -10,7 +10,7 @@ run = """
 token="$(op read "op://cluster-${usage_cluster?}/bs-sops/password")"
 kubectl create secret generic sops-age \
   --namespace flux-system \
-  --from-literal=key="$token" \
+  --from-literal=age.agekey="$token" \
   --dry-run=client -o yaml | kubectl apply -f -
 """
 
