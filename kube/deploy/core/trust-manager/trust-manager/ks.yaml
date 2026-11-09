@@ -26,4 +26,6 @@ spec:
   path: ./kube/deploy/core/trust-manager/trust-manager/bundle
   dependsOn:
     - name: core-trust-manager
+    - name: core-cert-manager-ca
+      namespace: cert-manager
   targetNamespace: *ns

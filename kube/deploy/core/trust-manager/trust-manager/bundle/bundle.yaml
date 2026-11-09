@@ -7,6 +7,9 @@ metadata:
 spec:
   sources:
     - useDefaultCAs: true
+    - configMap:
+        name: pki-root
+        key: root.pem
   target:
     configMap:
       key: "ca.crt"
