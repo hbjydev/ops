@@ -36,7 +36,7 @@ Apply these labels to pod templates, including installation, upgrade, and deleti
 
 Standard allowances set `enableDefaultDeny` to `false` for their traffic direction. This lets operators stage labels without enabling isolation. A separate default-deny policy determines when unmatched traffic is blocked.
 
-The deployment resource list includes DNS and label-based allowances. It excludes `default-deny.yaml` and `kube-system-allow-all.yaml`.
+The deployment resource list includes DNS, label-based, and service-specific allowances. It excludes `default-deny.yaml` and `kube-system-allow-all.yaml`.
 
 Allow rules combine their permissions. A broad `cluster`, `host`, or `world` label grants more access than an individual service usually needs. Use specific peer and port rules for internal service connections.
 
