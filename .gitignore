@@ -1,2 +1,3 @@
 kubeconfig
 talosconfig
+.mise/config.local.toml
