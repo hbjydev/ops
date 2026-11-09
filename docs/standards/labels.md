@@ -35,6 +35,7 @@ should be documented below.
 | `trust.home.arpa/inject` | Whether or not to inject the trusted root bundle into this pod. | Pods | `true` (default), `false` |
 | `trust.home.arpa/profile` | Defines that the pod should use a well-known 'profile' for injecting trust roots | Pods | `default` (default), `node`, `python`, `curl` |
 | `egress.netpol.home.arpa/apiserver` | Allow outgoing Kubernetes API traffic, including local-host TCP 6443. | Pods | `allow` |
+| `egress.netpol.home.arpa/cloudflare-dns` | Allow DNS over HTTPS to Cloudflare resolvers on TCP 443. | Pods | `allow` |
 | `egress.netpol.home.arpa/cluster` | Allow outgoing traffic to all cluster endpoints and nodes. | Pods | `allow` |
 | `egress.netpol.home.arpa/host` | Allow outgoing traffic to the local node. | Pods | `allow` |
 | `egress.netpol.home.arpa/talos-api` | Allow outgoing TCP 50000 and 50001 to local and remote nodes. | Pods | `allow` |
@@ -51,3 +52,7 @@ should be documented below.
 Apply network labels to pod templates. Labels on a HelmRelease or Deployment alone do not select its pods.
 
 The `internet` policies exclude `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. They do not define all public addresses or include IPv6. See [the network policy standard](netpols.md) for enforcement behavior.
+
+The `cloudflare-dns` label allows TCP 443 to `1.1.1.1`, `1.0.0.1`, `1.1.1.2`, `1.0.0.2`, `1.1.1.3`, and `1.0.0.3`. These are Cloudflare's standard and Families IPv4 resolvers. It grants destination and port access, without restricting HTTP paths. It does not grant IPv6, plain DNS, or DNS over TLS access. [Cloudflare endpoints](https://developers.cloudflare.com/1.1.1.1/infrastructure/network-operators/)
+
+CoreDNS uses this label with the standard resolver pair. ACME automates certificate issuance. When an ACME issuer is configured, add the label to cert-manager's controller `podLabels`. DNS01 uses a DNS record to prove domain control. The configured DNS01 resolvers already use HTTPS, but certificate-authority and DNS-provider API access need separate allowances.

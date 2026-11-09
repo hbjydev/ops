@@ -1,0 +1,75 @@
+---
+name: Documentation Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/docs.yaml"
+      - "docs/**"
+      - "mise.toml"
+      - "package.json"
+      - "aube-lock.yaml"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  docs-build:
+    name: Build site
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Repo
+        uses: bitshift-systems/.github/actions/setup-repo@50b88cc93d8640157770512ec9e11750d6c06a31 # setup-repo-v2.2.0
+        with:
+          cache-key: docs-build
+          install-args: node aube
+
+      - name: Cache VitePress
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: docs/.vitepress/cache
+          key: ${{ runner.os }}-vitepress-${{ hashFiles('docs/**', 'aube-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-vitepress-
+
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Install dependencies
+        run: aube ci
+
+      - name: Build VitePress site
+        run: aube run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/.vitepress/dist
+
+  docs-deploy:
+    name: Deploy
+    needs: docs-build
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    timeout-minutes: 2
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

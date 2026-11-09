@@ -5,6 +5,7 @@ config_roots = ["pki"]
 
 [tools]
 age = "1.3.2"
+aube = { version = "2.9.0", workflow = ["release-plz.yml@refs/heads/main", "release.yml@refs/heads/main"] }
 fnox = { version = "1.47.0", workflow = "release.yml" }
 helmfile = { version = "1.8.2", workflow = "releaser.yaml" }
 jactionlint = "2.5.0"
