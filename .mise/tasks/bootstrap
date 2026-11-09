@@ -42,8 +42,9 @@ if [ ! -f "${KUBECONFIG}" ]; then
 fi
 
 if [ "${usage_skip_talos:-false}" = "false" ]; then
-  echo "TODO: Bootstrap Talos installation for cluster ${usage_cluster_name}"
-  exit 1
+  cd "${talos_dir}" && fnox exec -- topf apply --auto-bootstrap --confirm=false
+  # TODO: Safely wait for the Kube API to be up then continue.
+  exit 0
 fi
 
 if [ "${usage_skip_kube:-false}" = "false" ]; then

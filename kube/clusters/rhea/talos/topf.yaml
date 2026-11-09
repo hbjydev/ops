@@ -8,6 +8,6 @@ secretsProvider: '../../../../scripts/topf-secret'
 
 nodes:
   - host: rhea-controlplane-01
-    ip: 100.80.113.62
+    ip: 193.160.32.161
     role: control-plane
     platform: metal
