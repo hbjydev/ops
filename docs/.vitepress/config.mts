@@ -8,12 +8,28 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Standards', link: '/standards/' },
+      { text: 'Clusters', link: '/clusters/phoebe' },
+      { text: 'Core', link: '/core/pki' },
+      { text: 'Standards', link: '/standards/labels' },
     ],
     sidebar: [
       {
+        text: 'Clusters',
+        items: [
+          { text: 'Phoebe', link: '/clusters/phoebe' },
+          { text: 'Rhea', link: '/clusters/rhea' },
+        ]
+      },
+      {
+        text: 'Core Infrastructure',
+        items: [
+          { text: 'PKI', link: '/core/pki' },
+          { text: 'Secrets', link: '/core/secrets' },
+          { text: 'Security', link: '/core/security' },
+        ]
+      },
+      {
         text: 'Standards',
-        link: '/standards/',
         items: [
           { text: 'Labels', link: '/standards/labels' },
           { text: 'Network Policies', link: '/standards/netpols' },
