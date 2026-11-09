@@ -1,0 +1,3 @@
+{{- $cluster := requiredEnv "CLUSTER_NAME" -}}
+{{- $path := printf "../../../clusters/%s/flux/instance/helmrelease.yaml" $cluster -}}
+{{ (readFile $path | fromYaml).spec.values | toYaml }}
