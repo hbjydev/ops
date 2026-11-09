@@ -23,6 +23,7 @@ export default defineConfig({
       {
         text: 'Core Infrastructure',
         items: [
+          { text: 'GitOps', link: '/core/gitops' },
           { text: 'Networking', link: '/core/networking' },
           { text: 'PKI', link: '/core/pki' },
           { text: 'Secrets', link: '/core/secrets' },
