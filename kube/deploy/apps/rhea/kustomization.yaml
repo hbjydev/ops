@@ -6,4 +6,5 @@ resources:
   - ../../core/cert-manager
   - ../../core/flux-system
   - ../../core/kube-system
+  - ../../core/kyverno
   - ../../core/trust-manager
