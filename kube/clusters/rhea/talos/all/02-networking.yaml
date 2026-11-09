@@ -24,6 +24,12 @@ kind: KubeFlannelCNIConfig
 $patch: delete
 
 ---
+# we use cilium, not flannel
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+
+---
 # we deploy our own coredns install
 apiVersion: v1alpha1
 kind: KubeCoreDNSConfig
