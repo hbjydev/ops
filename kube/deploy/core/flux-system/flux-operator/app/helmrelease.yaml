@@ -10,4 +10,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-operator
-  values: {}
+  values:
+    commonLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/internet-https: allow

@@ -34,6 +34,35 @@ spec:
         interval: 15m
       kustomize:
         patches:
+          # Attach standard permissions to controller pods.
+          - patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      egress.netpol.home.arpa/apiserver: allow
+            target:
+              kind: Deployment
+              name: (source-controller|kustomize-controller|helm-controller|notification-controller)
+
+          - patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      egress.netpol.home.arpa/internet-https: allow
+            target:
+              kind: Deployment
+              name: source-controller
+
           # Increase the number of workers
           - patch: |-
               - op: add

@@ -36,6 +36,8 @@ spec:
         enabled: true
       ui:
         enabled: true
+        podLabels:
+          egress.netpol.home.arpa/apiserver: allow
 
     # [perf] scale operator to 1 replica
     operator:
