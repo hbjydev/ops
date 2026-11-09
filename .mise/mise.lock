@@ -87,7 +87,10 @@ url_api = "https://api.github.com/repos/postfinance/topf/releases/assets/6686243
 [[tools.aube]]
 version = "2.9.0"
 backend = "packslip:github.com/aubepkg/aube"
-specifiers = ["latest"]
+specifiers = [
+    "2.9.0",
+    "latest",
+]
 
 [tools.aube."platforms.linux-arm64"]
 checksum = "sha256:6439ed819ef506a076f002fb520686c84518dcea319e61be0816f1120a1d1862"
