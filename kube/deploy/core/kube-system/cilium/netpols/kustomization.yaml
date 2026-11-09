@@ -3,9 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./default-deny.yaml
   - ./default-dns.yaml
   - ./hubble.yaml
   - ./labelled-egress.yaml
   - ./labelled-ingress.yaml
-# Default deny remains excluded until the service-specific allowances are ready.
-# Do not include the broad kube-system exception in the staged rollout.
