@@ -26,5 +26,3 @@ spec:
       egress.netpol.home.arpa/apiserver: allow
     metrics:
       enabled: true
-    serviceMonitor:
-      enabled: true
