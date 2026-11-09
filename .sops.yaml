@@ -1,11 +1,28 @@
 ---
 creation_rules:
-  - path_regex: \.sops\.yaml$
-    age: >-
-      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
-  - path_regex: talos\/secrets\.yaml$
-    age: >-
-      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+  - path_regex: phoebe\/flux\/secrets\/.+\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    age:
+      - # my key
+        age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+      - # phoebe cluster key
+        age1g699v4zfsv6pgnrg2ztgyd4d78davymluqa8q86jsjhe8llvyarq0lpl8z
+  - path_regex: rhea\/flux\/secrets\/.+\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    age:
+      - # my key
+        age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+      - # rhea cluster key
+        age1xdaz2grs72putwrkltm9unfml32pn6ttnuaulajj9qmdtlsvfcash77rgd
   - path_regex: talos\/.+\/.+\.yaml$
     age: >-
       age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+  - path_regex: \.sops\.yaml$
+    age: >-
+      age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+
+stores:
+  yaml:
+    indent: 2
