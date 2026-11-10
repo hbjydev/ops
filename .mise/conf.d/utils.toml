@@ -1,0 +1,20 @@
+[tasks."util:render"]
+usage = '''
+arg "<cluster>" help="The cluster to render a template for."
+arg "<file>" help="The template file to render."
+flag "--output <file>" help="The output file to write the rendered template to."
+flag "--extra-vars <vars>" help="Extra variables to pass to the template rendering engine."
+'''
+tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
+run = '''
+context="{\"name\": \"${usage_cluster?}\"}"
+context_merged="$(echo "${context} ${usage_extra_vars}" | jq -s add)"
+
+dir="$(dirname "${usage_output?}")"
+mkdir -p "${dir}"
+
+echo "$context_merged" | tera \
+  --template "${usage_file?}" \
+  --stdin \
+  --out "${usage_output:=/dev/stdout}"
+'''

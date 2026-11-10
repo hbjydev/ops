@@ -17,6 +17,18 @@ key_data=$(age-keygen)
 pubkey=$(echo "${key_data}" | grep "public key" | awk '{print $4}')
 privkey=$(echo "${key_data}" | grep "AGE-SECRET-KEY")
 op item get "bs-sops" --vault "${vault_name}" 2>&1 >/dev/null || op item create --title "bs-sops" --vault "cluster-${usage_cluster?}" --category "password" "username=${pubkey}" "password=${privkey}"
+echo "Created Age keypair for cluster ${usage_cluster?} and stored in 1Password vault ${vault_name}."
+echo "Configuring SOPS to use the Age key for encryption."
+cat <<EOF >> "{{ config_root }}/.sops.yaml"
+  - path_regex: ${usage_cluster?}\/flux\/secrets\/.+\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    age:
+      - # my key
+        age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
+      - # ${usage_cluster?} cluster key
+        ${pubkey}
+EOF
 '''
 
 [tasks."bootstrap:pki"]
@@ -30,35 +42,27 @@ mise run //pki:intermediate:create "${usage_cluster?}" --generation v1 --root ro
 [tasks."bootstrap:flux"]
 usage = '''
 arg "<cluster>" help="The cluster to bootstrap Flux for."
+arg "<op-token>" help="The 1Password token to use for Flux."
 '''
 tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
 run = '''
-mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}"
-mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}/talos"
-mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}/flux"
 flux_templates_dir="{{ config_root }}/.mise/conf.d/bootstrap/flux"
 templates_out_dir="{{ config_root }}/kube/clusters/${usage_cluster?}/flux"
-mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/apps.yaml" --output "${templates_out_dir}/apps.yaml"
-mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/clusterinfo.yaml" --output "${templates_out_dir}/clusterinfo.yaml"
-mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/flux-instance.yaml" --output "${templates_out_dir}/flux-instance.yaml"
-mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/kustomization.yaml" --output "${templates_out_dir}/kustomization.yaml"
-mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/secrets.yaml" --output "${templates_out_dir}/secrets.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/apps.yaml" --output "${templates_out_dir}/apps.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/clusterinfo.yaml" --output "${templates_out_dir}/clusterinfo.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/flux-instance.yaml" --output "${templates_out_dir}/flux-instance.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/kustomization.yaml" --output "${templates_out_dir}/kustomization.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/secrets.yaml" --output "${templates_out_dir}/secrets.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/instance/helmrelease.yaml" --output "${templates_out_dir}/instance/helmrelease.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/instance/ocirepository.yaml" --output "${templates_out_dir}/instance/ocirepository.yaml"
+mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/secrets/op-token.sops.yaml" --output "${templates_out_dir}/secrets/op-token.sops.yaml" --extra-vars "{\"op_token\": \"${usage_op_token?}\"}"
+fnox exec -- sops -e -i "${templates_out_dir}/secrets/op-token.sops.yaml"
 '''
 
-[tasks."bootstrap:render"]
+[tasks."talos"]
 usage = '''
-arg "<cluster>" help="The cluster to render a template for."
-arg "<file>" help="The template file to render."
-flag "--output <file>" help="The output file to write the rendered template to."
-flag "--extra-vars <vars>" help="Extra variables to pass to the template rendering engine."
+arg "<cluster>" help="The cluster to bootstrap Talos for."
 '''
-tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
 run = '''
-context="{\"name\": \"${usage_cluster?}\"}"
-context_merged="$(echo "${context} ${usage_extra_vars}" | jq -s add)"
 
-echo "$context_merged" | tera \
-  --template "${usage_file?}" \
-  --stdin \
-  --out "${usage_output:=/dev/stdout}"
 '''
