@@ -49,6 +49,53 @@ url = "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-wi
 url_api = "https://api.github.com/repos/FiloSottile/age/releases/assets/535541937"
 provenance = "github-attestations"
 
+[[tools."aqua:chevdor/tera-cli"]]
+version = "0.5.1"
+backend = "aqua:chevdor/tera-cli"
+specifiers = ["0.5.1"]
+
+[tools."aqua:chevdor/tera-cli"."platforms.linux-arm64"]
+checksum = "sha256:d46b9df2b873daa922fa7ad5622e9d04ba0bb10f2d8a93ab7592fa42bb1bd6e8"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443595158"
+
+[tools."aqua:chevdor/tera-cli"."platforms.linux-arm64-musl"]
+checksum = "sha256:021d8662b47828e33ee232e821daf13c1e6a36b4de846b77e511c1664cfdb82b"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443595264"
+
+[tools."aqua:chevdor/tera-cli"."platforms.linux-x64"]
+checksum = "sha256:3b7bee801802086c61a5361815383890f563f49795d9868a2f7cb70e5680d685"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443594605"
+
+[tools."aqua:chevdor/tera-cli"."platforms.linux-x64-musl"]
+checksum = "sha256:ca9c2f2a124ad9be70adb0f53b0e28e106436e2514d6b41bd74e255440d7ab5f"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443595300"
+
+[tools."aqua:chevdor/tera-cli"."platforms.macos-arm64"]
+checksum = "sha256:0731db549b9a2f982d105812e7f81b36aaa1799494b1208419c650be3527f950"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443595219"
+
+[tools."aqua:chevdor/tera-cli"."platforms.macos-x64"]
+checksum = "sha256:13e9bbc28308217af1b430c1222563405057f9e2db1d1efe4c75a1d52c84df82"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443594743"
+
+[tools."aqua:chevdor/tera-cli"."platforms.windows-x64"]
+checksum = "sha256:a0baf6ac8d143a01e4fa5505cfaee262a0f939c0be16ed7956f9fb8109bbc131"
+checksum_source = "mise-versions"
+url = "https://github.com/chevdor/tera-cli/releases/download/v0.5.1/tera-cli-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/chevdor/tera-cli/releases/assets/443595330"
+
 [[tools."aqua:postfinance/topf"]]
 version = "0.6.2"
 backend = "aqua:postfinance/topf"
@@ -472,6 +519,39 @@ checksum = "sha256:45b25be0ceef02b55110a2858f2fcc4e2f711f8b3dcd64bbc3c842d45adfd
 url = "https://github.com/siderolabs/talos/releases/download/v1.14.5/talosctl-windows-amd64.exe"
 url_api = "https://api.github.com/repos/siderolabs/talos/releases/assets/678470928"
 provenance = "cosign"
+
+[[tools.terraform]]
+version = "1.17.1"
+backend = "aqua:hashicorp/terraform"
+specifiers = ["1.17.1"]
+
+[tools.terraform."platforms.linux-arm64"]
+checksum = "sha256:988e950a1c23058093b0e66ab2d5fb53fc18345ecfbd5871acf51dbac9325edd"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_linux_arm64.zip"
+
+[tools.terraform."platforms.linux-arm64-musl"]
+checksum = "sha256:988e950a1c23058093b0e66ab2d5fb53fc18345ecfbd5871acf51dbac9325edd"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_linux_arm64.zip"
+
+[tools.terraform."platforms.linux-x64"]
+checksum = "sha256:4638628058e71a55212b1c563712eac03b902128f40740f3dc8174df12135061"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_linux_amd64.zip"
+
+[tools.terraform."platforms.linux-x64-musl"]
+checksum = "sha256:4638628058e71a55212b1c563712eac03b902128f40740f3dc8174df12135061"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_linux_amd64.zip"
+
+[tools.terraform."platforms.macos-arm64"]
+checksum = "sha256:b1ecb3fe0d0a0290c1ab6f83d967d43f25da05d0b671ee0fb355252268dce95a"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_darwin_arm64.zip"
+
+[tools.terraform."platforms.macos-x64"]
+checksum = "sha256:fde92387cf9c0de74255003c85291f8fbede54585c10d0635ca7a43633d4d171"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_darwin_amd64.zip"
+
+[tools.terraform."platforms.windows-x64"]
+checksum = "sha256:a3b71365cff94c0f978cf75d86addb075ea1bb6409055ea0ab359bf057d7898a"
+url = "https://releases.hashicorp.com/terraform/1.17.1/terraform_1.17.1_windows_amd64.zip"
 
 [[tools.usage]]
 version = "7.2.0"

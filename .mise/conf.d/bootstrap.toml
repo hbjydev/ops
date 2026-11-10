@@ -1,0 +1,64 @@
+[tasks."bootstrap:op"]
+usage = '''
+arg "<cluster>" help="The cluster to bootstrap 1Password for."
+'''
+run = '''
+vault_name="cluster-${usage_cluster?}"
+op vault get "${vault_name}" 2>&1 >/dev/null || op vault create "${vault_name}"
+'''
+
+[tasks."bootstrap:age"]
+usage = '''
+arg "<cluster>" help="The cluster to bootstrap Age keys for."
+'''
+run = '''
+vault_name="cluster-${usage_cluster?}"
+key_data=$(age-keygen)
+pubkey=$(echo "${key_data}" | grep "public key" | awk '{print $4}')
+privkey=$(echo "${key_data}" | grep "AGE-SECRET-KEY")
+op item get "bs-sops" --vault "${vault_name}" 2>&1 >/dev/null || op item create --title "bs-sops" --vault "cluster-${usage_cluster?}" --category "password" "username=${pubkey}" "password=${privkey}"
+'''
+
+[tasks."bootstrap:pki"]
+usage = '''
+arg "<cluster>" help="The cluster to bootstrap PKI CAs for."
+'''
+run = '''
+mise run //pki:intermediate:create "${usage_cluster?}" --generation v1 --root root-v1
+'''
+
+[tasks."bootstrap:flux"]
+usage = '''
+arg "<cluster>" help="The cluster to bootstrap Flux for."
+'''
+tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
+run = '''
+mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}"
+mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}/talos"
+mkdir -p "{{ config_root }}/kube/clusters/${usage_cluster?}/flux"
+flux_templates_dir="{{ config_root }}/.mise/conf.d/bootstrap/flux"
+templates_out_dir="{{ config_root }}/kube/clusters/${usage_cluster?}/flux"
+mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/apps.yaml" --output "${templates_out_dir}/apps.yaml"
+mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/clusterinfo.yaml" --output "${templates_out_dir}/clusterinfo.yaml"
+mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/flux-instance.yaml" --output "${templates_out_dir}/flux-instance.yaml"
+mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/kustomization.yaml" --output "${templates_out_dir}/kustomization.yaml"
+mise run bootstrap:render "${usage_cluster?}" "${flux_templates_dir}/secrets.yaml" --output "${templates_out_dir}/secrets.yaml"
+'''
+
+[tasks."bootstrap:render"]
+usage = '''
+arg "<cluster>" help="The cluster to render a template for."
+arg "<file>" help="The template file to render."
+flag "--output <file>" help="The output file to write the rendered template to."
+flag "--extra-vars <vars>" help="Extra variables to pass to the template rendering engine."
+'''
+tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
+run = '''
+context="{\"name\": \"${usage_cluster?}\"}"
+context_merged="$(echo "${context} ${usage_extra_vars}" | jq -s add)"
+
+echo "$context_merged" | tera \
+  --template "${usage_file?}" \
+  --stdin \
+  --out "${usage_output:=/dev/stdout}"
+'''
