@@ -27,8 +27,8 @@ spec:
         ingress.netpol.home.arpa/apiserver: allow
       tls:
         mode: cert-manager
-      serviceMonitor:
-        enabled: true
+      # serviceMonitor:
+      #   enabled: true
 
     features:
       credentialProjection:
