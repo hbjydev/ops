@@ -8,4 +8,4 @@ metadata:
   labels:
     reconcile.fluxcd.io/watch: Enabled
 data:
-  CLUSTER: main
+  CLUSTER: phoebe
