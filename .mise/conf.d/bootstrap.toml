@@ -59,10 +59,45 @@ mise run //:util:render "${usage_cluster?}" "${flux_templates_dir}/secrets/op-to
 fnox exec -- sops -e -i "${templates_out_dir}/secrets/op-token.sops.yaml"
 '''
 
-[tasks."talos"]
+[tasks."bootstrap:kube:ns"]
 usage = '''
-arg "<cluster>" help="The cluster to bootstrap Talos for."
+arg "<cluster>" help="The cluster to bootstrap Flux for."
+'''
+tools = { "aqua:chevdor/tera-cli" = "0.5.1" }
+run = '''
+core_dir="{{ config_root }}/kube/deploy/core"
+namespaces=$(find "${core_dir}" -mindepth 1 -maxdepth 1 -type d)
+KUBECONFIG="{{ config_root }}/kube/clusters/${usage_cluster?}/kubeconfig"
+
+if [ ! -f "${KUBECONFIG}" ]; then
+  mise run //:kubeconfig "${usage_cluster?}"
+fi
+
+for ns in ${namespaces}; do
+  ns_name=$(basename "${ns}")
+  if kubectl get namespace "${ns_name}" >/dev/null 2>&1; then
+    echo "Namespace ${ns_name} already exists in cluster ${usage_cluster?}, skipping creation."
+    continue
+  fi
+  echo "Creating namespace ${ns_name} in cluster ${usage_cluster?}..."
+  kubectl apply -f "${ns}/namespace.yaml"
+done
+'''
+
+[tasks."kubeconfig"]
+usage = '''
+arg "<cluster>" help="The cluster to generate a Kubeconfig for."
 '''
 run = '''
+cd "{{ config_root }}/kube/clusters/${usage_cluster?}/talos"
+topf kubeconfig --validity 3600h > "{{ config_root }}/kube/clusters/${usage_cluster?}/kubeconfig"
+'''
 
+[tasks."talosconfig"]
+usage = '''
+arg "<cluster>" help="The cluster to generate a Talosconfig for."
+'''
+run = '''
+cd "{{ config_root }}/kube/clusters/${usage_cluster?}/talos"
+topf talosconfig > "{{ config_root }}/kube/clusters/${usage_cluster?}/kubeconfig"
 '''
