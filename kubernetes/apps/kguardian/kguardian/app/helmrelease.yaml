@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kguardian
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: kguardian
+  interval: 30m
+  # Chart 1.29.2 hardcodes password auth and has no extra volume/mount values.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: kguardian-broker
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kguardian-broker
+                annotations:
+                  configmap.reloader.stakater.com/reload: cluster-roots
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      trust.home.arpa/inject: "true"
+                  spec:
+                    containers:
+                      - name: broker
+                        env:
+                          - name: DB_PASSWORD
+                            $patch: delete
+                          - name: DATABASE_URL
+                            value: "postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/cluster-trust/ca.crt"
+                        volumeMounts:
+                          - name: postgres-certs
+                            mountPath: /var/run/secrets/postgresql
+                            readOnly: true
+                    volumes:
+                      - name: postgres-certs
+                        csi:
+                          driver: csi.cert-manager.io
+                          readOnly: true
+                          volumeAttributes:
+                            csi.cert-manager.io/issuer-name: postgres-client-ca
+                            csi.cert-manager.io/issuer-kind: ClusterIssuer
+                            csi.cert-manager.io/key-algorithm: ECDSA
+                            csi.cert-manager.io/key-size: "384"
+                            csi.cert-manager.io/key-encoding: PKCS8
+                            csi.cert-manager.io/key-usages: client auth
+                            csi.cert-manager.io/common-name: kguardian
+                            csi.cert-manager.io/fs-group: "1000"
+  values:
+    defaultPodOptions:
+      annotations: {}
+      labels: {}
+      schedulingGates: []
+
+    global:
+      labels:
+        egress.policy.home.arpa/litellm: allow
+        egress.policy.home.arpa/cluster: allow
+        db.policy.home.arpa/postgres: allow
+
+    controller:
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "500m"
+          memory: "512Mi"
+
+      excludedNamespaces:
+        - kguardian
+
+    database:
+      enabled: false
+      user: kguardian
+      databaseName: kguardian
+      existingSecret: kguardian-postgres
+      passwordSecretKey: password
+      external:
+        host: pooler-rw.database.svc.cluster.local
+        port: 5432
+        sslMode: verify-full
+
+    ai:
+      enabled: true
+      provider: openai
+      secret: kguardian-litellm
+      baseUrl: http://litellm.ai.svc.cluster.local:4000/v1
+      model: gpt-6-luna
+      mcp:
+        enabled: true
+        auth:
+          allowUnauthenticated: true

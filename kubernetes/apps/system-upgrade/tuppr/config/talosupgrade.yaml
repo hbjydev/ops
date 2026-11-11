@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/tuppr.home-operations.com/talosupgrade_v1alpha1.json
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: cluster
+spec:
+  talos:
+    # renovate: datasource=docker depName=ghcr.io/siderolabs/talos
+    version: v1.14.5
+
+  policy:
+    waitForVolumeDetach: true
+    drainTimeout: 10m
+
+  healthChecks:
+    # All nodes Ready
+    - apiVersion: v1
+      kind: Node
+      expr: status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m

@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vtsingle_v1.json
+apiVersion: operator.victoriametrics.com/v1
+kind: VTSingle
+metadata:
+  name: victoria-traces
+spec:
+  image:
+    repository: victoriametrics/victoria-traces
+    tag: v0.13.0
+    pullPolicy: Always
+
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+  retentionPeriod: "12"
+
+  storage:
+    storageClassName: miroir-local
+    resources:
+      requests:
+        storage: 50Gi

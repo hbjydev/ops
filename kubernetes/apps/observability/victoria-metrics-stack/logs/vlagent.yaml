@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vlagent_v1.json
+apiVersion: operator.victoriametrics.com/v1
+kind: VLAgent
+metadata:
+  name: logs-agent
+spec:
+  remoteWrite:
+    - url: "http://vlsingle-victoria-logs:9428/internal/insert"
+
+  k8sCollector:
+    enabled: true
+    ignoreFields:
+      - kubernetes.container_id
+      - kubernetes.namespace_labels*
+      - kubernetes.pod_annotations.k8s.v1.cni.cncf.io/network-status
+      - kubernetes.pod_annotations.cnpg.io/podSpec
+      - kubernetes.pod_labels.controller-revision-hash
+    includePodLabels: true
+    includePodAnnotations: true
+    includeNodeLabels: false
+    msgFields: [message.msg, message, msg, record.msg, fields.message]
+    timeFields: [time, ts, timestamp]
+
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: miroir-local
+        resources:
+          requests:
+            storage: 20Gi

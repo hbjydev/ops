@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app hermes
+  namespace: &namespace ai
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/kopiur
+    - ../../../../components/kanidm/public
+  dependsOn:
+    - name: kyverno-config
+      namespace: kyverno
+  interval: 1h
+  path: ./kubernetes/apps/ai/hermes/app
+  postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: *namespace
+      OIDC_DISPLAY_NAME: Hermes Agent
+      OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/hermes-agent.png
+      OIDC_ORIGIN: https://hermes.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://hermes.hayden.moe/auth/callback"]'
+      OIDC_GROUP_PREFIX: hermes
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  wait: false

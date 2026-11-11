@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/infra.hayden.moe/storagebucket_v1alpha1.json
+apiVersion: infra.hayden.moe/v1alpha1
+kind: StorageBucket
+metadata:
+  name: tranquil-media
+  namespace: selfhosted
+spec:
+  serviceProjectRef:
+    name: tranquil
+  location: EU
+  serviceAccount: tranquil
+  role: roles/storage.objectAdmin
+  interoperability:
+    enabled: true

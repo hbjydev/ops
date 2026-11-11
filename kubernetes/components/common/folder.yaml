@@ -1,0 +1,7 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/infra.hayden.moe/namespacefolder_v1alpha1.json
+apiVersion: infra.hayden.moe/v1alpha1
+kind: NamespaceFolder
+metadata:
+  name: folder
+spec: {}

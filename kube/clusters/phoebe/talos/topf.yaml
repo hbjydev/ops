@@ -2,7 +2,7 @@
 clusterName: phoebe
 clusterEndpoint: https://10.80.0.8:6443
 kubernetesVersion: "1.37.1"
-talosVersion: "1.14.5"
+talosVersion: "1.14.4"
 schematicId: "@schematic.yaml"
 platform: metal
 secureboot: false

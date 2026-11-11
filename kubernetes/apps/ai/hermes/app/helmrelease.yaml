@@ -1,0 +1,293 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hermes
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      hermes:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: cluster-roots
+        replicas: 1
+        strategy: Recreate
+        type: deployment
+
+        serviceAccount:
+          identifier: hermes
+
+        initContainers:
+          init:
+            image:
+              repository: docker.io/library/alpine
+              tag: "3.24"
+            command:
+              - sh
+              - -c
+              - |
+                set -euo pipefail
+                rm -rf /data/config.yaml*
+                cp /etc/hermes/config.yaml /data/config.yaml
+                cp /etc/hermes/honcho.json /data/honcho.json
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: [ALL] }
+              runAsGroup: 1000
+              runAsUser: 1000
+
+          install-tools:
+            image: &image
+              repository: nousresearch/hermes-agent
+              tag: v2026.9.24@sha256:fca358f12efd65bfaaca05884166f15c0e2788375ca30d77061ac1ebc96452b7
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                mkdir -p $(HOME)/.local/bin
+                rm -f $(HOME)/.local/bin/hermes
+                if [ ! -f $(HOME)/.local/share/mise ]; then
+                  curl https://mise.run | sh
+                fi
+            env: &baseEnv
+              # Tools also use Node and curl alongside Python.
+              NODE_EXTRA_CA_CERTS: /var/run/cluster-trust/ca.crt
+              CURL_CA_BUNDLE: /var/run/cluster-trust/ca.crt
+              TZ: Europe/London
+              HOME: /data
+              HOMEBREW_PREFIX: $(HOME)/.local/share/brew
+              PATH: "$(HOME)/.local/bin:$(HOME)/.local/share/mise/shims:$(HOME)/.local/share/brew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+        pod:
+          labels:
+            trust.home.arpa/inject: "true"
+            egress.policy.home.arpa/litellm: allow
+            egress.policy.home.arpa/honcho: allow
+            egress.policy.home.arpa/seerr: allow
+            egress.policy.home.arpa/searxng: allow
+            ingress.policy.home.arpa/external: allow
+        containers:
+          app:
+            image: *image
+            env: &env
+              <<: *baseEnv
+              TZ: Europe/London
+
+              API_SERVER_ENABLED: "true"
+              API_SERVER_HOST: "0.0.0.0"
+              API_SERVER_CORS_ORIGINS: '*'
+
+              HERMES_UID: "1000"
+              HERMES_GID: "1000"
+              HERMES_HOME: "/data"
+              HERMES_CRON_TIMEOUT: 0
+
+              HERMES_DASHBOARD: "1"
+              HERMES_DASHBOARD_PUBLIC_URL: "https://hermes.hayden.moe"
+              HERMES_DASHBOARD_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/hermes
+              HERMES_DASHBOARD_OIDC_CLIENT_ID: hermes
+
+              SEERR_URL: http://seerr.media.svc.cluster.local
+              SEARXNG_URL: http://searxng.selfhosted.svc.cluster.local:8080
+
+              HOME: /data
+              PATH: "$(HOME)/.local/bin:$(HOME)/.local/share/mise/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin:/app/.venv/bin:/app/node_modules/.bin"
+            envFrom: &envFrom
+              - secretRef:
+                  name: hermes-config-env
+              - secretRef:
+                  name: hermes-litellm
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                cpu: 2000m
+                memory: 4Gi
+            ports:
+              - containerPort: &gatewayPort 8642
+                name: gateway
+                protocol: TCP
+              - containerPort: &dashboardPort 9119
+                name: dashboard
+                protocol: TCP
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add:
+                  - CHOWN
+                  - DAC_OVERRIDE
+                  - FOWNER
+                  - FSETID
+                  - SETGID
+                  - SETUID
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: false
+              runAsGroup: 0
+              runAsNonRoot: false
+              runAsUser: 0
+
+    defaultPodOptions:
+      annotations:
+        trust.home.arpa/profile: python
+      schedulingGates: []
+      automountServiceAccountToken: true
+      imagePullSecrets:
+        - name: imp-forgejo
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+    service:
+      app:
+        controller: hermes
+        ipFamilies:
+          - IPv4
+        ports:
+          gateway:
+            port: *gatewayPort
+          dashboard:
+            port: *dashboardPort
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.hayden.moe"
+        parentRefs:
+          - name: external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: dashboard
+
+    persistence:
+      data:
+        existingClaim: '{{ .Release.Name }}'
+
+      config:
+        type: configMap
+        name: 'hermes-config'
+        defaultMode: 0o755
+        advancedMounts:
+          hermes:
+            init:
+              - path: /etc/hermes/config.yaml
+                subPath: config.yaml
+              - path: /etc/hermes/honcho.json
+                subPath: honcho.json
+
+      run:
+        type: emptyDir
+        advancedMounts:
+          hermes:
+            app:
+              - path: /var/lib/hermes/run
+
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
+    serviceAccount:
+      hermes: {}
+
+    rbac:
+      roles:
+        # Broad read-only access across cluster resources. Secrets intentionally excluded.
+        hermes-read-all:
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["pods", "pods/log", "nodes", "services", "namespaces", "configmaps",
+                "persistentvolumes", "persistentvolumeclaims", "endpoints", "resourcequotas",
+                "limitranges", "serviceaccounts", "events"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apps"]
+              resources: ["deployments", "daemonsets", "statefulsets", "replicasets",
+                "controllerrevisions"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["batch"]
+              resources: ["jobs", "cronjobs"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["networking.k8s.io"]
+              resources: ["ingresses", "ingressclasses", "networkpolicies"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["storage.k8s.io"]
+              resources: ["storageclasses", "csinodes", "csidrivers", "volumeattachments"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["autoscaling"]
+              resources: ["horizontalpodautoscalers"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["policy"]
+              resources: ["poddisruptionbudgets"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["coordination.k8s.io"]
+              resources: ["leases"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apiextensions.k8s.io"]
+              resources: ["customresourcedefinitions"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apiregistration.k8s.io"]
+              resources: ["apiservices"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["metrics.k8s.io"]
+              resources: ["nodes", "pods"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["helm.toolkit.fluxcd.io"]
+              resources: ["helmreleases"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+              resources: ["kustomizations"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["source.toolkit.fluxcd.io"]
+              resources: ["gitrepositories", "helmrepositories", "ocirepositories",
+                "buckets", "helmcharts"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["external-secrets.io"]
+              resources: ["externalsecrets", "secretstores", "clustersecretstores"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["monitoring.coreos.com"]
+              resources: ["prometheuses", "alertmanagers", "servicemonitors", "podmonitors",
+                "prometheusrules", "thanosrulers", "probes"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["grafana.integreatly.org"]
+              resources: ["grafanas", "grafanacontactpoints", "grafanaalertrulegroups",
+                "grafanadashboards", "grafanadatasources", "grafanafolders",
+                "grafanalibrarypanels", "grafanamanifests", "grafanamutetimings",
+                "grafananotificationpolicies", "grafananotificationpolicyroutes",
+                "grafananotificationtemplates", "grafanaserviceaccounts"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["snapshot.storage.k8s.io"]
+              resources: ["volumesnapshots", "volumesnapshotcontents", "volumesnapshotclasses"]
+              verbs: ["get", "list", "watch"]
+      bindings:
+        hermes-read-all:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: hermes-read-all
+          subjects:
+            - identifier: hermes
+              serviceAccount: hermes

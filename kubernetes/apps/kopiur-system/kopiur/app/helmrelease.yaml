@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kopiur
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: kopiur
+  interval: 30m
+
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: grafana.integreatly.org
+              version: v1beta1
+              kind: GrafanaDashboard
+              name: kopiur-dashboard
+            patch: |
+              apiVersion: grafana.integreatly.org/v1beta1
+              kind: GrafanaDashboard
+              metadata:
+                name: _
+              spec:
+                datasources:
+                  - datasourceName: VictoriaMetrics
+                    inputName: datasource
+
+  install:
+    crds: CreateReplace
+
+  values:
+    defaultPodOptions:
+      annotations: {}
+      schedulingGates: []
+
+    installScope: cluster
+
+    webhook:
+      tls:
+        mode: cert-manager
+      serviceMonitor:
+        enabled: true
+
+    features:
+      credentialProjection:
+        enabled: true
+
+    ui:
+      enabled: true
+      auth:
+        userHeader: x-user-username
+        groupsHeader: x-user-groups
+        groupsFormat: base64Json
+        emailHeader: x-user-email
+
+        proxySecret:
+          existingSecret: kopiur-ui-proxy-token
+          key: credential
+
+        allowedGroups: [kopiur_admins@sso.hayden.moe, kopiur_users@sso.hayden.moe]
+      rbac:
+        userRoles: true
+        browseRole: true
+        bindings:
+          - role: editor
+            groups: [kopiur_admins@sso.hayden.moe]
+          - role: user
+            groups: [kopiur_users@sso.hayden.moe]
+
+      networkPolicy:
+        enabled: true
+        proxySelector:
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: network
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/component: proxy
+
+    monitoring:
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            grafana.internal/instance: grafana
+
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    logging:
+      level: info
+      format: json

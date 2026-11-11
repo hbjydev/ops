@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/tailscale.com/proxygroup_v1alpha1.json
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyGroup
+metadata:
+  name: ts-o11y-proxy
+spec:
+  type: ingress
+  replicas: 2

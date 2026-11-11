@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/clusterrepository_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: hetzner
+spec:
+  backend:
+    s3:
+      bucket: phoebe-backup
+      prefix: "kopiur"
+      endpoint: hel1.your-objectstorage.com
+      region: US
+      auth:
+        secretRef:
+          name: kopia-hetzner-secret
+          namespace: kopiur-system
+
+  credentialProjection:
+    allowed: true
+
+  create:
+    enabled: true
+
+  encryption:
+    passwordSecretRef:
+      name: kopia-hetzner-secret
+      namespace: kopiur-system
+      key: KOPIA_PASSWORD
+
+  allowedNamespaces:
+    all: true
+
+  identityDefaults:
+    hostnameExpr: namespace
+    usernameExpr: namespace + '-' + policyName
+
+  moverDefaults:
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+    ttlSecondsAfterFinished: 86400
+
+  maintenance:
+    namespace: kopiur-system

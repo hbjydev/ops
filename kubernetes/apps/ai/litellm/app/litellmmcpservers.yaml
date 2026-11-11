@@ -1,0 +1,182 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-context7
+spec:
+  alias: context7
+  url: https://mcp.context7.com/mcp
+  transport: http
+  params:
+    available_on_public_internet: true
+  authType: bearer_token
+  authTokenRef:
+    name: context7-api-key
+    key: token
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-kguardian
+spec:
+  alias: kguardian
+  url: http://kguardian-llm-bridge.kguardian.svc.cluster.local:8080/mcp
+  transport: http
+  params:
+    available_on_public_internet: true
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-hass
+spec:
+  alias: hass
+  params:
+    available_on_public_internet: true
+  workload:
+    podLabels:
+      trust.home.arpa/inject: "true"
+    podAnnotations:
+      trust.home.arpa/profile: python
+      configmap.reloader.stakater.com/reload: cluster-roots
+    # renovate: datasource=docker depName=ghcr.io/homeassistant-ai/ha-mcp
+    image: ghcr.io/homeassistant-ai/ha-mcp:9.1.2
+    port: 8086
+    command: ["ha-mcp-web"]
+    env:
+      - name: HOMEASSISTANT_URL
+        value: https://hass.hayden.moe
+      - name: HOMEASSISTANT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: homeassistant-token
+            key: token
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-miniflux
+spec:
+  alias: miniflux
+  params:
+    available_on_public_internet: true
+  transport: http
+  authType: bearer_token
+  authTokenRef:
+    name: miniflux-token
+    key: token
+  workload:
+    podLabels:
+      trust.home.arpa/inject: "true"
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: cluster-roots
+    # renovate: datasource=docker depName=jwonder/miniflux-mcp
+    image: jwonder/miniflux-mcp:0.8.0
+    env:
+      - name: MCP_TRANSPORT
+        value: streamable-http
+      - name: MCP_HTTP_ADDR
+        value: :8080
+      - name: MCP_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: miniflux-token
+            key: token
+
+      - name: MINIFLUX_URL
+        value: http://miniflux.selfhosted.svc.cluster.local:8080
+      - name: MINIFLUX_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: miniflux-token
+            key: token
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+    podSecurityContext:
+      runAsUser: &id 0
+      runAsGroup: *id
+      runAsNonRoot: false
+      fsGroup: *id
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-victorialogs
+spec:
+  alias: victorialogs
+  params:
+    available_on_public_internet: true
+  workload:
+    podLabels:
+      trust.home.arpa/inject: "true"
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: cluster-roots
+    # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victorialogs
+    image: ghcr.io/victoriametrics/mcp-victorialogs:v1.9.0
+    port: 8080
+    env:
+      - name: MCP_SERVER_MODE
+        value: http
+      - name: MCP_LISTEN_ADDR
+        value: :8080
+      - name: VL_INSTANCE_ENTRYPOINT
+        value: http://vlsingle-victoria-logs.observability.svc:9428
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: mcp-victoriametrics
+spec:
+  alias: victoriametrics
+  params:
+    available_on_public_internet: true
+  workload:
+    podLabels:
+      trust.home.arpa/inject: "true"
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: cluster-roots
+    # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victoriametrics
+    image: ghcr.io/victoriametrics/mcp-victoriametrics:v1.120.1
+    port: 8080
+    env:
+      - name: MCP_SERVER_MODE
+        value: http
+      - name: MCP_LISTEN_ADDR
+        value: :8080
+      - name: VM_INSTANCE_TYPE
+        value: single
+      - name: VM_INSTANCE_ENTRYPOINT
+        value: http://vmsingle-victoria-metrics.observability.svc:8429
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp

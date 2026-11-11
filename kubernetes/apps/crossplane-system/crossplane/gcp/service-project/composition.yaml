@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apiextensions.crossplane.io/composition_v1.json
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: service-project-gcp
+spec:
+  compositeTypeRef:
+    apiVersion: infra.hayden.moe/v1alpha1
+    kind: ServiceProject
+
+  mode: Pipeline
+
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+
+          - name: project
+            base:
+              apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+              kind: Project
+              spec:
+                forProvider:
+                  billingAccount: 017336-A9FFB2-6A25BD
+                providerConfigRef:
+                  kind: ClusterProviderConfig
+                  name: gcp-cloudplatform
+
+            patches:
+              # Put the composed Folder beside the XR.
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: metadata.namespace
+
+              # Parent folder
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: spec.forProvider.folderIdRef.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "fldr-%s"
+
+              # Parent folder namespace
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: spec.forProvider.folderIdRef.namespace
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s"
+
+              # Project naming
+              - type: CombineFromComposite
+                toFieldPath: spec.forProvider.name
+                combine:
+                  variables:
+                    - fromFieldPath: metadata.namespace
+                    - fromFieldPath: metadata.name
+                  strategy: string
+                  string:
+                    fmt: "prj-phb-%s-%s"
+
+              # Project naming with a stable suffix, bounded to 30 characters
+              - type: CombineFromComposite
+                toFieldPath: spec.forProvider.projectId
+                combine:
+                  variables:
+                    - fromFieldPath: metadata.namespace
+                    - fromFieldPath: metadata.name
+                    - fromFieldPath: metadata.uid
+                  strategy: string
+                  string:
+                    fmt: "prj-phb-%.6s-%.6s-%.8s"
+              - type: ToCompositeFieldPath
+                fromFieldPath: status.atProvider.projectId
+                toFieldPath: status.projectId
+                policy:
+                  fromFieldPath: Optional
+
+    - step: automatically-detect-readiness
+      functionRef:
+        name: function-auto-ready

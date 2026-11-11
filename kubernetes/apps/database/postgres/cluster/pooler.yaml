@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/pooler_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pooler-rw
+spec:
+  cluster:
+    name: postgres
+
+  instances: 2
+  type: rw
+  pgbouncer:
+    poolMode: session
+
+    authQuery: "SELECT usename, passwd FROM public.user_search($1)"
+    pg_hba:
+      - hostssl all all all cert
+      - host all all all scram-sha-256
+    serverCASecret:
+      name: pooler-server-cert
+    serverTLSSecret:
+      name: pooler-client-cert
+    clientCASecret:
+      name: pooler-client-cert
+    clientTLSSecret:
+      name: pooler-server-cert
+
+    parameters:
+      # server_tls_protocols: tlsv1.3
+      auth_type: hba
+      server_tls_sslmode: verify-full
+      client_tls_sslmode: allow
+      max_client_conn: "1000"
+      max_prepared_statements: "200"
+      default_pool_size: "60"
+      ignore_startup_parameters: search_path,options
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/podmonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: &name pooler-rw
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: *name
+  podMetricsEndpoints:
+    - port: metrics

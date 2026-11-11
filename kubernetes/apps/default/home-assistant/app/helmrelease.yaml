@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: home-assistant
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  interval: 1h
+  values:
+    controllers:
+      home-assistant:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          labels:
+            egress.policy.home.arpa/internet: allow
+            egress.policy.home.arpa/lan: allow
+            egress.policy.home.arpa/iot: allow
+
+        initContainers:
+          init-config:
+            image: &img
+              repository: ghcr.io/home-operations/home-assistant
+              tag: 2026.11.1@sha256:c129b1e4190273254d93d413fe2a083233c9202d84cb08f84dddb01861df432e
+            command:
+              - /bin/bash
+              - -c
+              - |
+                rm /config/configuration.yaml
+                cp /run/config/configuration.yaml /config/configuration.yaml
+
+        containers:
+          app:
+            image: *img
+            env:
+              TZ: Europe/London
+              HASS_HTTP_USE_X_FORWARDED_FOR: true
+              HASS_HTTP_TRUSTED_PROXY_1: 172.18.0.0/16
+              HASS_HTTP_TRUSTED_PROXY_2: 10.80.0.0/24
+            securityContext:
+              readOnlyRootFilesystem: true
+              privileged: true
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "iot",
+            "namespace": "kube-system",
+            "ips": ["192.168.20.20/24"],
+            "mac": "c6:07:27:af:fb:53"
+          }]
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        ports:
+          http:
+            appProtocol: kubernetes.io/ws
+            port: 8123
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
+        hostnames:
+          - "{{ .Release.Name }}.hayden.moe"
+          - hass.hayden.moe
+        parentRefs:
+          - name: external
+            namespace: network
+
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /config
+      configmap:
+        type: configMap
+        name: home-assistant-configmap
+        advancedMounts:
+          home-assistant:
+            init-config:
+              - path: /run/config/configuration.yaml
+                subPath: configuration.yaml
+      config-cache:
+        existingClaim: "{{ .Release.Name }}-cache"
+        globalMounts:
+          - path: /config/.venv
+      zbt2:
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_A4CB8FD15F5C-if00
+      tty:
+        type: hostPath
+        hostPath: /dev/ttyACM0
+      tmp:
+        type: emptyDir

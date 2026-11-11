@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: towonel-agent
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: towonel-agent
+  interval: 30m
+  values:
+    controllers:
+      main:
+        replicas: 2
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+    agent:
+      logLevel: info
+      healthPort: 9090
+      services:
+        - hostname: '*.hayden.moe'
+          origin: external.network.svc.cluster.local:443
+        - hostname: '*.s3.hayden.moe'
+          origin: external.network.svc.cluster.local:443
+      tcpServices:
+        - name: forgejo-ssh
+          origin: forgejo-ssh.dev.svc.cluster.local:22
+          listen_port: 2468
+        - name: stunner-turns-tls
+          origin: stunner.network.svc.cluster.local:5349
+          listen_port: 5349
+        - name: spt
+          origin: spt.gameservers.svc.cluster.local:6969
+          listen_port: 6969
+      udpServices:
+        - name: stunner-turn-udp
+          origin: stunner.network.svc.cluster.local:3478
+          listen_port: 3478
+        - name: spt-hayden-server
+          origin: 192.168.4.97:25565
+          listen_port: 25565
+      inviteTokenSecret:
+        name: towonel-agent-secret
+        key: TOWONEL_INVITE_TOKEN
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: metrics
+            interval: 1m
+            scrapeTimeout: 10s
+            path: /metrics
+
+    monitoring:
+      prometheusRule:
+        enabled: true
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          allowCrossNamespaceImport: true
+          matchLabels:
+            grafana.internal/instance: grafana
