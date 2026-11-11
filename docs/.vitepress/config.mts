@@ -17,6 +17,7 @@ export default defineConfig({
         text: 'Clusters',
         items: [
           { text: 'Phoebe', link: '/clusters/phoebe' },
+          { text: 'Phoebe Migration', link: '/clusters/phoebe-migration' },
           { text: 'Rhea', link: '/clusters/rhea' },
         ]
       },

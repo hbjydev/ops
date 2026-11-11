@@ -6,11 +6,17 @@ An intermediate authority receives its signing authority from the root.
 cert-manager uses each intermediate to issue and renew service certificates.
 No CFSSL server runs in Kubernetes.
 
-The root lasts 3,650 days and allows one intermediate level.
-Each intermediate lasts 1,825 days and cannot issue further authorities.
+The root lasts 3,650 days and permits two subordinate authority levels with `pathlen:2`.
+Each cluster intermediate lasts 1,825 days and permits one subordinate authority level with `pathlen:1`.
 Both use ECDSA P-256 keys.
 The cluster name identifies the intended owner but does not restrict certificate names cryptographically.
 Keep certificate issuance permissions restricted to trusted operators.
+
+This supports a root, cluster intermediate, database authority and final server certificate.
+Set database authorities to `pathlen:0` so that they cannot delegate further.
+Path length counts subordinate authorities, excluding the final service certificate.
+Changing the JSON configuration does not change certificates already issued.
+Test the complete chain through a database authority before deployment.
 
 1Password stores the private keys.
 The root lives in the `ops-pki` vault, and each intermediate lives in its `cluster-<name>` vault.
@@ -89,7 +95,7 @@ This avoids ordinary filesystem storage but does not guarantee exclusion from sw
 ## Create cluster intermediates
 
 Read `signing.json` before issuing an intermediate.
-The `cluster-ca` profile controls its lifetime and prohibits subordinate authorities.
+The `cluster-ca` signing profile controls its lifetime and permits one subordinate authority level.
 The task refuses issuance when the intermediate lifetime exceeds the remaining root lifetime.
 
 ```sh
@@ -107,10 +113,12 @@ On your workstation, make sure that each intermediate chains to the root:
 ```sh
 openssl verify -CAfile certs/root-v1.pem certs/ca-phoebe-v1.pem
 openssl verify -CAfile certs/root-v1.pem certs/ca-rhea-v1.pem
+openssl x509 -in certs/root-v1.pem -noout -subject -issuer -dates -ext basicConstraints
 openssl x509 -in certs/ca-phoebe-v1.pem -noout -subject -issuer -dates -ext basicConstraints
 ```
 
-The constraint output must contain `CA:TRUE, pathlen:0`.
+The root constraint output must contain `CA:TRUE, pathlen:2`.
+The cluster intermediate constraint output must contain `CA:TRUE, pathlen:1`.
 The generation tasks also test certificate chains and key matches before saving an authority.
 If saving succeeds but local export fails, restore the public files without creating another authority:
 
@@ -123,29 +131,31 @@ If a command fails during a 1Password operation, inspect the target item before 
 Do not delete an existing item to bypass the duplicate guard.
 The item can contain the authority that the previous command already saved.
 
-## Connect cert-manager later
+## Connect cert-manager
 
 The tasks above do not write to Kubernetes.
-For each cluster, synchronize its 1Password item into a `kubernetes.io/tls` Secret named `service-ca` in the `cert-manager` namespace.
-Map `private-key` to `tls.key` and `chain` to `tls.crt`.
-Use your chosen secret synchronization controller for this mapping.
+Shared core uses External Secrets to synchronize `ca-<cluster>-v1` from the cluster's 1Password vault into the `cert-manager` namespace.
+The resulting `kubernetes.io/tls` Secret has the same name.
+External Secrets maps `private-key` to `tls.key` and `chain` to `tls.crt`.
+The `onepassword` store uses the service account token in `external-secrets/op-token`.
 
 A `ClusterIssuer` is a cert-manager issuer available across namespaces.
 Its CA Secret lives in the cluster resource namespace, normally `cert-manager`.
 An `Issuer` instead reads a Secret in its own namespace.
-After the Secret exists, use this resource for cluster-wide issuance:
+Shared core defines this issuer for Phoebe after cluster substitution:
 
 ```yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: internal-services
+  name: cluster-ca
 spec:
   ca:
-    secretName: service-ca
+    secretName: ca-phoebe-v1
 ```
 
-Distribute `root-v1.pem` independently as the trusted public root.
+Shared core distributes `root-v1.pem` through the `pki-root` ConfigMap and the `trusted-roots` bundle.
+During migration, include the previous root until all dependent certificates and clients move.
 Use service certificates with `duration: 2160h` and `renewBefore: 720h` as an initial policy.
 These values mean a 90-day lifetime and renewal 30 days before expiry.
 cert-manager does not prevent a service certificate from outliving its issuer.
@@ -174,8 +184,8 @@ Perform these steps for the target cluster:
 1. Make sure that clients trust the root and accept the new intermediate chain.
 2. Update any clients that pin the old intermediate to trust both generations during the transition.
 3. Change the Secret synchronization source to the new 1Password item.
-4. Make sure that `service-ca` contains the new certificate and matching key.
-5. Make sure that `internal-services` reports `Ready=True`.
+4. Make sure that the issuer's referenced Secret contains the new certificate and matching key.
+5. Make sure that `cluster-ca` reports `Ready=True`.
 6. Renew each affected cert-manager Certificate with `cmctl renew --namespace <namespace> <certificate-name>`.
 7. Make sure that each renewed certificate contains the expected chain.
 8. Reload or restart applications that do not reload their certificate files automatically.
@@ -209,6 +219,8 @@ The repository does not yet deploy Prometheus or Alertmanager.
 The examples in `monitoring/` require Prometheus Operator, Prometheus, and an Alertmanager receiver that delivers notifications to you.
 Prometheus evaluates alert conditions, and Alertmanager routes notifications.
 These files are examples, not resources included in Flux.
+They use the placeholder Secret name `service-ca`.
+For Phoebe, adapt that name to `ca-phoebe-v1` in the exporter values and alert rules before installation.
 
 The examples assume the monitoring stack has the Helm release label `release: monitoring`.
 They also assume the CA Secret is `cert-manager/service-ca`.
@@ -261,6 +273,10 @@ Run the tests on your workstation from `pki/`.
 The tests create disposable certificates with the pinned CFSSL binary.
 A Bash test double stores disposable 1Password items in a temporary directory.
 The tests never contact your vaults.
+
+The current workflow assertions still expect root `pathlen:1` and cluster `pathlen:0`.
+Update them to `2` and `1` before running the suite against this hierarchy.
+Add a complete database authority chain test to cover the additional level.
 
 ```sh
 mise exec -- ./tests/workflow
