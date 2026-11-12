@@ -1,0 +1,8 @@
+---
+podLabels:
+webhook:
+  podLabels:
+certController:
+  podLabels:
+grafanaDashboard:
+  enabled: true

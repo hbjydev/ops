@@ -9,3 +9,4 @@ resources:
   - ../../core/kube-system/coredns
   - ../../core/kube-system/metrics-server
   - ./kube-system/cilium
+  - ./external-secrets/external-secrets

@@ -50,7 +50,7 @@ Earlier proposals used the names `service-ca` and `internal-services`. The curre
 | --- | --- |
 | Cilium | Preserve BGP, native routing, `bond+`, address pools and Multus integration through Phoebe overrides. |
 | Network policies | Migrate existing allowances and labels before changing enforcement. Test both allowed and blocked connections. |
-| Secrets | Preserve SOPS decryption and existing keys. Test the transition from 1Password Connect to the SDK provider separately. |
+| Secrets | Preserve SOPS decryption and existing keys. Phoebe retains 1Password Connect indefinitely; do not select the shared SDK store. |
 | Helm recovery | Preserve Phoebe's `remediateLastFailure: false`. Shared defaults currently set it to `true`. |
 | Release identity | Preserve Helm release names, namespaces and storage namespaces during ownership transfer. |
 | trust-manager | Preserve existing database Secret bundles. Shared core changes its namespace and omits their current Secret target permissions. |
@@ -117,7 +117,7 @@ Keep pruning protections until the restored inventory is complete.
 2. Preserve Helm release identities while updating Flux names and dependency references.
 3. Move Cilium together with its Phoebe overrides and routing resources.
 4. Preserve existing database trust bundles when adopting shared trust-manager.
-5. Test the 1Password SDK store with representative existing ExternalSecrets before retiring Connect.
+5. Preserve Phoebe's 1Password Connect server and existing ClusterSecretStore. The shared SDK provider is not part of Phoebe's migration.
 6. Render both Phoebe and Rhea after shared changes.
 7. Remove each compatibility definition only after its new owner passes acceptance tests.
 
