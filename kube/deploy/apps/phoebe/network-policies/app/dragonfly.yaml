@@ -86,14 +86,10 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: dragonfly-system
             control-plane: controller-manager
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: observability
-            app.kubernetes.io/name: vmagent
       toPorts:
         - ports:
             - port: "9999"
               protocol: TCP
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.m00nlit.dev/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
@@ -140,14 +136,3 @@ spec:
         - ports:
             - port: "4317"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: kube-system
-            k8s-app: coredns
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: "ANY"
-          rules:
-            dns:
-              - matchPattern: "*"

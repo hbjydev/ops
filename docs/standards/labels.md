@@ -76,6 +76,8 @@ should be documented below.
 | `egress.netpol.home.arpa/memini` | Allow outgoing traffic to `memini` on its configured service ports. | Pods on Phoebe | `allow` |
 | `egress.netpol.home.arpa/postgres` | Allow PostgreSQL client traffic on port 5432 and ICMP to the postgres cluster and its poolers. | Pods on Phoebe | `allow` |
 | `egress.netpol.home.arpa/dragonfly` | Allow Redis client traffic on port 6379 and ICMP to Dragonfly and dfguard. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/o11y` | Allow incoming traffic from labelled observability collectors. | Pods | `allow` |
+| `netpol.home.arpa/o11y` | Identify an observability collector allowed to reach monitoring targets. | Collector pods | `true` |
 
 Apply network labels to pod templates. Labels on a HelmRelease or Deployment alone do not select its pods.
 
