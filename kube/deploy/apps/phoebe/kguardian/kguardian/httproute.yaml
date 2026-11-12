@@ -6,6 +6,8 @@ metadata:
   name: kguardian
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: kguardian
 spec:
   hostnames:
     - kguardian.hayden.moe

@@ -1,0 +1,46 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ai
+resources:
+  - ../../../base/ai/mcp-auth-proxy/ks.yaml
+  - ./litellmvirtualkey.yaml
+configMapGenerator:
+  - name: mcp-auth-proxy-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+patches:
+  - target:
+      kind: Kustomization
+      name: mcp-auth-proxy
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: mcp-auth-proxy
+      spec:
+        postBuild:
+          substitute:
+            OIDC_DISPLAY_NAME: ChatGPT MCP gateway
+            OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/openai.svg
+            OIDC_ORIGIN: https://mcp.hayden.moe
+            OIDC_REDIRECT_URLS: '["https://mcp.hayden.moe/.auth/oidc/callback"]'
+            OIDC_SECRET_ROTATION_ENABLED: "false"
+            OIDC_ALLOW_INSECURE_CLIENT_DISABLE_PKCE: "true"
+            OIDC_GROUP_PREFIX: mcp_auth_proxy
+            OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+            OIDC_ADMIN_GROUP_MEMBERS: '[]'
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
+        dependsOn:
+          - name: core-kyverno-config
+            namespace: kyverno
+          - name: core-kopiur-config
+            namespace: kopiur-system
+          - name: litellm
+            namespace: ai

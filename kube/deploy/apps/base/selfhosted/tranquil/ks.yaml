@@ -4,22 +4,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app tranquil
-  namespace: &namespace selfhosted
+  namespace: selfhosted
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../kube/components/postgres/cert
-  dependsOn:
-    - name: miroir-config
-      namespace: miroir-system
+    - ../../../../../../components/postgres/cert
   interval: 1h
-  path: ./kubernetes/apps/selfhosted/tranquil/app
+  path: ./kube/deploy/apps/base/selfhosted/tranquil/app
   postBuild:
     substitute:
       APP: *app
-      NAMESPACE: *namespace
+      NAMESPACE: &namespace selfhosted
   prune: true
   retryInterval: 2m
   sourceRef:

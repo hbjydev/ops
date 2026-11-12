@@ -37,7 +37,7 @@ spec:
                           - name: DB_PASSWORD
                             $patch: delete
                           - name: DATABASE_URL
-                            value: "postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
+                            value: "${KGUARDIAN_DATABASE_URL}"
                         volumeMounts:
                           - name: postgres-certs
                             mountPath: /var/run/secrets/postgresql
@@ -61,43 +61,9 @@ spec:
       annotations: {}
       labels: {}
       schedulingGates: []
-
-    global:
-      labels:
-        egress.netpol.home.arpa/litellm: allow
-        egress.netpol.home.arpa/cluster: allow
-        egress.netpol.home.arpa/postgres: allow
-
-    controller:
-      resources:
-        requests:
-          cpu: "100m"
-          memory: "128Mi"
-        limits:
-          cpu: "500m"
-          memory: "512Mi"
-
-      excludedNamespaces:
-        - kguardian
-
-    database:
-      enabled: false
-      user: kguardian
-      databaseName: kguardian
-      existingSecret: kguardian-postgres
-      passwordSecretKey: password
-      external:
-        host: pooler-rw.database.svc.cluster.local
-        port: 5432
-        sslMode: verify-full
-
-    ai:
-      enabled: true
-      provider: openai
-      secret: kguardian-litellm
-      baseUrl: http://litellm.ai.svc.cluster.local:4000/v1
-      model: gpt-6-luna
-      mcp:
-        enabled: true
-        auth:
-          allowUnauthenticated: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: kguardian-defaults
+    - kind: ConfigMap
+      name: kguardian-values
+      optional: true

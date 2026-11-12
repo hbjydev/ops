@@ -6,6 +6,8 @@ metadata:
   name: mcp-auth-proxy
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app mcp-auth-proxy
 spec:
   proxyRef: litellm
   secretName: mcp-auth-proxy-litellm

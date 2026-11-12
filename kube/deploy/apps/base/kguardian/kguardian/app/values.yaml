@@ -1,0 +1,30 @@
+---
+defaultPodOptions:
+  annotations: {}
+  labels: {}
+  schedulingGates: []
+
+global:
+  labels:
+    egress.netpol.home.arpa/litellm: allow
+    egress.netpol.home.arpa/cluster: allow
+    egress.netpol.home.arpa/postgres: allow
+
+controller:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  excludedNamespaces:
+    - kguardian
+
+database:
+  enabled: false
+  user: kguardian
+  databaseName: kguardian
+  existingSecret: kguardian-postgres
+  passwordSecretKey: password

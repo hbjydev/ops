@@ -1,0 +1,16 @@
+---
+ai:
+  enabled: true
+  provider: openai
+  secret: kguardian-litellm
+  baseUrl: http://litellm.ai.svc.cluster.local:4000/v1
+  model: gpt-6-luna
+  mcp:
+    enabled: true
+    auth:
+      allowUnauthenticated: true
+database:
+  external:
+    host: pooler-rw.database.svc.cluster.local
+    port: 5432
+    sslMode: verify-full

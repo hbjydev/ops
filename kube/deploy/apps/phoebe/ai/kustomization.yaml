@@ -8,7 +8,7 @@ resources:
   - ../../../../../kubernetes/apps/ai/memini/ks.yaml
   - ./mimi
   - ../../../../../kubernetes/apps/ai/litellm/ks.yaml
-  - ../../../../../kubernetes/apps/ai/mcp-auth-proxy/ks.yaml
+  - ./mcp-auth-proxy
   - ./llmkube
 namespace: ai
 components:

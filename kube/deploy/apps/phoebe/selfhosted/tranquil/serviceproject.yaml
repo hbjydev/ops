@@ -7,4 +7,6 @@ metadata:
   namespace: selfhosted
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app tranquil
 spec: {}
