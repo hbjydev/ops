@@ -162,6 +162,24 @@ the Grafana dashboard binding and VictoriaMetrics scrape resource belong to the
 Phoebe composition. The compatibility callback and application network policies
 remain with the shared proxy definition.
 
+### Media, Matrix and home automation workloads
+
+Forgejo, Silo, slskd, Continuwuity, LiveKit and Home Assistant select shared
+base definitions. LiveKit includes its JWT service; Home Assistant includes
+Matter Server and OpenThread. Existing release and integration names are retained.
+
+Phoebe owns Forgejo's branding, themes, routes and Anubis credential component;
+Continuwuity's Unbound configuration; and Home Assistant's generated configuration.
+Multus addresses, serial devices, NFS mounts, identity settings and service URLs
+are cluster values. Cache PVCs remain application-owned with cluster-supplied
+`CACHE_STORAGE_CLASS` and `CACHE_CAPACITY`. slskd retains its StatefulSet volume
+claim template and inline Kopiur policy.
+
+Only keep inline Helm value containers required by integration patches. An empty
+inline annotations map can suppress annotations supplied through `valuesFrom`;
+workloads without those patches should omit the inline map. Check the live pod
+template and network attachment when moving Multus settings into cluster values.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:

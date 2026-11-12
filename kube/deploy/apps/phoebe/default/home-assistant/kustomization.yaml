@@ -16,7 +16,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       annotations:
         kustomize.toolkit.fluxcd.io/substitute: disabled
-        kustomize.toolkit.fluxcd.io/prune: disabled
   - name: home-assistant-values
     files:
       - values.yaml=values.yaml

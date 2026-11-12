@@ -4,8 +4,6 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMServiceScrape
 metadata:
   name: home-assistant
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   selector:
     matchLabels:

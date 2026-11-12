@@ -4,8 +4,6 @@ apiVersion: stunner.l7mp.io/v1
 kind: UDPRoute
 metadata:
   name: livekit
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: livekit
 spec:

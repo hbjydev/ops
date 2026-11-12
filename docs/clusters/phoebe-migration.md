@@ -89,6 +89,14 @@ now select base definitions. Phoebe owns their cluster configuration, including
 Hermes/Honcho's generated config files and LiteLLM's models, keys, MCP servers
 and monitoring bindings. Application, integration and storage owners are retained.
 
+Forgejo, Silo, slskd, Continuwuity, LiveKit and Home Assistant now use base
+as well, including LiveKit's JWT service and Home Assistant's Matter Server and
+OpenThread releases. Their credentials, generated configuration and cluster
+network/device settings live under Phoebe. Observability workloads and the
+remaining infrastructure/config selections still use the compatibility tree.
+Both LiveKit HelmReleases were already failing upgrades/rollbacks before this
+batch; that operational issue remains separate from the layout migration.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base
