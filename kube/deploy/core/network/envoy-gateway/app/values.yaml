@@ -1,0 +1,20 @@
+---
+global:
+  imageRegistry: mirror.gcr.io
+deployment:
+  replicas: 2
+  priorityClassName: system-cluster-critical
+  envoyGateway:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+config:
+  envoyGateway:
+    provider:
+      type: Kubernetes
+      kubernetes:
+        deploy:
+          type: GatewayNamespace

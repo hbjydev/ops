@@ -6,7 +6,7 @@ metadata:
   name: dragonfly
 spec:
   dependsOn:
-    - name: dragonfly-operator
+    - name: core-dragonfly-operator
       namespace: dragonfly-system
   healthChecks:
     - apiVersion: dragonflydb.io/v1alpha1

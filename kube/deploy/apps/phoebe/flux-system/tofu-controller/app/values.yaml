@@ -1,0 +1,7 @@
+---
+allowCrossNamespaceRefs: true
+runner:
+  serviceAccount:
+    allowedNamespaces:
+      - flux-system
+      - network

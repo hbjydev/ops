@@ -40,7 +40,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: opentelemetry-operator
+    - name: core-opentelemetry-operator
   healthChecks:
     - apiVersion: opentelemetry.io/v1beta1
       kind: OpenTelemetryCollector

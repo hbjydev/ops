@@ -40,7 +40,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: tofu-controller
+    - name: core-tofu-controller
       namespace: flux-system
   interval: 1h
   path: ./kubernetes/apps/network/tailscale/policy
@@ -65,7 +65,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: tofu-controller
+    - name: core-tofu-controller
       namespace: flux-system
   interval: 1h
   path: ./kubernetes/apps/network/tailscale/dns

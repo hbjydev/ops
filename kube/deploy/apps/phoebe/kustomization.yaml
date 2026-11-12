@@ -21,3 +21,14 @@ resources:
   - ../../core/kube-system/snapshot-controller
   - ../../core/kube-system/ksgate
   - ../../core/cert-manager/cert-manager-csi-driver
+  - ./cnpg-system/cloudnative-pg
+  - ../../core/cnpg-system/cloudnative-pg-barman-cloud-plugin
+  - ./dragonfly-system/dragonfly-operator
+  - ../../core/garage-system/garage-operator
+  - ../../core/observability/opentelemetry-operator
+  - ../../core/network/envoy-gateway
+  - ./crossplane-system/crossplane
+  - ../../core/kro-system/kro
+  - ./flux-system/tofu-controller
+  - ./system-upgrade/tuppr
+  - ./miroir-system/miroir

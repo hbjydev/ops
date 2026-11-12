@@ -26,7 +26,7 @@ metadata:
   name: miroir-config
 spec:
   dependsOn:
-    - name: miroir
+    - name: core-miroir
       namespace: miroir-system
   interval: 1h
   path: ./kubernetes/apps/miroir-system/miroir/config

@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: garage
   dependsOn:
-    - name: garage-operator
+    - name: core-garage-operator
       namespace: garage-system
     - name: core-kopiur-config
       namespace: kopiur-system

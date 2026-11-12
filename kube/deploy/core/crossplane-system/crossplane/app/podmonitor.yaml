@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: crossplane
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: crossplane
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 30s

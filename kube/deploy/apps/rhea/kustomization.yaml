@@ -11,3 +11,6 @@ resources:
   - ../../core/kyverno
   - ../../core/trust-manager
   - ../../core/observability
+  - ../../core/observability/opentelemetry-operator
+  - ./network
+  - ./system-upgrade

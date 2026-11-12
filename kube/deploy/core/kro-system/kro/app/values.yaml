@@ -1,0 +1,9 @@
+---
+config:
+  featureGates:
+    CELOmitFunction: true
+metrics:
+  service:
+    create: true
+  serviceMonitor:
+    enabled: true

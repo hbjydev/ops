@@ -1,0 +1,10 @@
+---
+crds:
+  install: true
+  keep: true
+webhooks:
+  enabled: true
+  certManager:
+    enabled: true
+serviceMonitor:
+  enabled: true

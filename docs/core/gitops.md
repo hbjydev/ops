@@ -74,3 +74,21 @@ dashboard ConfigMaps are included where configured, even on clusters without
 a monitoring stack. Installing a scraper is a separate cluster choice.
 Grafana Operator dashboard bindings remain cluster-specific because they
 require additional CRDs and a matching Grafana instance.
+
+## Optional shared controllers
+
+A definition in `kube/deploy/core` does not imply installation on every cluster.
+Select optional controllers explicitly from each cluster's application root;
+do not add them to an existing namespace aggregate merely to make them available.
+The cluster composition also supplies the selected controllers' namespaces.
+
+Phoebe selects CloudNativePG and Barman, Dragonfly, Garage, OpenTelemetry,
+Envoy Gateway, Crossplane, kro, tofu-controller, tuppr and miroir. Rhea selects
+only OpenTelemetry, Envoy Gateway and tuppr from this batch. Rhea does not gain
+collectors, gateways or upgrade plans just by selecting their controllers.
+
+Shared Helm values are generated as `<release>-defaults`; an optional
+`<release>-values` ConfigMap supplies cluster overrides. Phoebe retains its
+Grafana Operator bindings, Crossplane credentials and packages, and tofu runner
+permissions under `kube/deploy/apps/phoebe`. Database/storage instances,
+collectors, gateway resources and upgrade plans remain cluster-specific.
