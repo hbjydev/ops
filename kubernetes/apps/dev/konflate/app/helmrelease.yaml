@@ -11,7 +11,7 @@ spec:
   interval: 1h
   values:
     config:
-      repo: github://hbjydev/phoebe
+      repo: github://hbjydev/ops
       statusChecks: true
       prComments: true
       publicUrl: https://konflate.hayden.moe
