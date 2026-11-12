@@ -76,6 +76,10 @@ The Kopiur-only batch is also migrated: Mimi, Navidrome, Picard, Plex, Seerr,
 qBittorrent, Qui, SABnzbd and SPT. Their storage and backup resources retain their
 existing application owners, identities and settings.
 
+MCP auth proxy, kguardian and Tranquil now use base definitions as well. Their
+database and identity integration owners are retained; cloud claims and other
+cluster-specific inputs are selected from Phoebe.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base

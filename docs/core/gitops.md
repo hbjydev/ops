@@ -114,6 +114,28 @@ record belong to the Phoebe composition. Application policies and SPT's pinned
 mod-install script stay with their base definitions. Mimi's zero replica count
 is a Phoebe setting, preserved during migration.
 
+### Database and identity application migration
+
+MCP auth proxy, kguardian and Tranquil select base definitions with their existing
+Kanidm/PostgreSQL components. Generated database and OAuth Kustomizations retain
+their names, owners and shared component paths. Phoebe supplies identity origins,
+redirects, membership, service endpoints, routes and other deployment settings.
+
+The integration components use JSON patches against `HelmRelease.spec.values`.
+Keep their required `defaultPodOptions.annotations`, `labels` and
+`schedulingGates` containers inline where needed, while ordinary defaults and
+cluster overrides use values ConfigMaps. Generated inline integration values take
+precedence over valuesFrom inputs. Compare the final merged values, including
+these patches, when migrating or changing an integrated workload.
+
+MCP auth proxy retains its inline Kopiur policy and Helm-managed PVC; this batch
+does not convert its backup arrangement to the restore component. Repository and
+snapshot class are cluster inputs. Its LiteLLM virtual key is cluster config.
+Kguardian retains its chart-specific TLS post-renderer, with the database URL
+supplied through Phoebe's `KGUARDIAN_DATABASE_URL` substitution. Tranquil's
+credentials, ServiceProject and StorageBucket are selected by Phoebe, preserving
+the existing cloud resource identities.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:

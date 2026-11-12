@@ -4,8 +4,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMVirtualKey
 metadata:
   name: mcp-auth-proxy
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app mcp-auth-proxy
 spec:
