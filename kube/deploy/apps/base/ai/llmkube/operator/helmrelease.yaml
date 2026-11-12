@@ -9,9 +9,6 @@ spec:
     kind: OCIRepository
     name: llmkube
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: llmkube-defaults
-    - kind: ConfigMap
-      name: llmkube-values
-      optional: true
+  values:
+    fullnameOverride: llmkube
+    namespace: ai

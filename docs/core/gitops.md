@@ -5,221 +5,59 @@ Flux deploys the configuration stored in this repository.
 
 ## Deployment layers
 
-Cluster roots explicitly select shared controllers and local Flux Kustomizations.
-Keep the application layout consistent: `apps/<cluster>/<namespace>/<application>`.
-Core owns controller releases and their defaults. Cluster configuration owns
-credentials, provider packages, dashboards, routes and workload instances.
+`kube/deploy/core/<namespace>/<controller>` contains shared controller manifests.
+`kube/deploy/apps/base/<namespace>/<application>` contains shared workload
+manifests. These are catalogues of reusable resources, not cluster selections.
+HelmRelease defaults live inline in `spec.values`.
 
-### Application selection and namespace composition
+Each cluster owns its Flux Kustomizations under
+`kube/deploy/apps/<cluster>/<namespace>/<application>`. A local `ks.yaml` selects
+the shared build path and declares dependencies, integrations, substitutions and
+patches. Where an application already had a separate local configuration
+`ks.yaml`, its controller declaration is in `controller.yaml`; both retain their
+existing Flux identities and reconciliation boundaries.
 
-`kube/deploy/apps/base/<namespace>/<application>` holds reusable application
-manifests and their Flux Kustomizations. It is a catalogue: clusters select
-individual applications, not the entire base directory. Shared controller
-releases remain in `kube/deploy/core`.
+Cluster and namespace `kustomization.yaml` files explicitly select these local
+files and resources. A namespace using an unchanged shared app needs only its
+local Flux declaration and a selection entry. It needs no values ConfigMap or
+empty override directory. Refer directly to `ks.yaml` when a wrapper would only
+list that file.
 
-`kube/deploy/apps/<cluster>/<namespace>/kustomization.yaml` owns namespace
-composition. It selects namespace integrations, imports the chosen application
-Kustomizations from base, and includes cluster-local configuration or overrides.
-Keep application network policies with their application definitions. A cluster
-using application defaults needs only a reference to the base definition; it
-does not need an empty local application wrapper.
+Keep cluster-specific domains, endpoints, credentials, storage choices and
+instances in the cluster layer. Keep application network policies alongside
+shared application manifests. Moving a declaration does not move its managed
+resources to another owner: preserve Flux names, namespaces and build paths.
 
-Konflate is the first migrated workload. Its reusable definition lives in
-`base/dev/konflate`; Phoebe selects it through `phoebe/dev/konflate`, which
-generates its values ConfigMap and supplies its ExternalSecret. `cluster-apps`
-owns those cluster inputs, while the existing `dev/konflate` Flux Kustomization
-owns the release, chart source and default values. A values-only override can
-use the same optional `<release>-values` convention as core controllers. Keep
-cluster-specific hostnames, credentials and workload instances in the cluster
-layer rather than baking Phoebe assumptions into base.
+### Namespace composition
 
-Namespace composition uses these independently selectable components:
+Namespace compositions select these independent integrations:
 
 - `kube/components/namespace`: namespace creation and pruning protection.
 - `kube/components/namespace-backups`: backup mover annotations.
 - `kube/components/app-template`: the namespace-local chart source.
-- `kube/components/infra-folder`: the Crossplane NamespaceFolder integration for GCP
-  infrastructure folders, where its composition is installed.
-- `kube/clusters/phoebe/components/registry-credentials`: Phoebe registry secrets.
-- `kube/clusters/phoebe/components/github-status`: Phoebe GitHub credentials and
-  Flux status reporting.
-- `kube/clusters/phoebe/components/sops`: Phoebe's existing namespace-local
-  decryption key, with its encryption recipient preserved.
+- `kube/components/infra-folder`: the Crossplane NamespaceFolder integration.
+- `kube/clusters/phoebe/components/registry-credentials`: registry secrets.
+- `kube/clusters/phoebe/components/github-status`: GitHub credentials and Flux status.
+- `kube/clusters/phoebe/components/sops`: the namespace-local decryption key.
 
-The initial namespace migration preserves all previously selected integrations.
-Selection can be narrowed separately after checking their consumers.
-`cluster-apps` still owns these resources; no extra Flux owner is introduced.
-Phoebe namespace compositions temporarily reference unmigrated application
-`ks.yaml` files under `kubernetes/apps` directly. Replace those references with
-base selections as each workload is migrated. The legacy aggregate and common
-namespace component have been removed.
+These remain owned by `cluster-apps`. Kaniop retains its pre-existing namespace
+integration overlap in its child build; removing that overlap requires a separate
+ownership handover.
 
-Kaniop also selects these components in its child Flux Kustomization, retaining
-its pre-existing overlap with namespace composition. Removing that overlap needs
-an explicit ownership handover and is separate from this layout change.
+### Cluster configuration
 
-### Independent application migration
+Controllers and their instances are selected separately. Phoebe owns its
+PostgreSQL, Dragonfly, Garage, Kanidm, Cilium network configuration, gateways,
+collectors and upgrade plans. Their existing owners and recovery settings stay
+unchanged by relocating deployment declarations.
 
-The following deployments now use base definitions selected by Phoebe:
+Application themes and runtime configuration still use ConfigMaps where the
+application consumes them. Grafana/Gatus/Home Assistant configuration generators
+retain their substitution controls. Only Helm values transport ConfigMaps have
+been removed.
 
-- Garage webui, tsproxy, unpoller and smtp-relay.
-- Cloudflare DNS, towonel-agent, UniFi DNS and the UniFi certificate uploader.
-- llmkube, Multus, STUNner, Tailscale and kube-prometheus-stack.
-
-They do not consume the Kanidm, PostgreSQL, Dragonfly, Kopiur or Anubis workload
-integrations. This does not imply they have no dependencies: they still require
-applicable controllers, credentials, gateways and backend services. Apps with
-inline identity or backup manifests, including slskd, Gatus, Grafana and the
-VictoriaMetrics stack, are excluded from this batch just like component users.
-
-Shared release definitions use `<release>-defaults` and optional
-`<release>-values` ConfigMaps. Phoebe owns endpoint addresses, domains, DNS
-ownership settings, credentials and Grafana bindings. An app still needs its
-required external inputs even though the override ConfigMap itself is optional.
-Application network policies remain with the app definition. tsproxy needs no
-cluster override and is selected directly from base.
-
-Models, network attachments, STUNner gateways and Tailscale configuration retain
-their existing Flux owners under Phoebe. Tailscale's Terraform source paths now
-point into Phoebe's deployment tree; Terraform configuration, state identity and
-approval policy are unchanged. Bootstrap and Flux-instance migration remain
-separate work.
-
-The UniFi uploader requires `UNIFI_URL`; Phoebe supplies its existing console
-address. Its certificate Secret name is also a cluster value. Run its isolated
-HTTP-boundary tests with:
-
-```sh
-python3 -m unittest discover -s kube/deploy/apps/base/network/unifi-cert-upload/tests
-```
-
-### Kopiur-backed application migration
-
-Mimi, Navidrome, Picard, Plex, Seerr, qBittorrent, Qui, SABnzbd and SPT select
-reusable definitions from base. Picard is selected independently of Navidrome.
-Each shared Flux Kustomization includes `kube/components/kopiur`; the existing
-application owner continues to own its PVC, Restore, SnapshotPolicy and
-SnapshotSchedule. Moving an app definition does not transfer storage ownership.
-
-Phoebe's application compositions supply Helm values and patch the selected Flux
-Kustomization with cluster-specific `KOPIUR_*` inputs and dependencies. Repository,
-storage class, snapshot class and capacities are explicit cluster settings;
-backup schedules and existing security settings are preserved. Seerr's separate
-cache PVC uses `SEERR_CACHE_STORAGE_CLASS` and `SEERR_CACHE_CAPACITY` inputs and
-retains the Seerr owner.
-
-Cluster values contain routes, NFS mounts, Multus addresses, device mounts,
-external endpoints and other deployment choices. Credentials and SPT's DNS
-record belong to the Phoebe composition. Application policies and SPT's pinned
-mod-install script stay with their base definitions. Mimi's zero replica count
-is a Phoebe setting, preserved during migration.
-
-### Database and identity application migration
-
-MCP auth proxy, kguardian and Tranquil select base definitions with their existing
-Kanidm/PostgreSQL components. Generated database and OAuth Kustomizations retain
-their names, owners and shared component paths. Phoebe supplies identity origins,
-redirects, membership, service endpoints, routes and other deployment settings.
-
-The integration components use JSON patches against `HelmRelease.spec.values`.
-Keep their required `defaultPodOptions.annotations`, `labels` and
-`schedulingGates` containers inline where needed, while ordinary defaults and
-cluster overrides use values ConfigMaps. Generated inline integration values take
-precedence over valuesFrom inputs. Compare the final merged values, including
-these patches, when migrating or changing an integrated workload.
-
-MCP auth proxy retains its inline Kopiur policy and Helm-managed PVC; this batch
-does not convert its backup arrangement to the restore component. Repository and
-snapshot class are cluster inputs. Its LiteLLM virtual key is cluster config.
-Kguardian retains its chart-specific TLS post-renderer, with the database URL
-supplied through Phoebe's `KGUARDIAN_DATABASE_URL` substitution. Tranquil's
-credentials, ServiceProject and StorageBucket are selected by Phoebe, preserving
-the existing cloud resource identities.
-
-Sonarr, Radarr, Lidarr and Prowlarr also select base definitions with the
-PostgreSQL and Kopiur components. Phoebe supplies routes, NFS mounts, database
-connection strings and backup storage settings. Database roles, certificate
-mounts and backup resources retain their existing owners. Sonarr and Radarr's
-cache PVCs use cluster-supplied `CACHE_STORAGE_CLASS` and `CACHE_CAPACITY` inputs
-without changing their resource identities.
-
-### AI and selfhosted application configuration
-
-Hermes, Honcho, Memini, LiteLLM, Immich, Miniflux, Norish, Paperless and SearXNG
-have reusable definitions in base. Phoebe supplies their endpoints, identity
-settings, credentials, device mounts and storage choices. Memini's zero replica
-count remains a cluster value.
-
-Hermes and Honcho's file-generated configuration ConfigMaps live beside their
-Phoebe selections. Their names and file contents stay unchanged, and their
-`substitute: disabled` annotation applies only to those configuration generators.
-Helm defaults and override ConfigMaps still allow Flux substitutions.
-
-LiteLLM selects both its operator and proxy. The proxy is a native resource, so
-Phoebe supplies its deployment settings through `LITELLM_*` substitutions rather
-than Helm values. Model definitions, virtual keys, MCP servers and credentials,
-the Grafana dashboard binding and VictoriaMetrics scrape resource belong to the
-Phoebe composition. The compatibility callback and application network policies
-remain with the shared proxy definition.
-
-### Media, Matrix and home automation workloads
-
-Forgejo, Silo, slskd, Continuwuity, LiveKit and Home Assistant select shared
-base definitions. LiveKit includes its JWT service; Home Assistant includes
-Matter Server and OpenThread. Existing release and integration names are retained.
-
-Phoebe owns Forgejo's branding, themes, routes and Anubis credential component;
-Continuwuity's Unbound configuration; and Home Assistant's generated configuration.
-Multus addresses, serial devices, NFS mounts, identity settings and service URLs
-are cluster values. Cache PVCs remain application-owned with cluster-supplied
-`CACHE_STORAGE_CLASS` and `CACHE_CAPACITY`. slskd retains its StatefulSet volume
-claim template and inline Kopiur policy.
-
-Only keep inline Helm value containers required by integration patches. An empty
-inline annotations map can suppress annotations supplied through `valuesFrom`;
-workloads without those patches should omit the inline map. Check the live pod
-template and network attachment when moving Multus settings into cluster values.
-
-### Observability workloads
-
-Gatus and the Grafana/VictoriaMetrics instance definitions live in `apps/base`.
-Grafana Operator and VictoriaMetrics Operator are optional entries under
-`core/observability`. Phoebe selects them explicitly alongside its instances;
-Rhea does not select them. Their existing Flux owner names (`grafana` and
-`victoria-metrics-operator`) are retained so dependent workloads keep the same
-ownership and dependency references.
-
-Helm releases use required defaults and optional cluster values ConfigMaps.
-Native instance resources use namespace-scoped Flux substitutions for storage,
-retention, Grafana authentication, plugins and routes. VictoriaMetrics' agent
-uses the forwarded `CLUSTER` metadata for its external label. Numeric-looking
-retention strings include JSON quotes in the substitution value to preserve the
-CRD's string type after Kustomize and Flux processing.
-
-Phoebe owns Gatus's generated configuration, Grafana's identity resources and
-credentials, dashboard/datasource bindings, Tailscale ingresses and Alertmanager
-routing. Existing PVCs and Kopiur policies retain their application owners. The
-unselected `logs/vlagent.yaml` configuration stays unselected in Phoebe; the
-migration does not enable another log collector.
-
-### Phoebe infrastructure configuration
-
-Phoebe's PostgreSQL, Dragonfly, Garage, Kanidm, certificate import/export,
-Cilium network configuration and runtime class live under `apps/phoebe`.
-These are cluster instances and configuration, not installations selected for
-every cluster. Their existing Flux names, resource ownership, storage and
-recovery settings are retained.
-
-Kaniop is an optional shared controller in `core/security/kaniop`. Phoebe's
-operator composition imports that definition with its local dashboard binding
-and existing namespace components, keeping those resources under the Kaniop
-owner. The Kanidm instance and its external Git source remain cluster-local.
-
-The Flux instance definition also lives under Phoebe. Its sync path remains
-`kubernetes/flux/cluster`; the two files there are the remaining compatibility
-entry point. Moving the configuration does not switch bootstrap or alter Flux
-controller recovery settings. The old, unselected Cilium, CoreDNS and
-cert-manager application copies have been removed.
+Phoebe's Flux instance retains `kubernetes/flux/cluster` as its compatibility
+entry point. Bootstrap redesign is separate from this layout change.
 
 ### Reusable workload integrations
 
@@ -253,49 +91,69 @@ Component paths in a Flux Kustomization are relative to its `spec.path`; native
 Kustomize component paths are relative to the containing `kustomization.yaml`.
 Nested database and identity Kustomizations point directly at `kube/components`.
 
-### Helm values
+### Helm values and opt-out labels
 
-A values-only override does not change the shared Flux Kustomization's path.
-The application composition imports the core definition and generates its optional
-`<release>-values` ConfigMap from a sibling `values.yaml`:
+Shared HelmReleases keep their defaults inline. A cluster customises a release
+through its own Flux Kustomization's `spec.patches`:
 
 ```yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
-namespace: system-upgrade
-resources:
-  - ../../../../core/system-upgrade/tuppr/ks.yaml
-  - ./ks.yaml
-configMapGenerator:
-  - name: tuppr-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+metadata:
+  name: core-cilium
+  namespace: kube-system
   labels:
-    reconcile.fluxcd.io/watch: Enabled
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  path: ./kube/deploy/core/kube-system/cilium/app
+  targetNamespace: kube-system
+  patches:
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: cilium
+      patch: |
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: cilium
+        spec:
+          values:
+            autoDirectNodeRoutes: true
 ```
 
-Core HelmReleases load `<release>-defaults`, followed by the optional
-`<release>-values`. A cluster using only defaults needs no values wrapper.
-Keep override ConfigMaps in the HelmRelease's namespace. Preserve any existing
-resource labels when moving generators between reconciliation owners.
+The example shows only a values override. Opting out also means explicitly
+selecting the desired Helm install, upgrade, rollback and timeout behaviour.
+Existing migrated overrides retain those settings as a preceding patch, including
+settings for any integration HelmReleases in the same build.
+
+`cluster-apps` applies two separately selected defaults patches:
+
+- `kustomization.flux.home.arpa/defaults: disabled` opts out of both general Flux
+  defaults and injected Helm defaults, preserving the existing full opt-out.
+- `kustomization.flux.home.arpa/helm-defaults: disabled` opts out only of injected
+  Helm patches. Cluster metadata, source and reconciliation defaults still apply.
+
+Use the narrower label whenever a child manages its own `spec.patches` list.
+Otherwise the parent Helm defaults replace that list. This is deliberate and
+explicit; there is no defaults component or implicit override-directory lookup.
+
+Kustomize merges maps and generally replaces lists in HelmRelease patches.
+A strategic-merge `null` removes a field; use a JSON patch to set a literal null
+when that is part of the chart values. Integrations may populate inline values
+before the child patches run. Keep their readiness gates, labels and credentials
+when overriding related maps or lists.
 
 ### Local resources and exceptional patches
 
 Put local resources in a separate `config/` directory, or a descriptive directory
-such as `gateways/`, `collector/` or `gcp/`. Declare their Flux owner in `ks.yaml`
-and depend on the appropriate controller. Adding a dashboard or provider package
-must not require redirecting the controller's core path through a local overlay.
+such as `gateways/`, `collector/` or `gcp/`. Declare their Flux owner locally and
+depend on the appropriate controller. Credentials, dashboards and routes retain
+their existing owners; this layout does not combine them into controller builds.
 
-Keep actual resource patches explicit. Phoebe's External Secrets chart-version
-patch and Kopiur's Helm post-renderer still require overlays. These are exceptions
-to the values-only pattern, not reasons to wrap every shared controller.
-
-Flux Operator also retains its optional cluster component convention:
-`apps/${CLUSTER}/flux-system/flux-operator/overrides`, selected with
-`ignoreMissingComponents: true`. Neither Phoebe nor Rhea currently supplies one.
-The parent must substitute the cluster name before the child selects a component.
+Phoebe's External Secrets chart-version overlay and Kopiur Helm post-renderer
+remain explicit local resource customisations. Their local Flux declarations
+select those existing overlays directly.
 
 ### Kustomization files and local rendering
 
@@ -308,8 +166,8 @@ belong beside a real generator and must not be included in automatic discovery.
 
 A directory referenced by Kustomize `resources` still needs its own kustomization.
 When a wrapper only imports `ks.yaml`, reference that file directly from the
-cluster root instead. Keep core selection explicit rather than recursively
-scanning all available controllers.
+cluster composition instead. Select local deployment declarations explicitly
+rather than recursively scanning all available shared controllers.
 
 Use the offline render helper for either kind of build root:
 
@@ -375,8 +233,8 @@ Envoy Gateway, Crossplane, kro, tofu-controller, tuppr and miroir. Rhea selects
 only OpenTelemetry, Envoy Gateway and tuppr from this batch. Rhea does not gain
 collectors, gateways or upgrade plans just by selecting their controllers.
 
-Shared Helm values are generated as `<release>-defaults`; an optional
-`<release>-values` ConfigMap supplies cluster overrides. Phoebe retains its
+Shared Helm values live inline in each HelmRelease; cluster-local Flux
+Kustomizations supply overrides through resource patches. Phoebe retains its
 Grafana Operator bindings, Crossplane credentials and packages, and tofu runner
 permissions under `kube/deploy/apps/phoebe`. Database/storage instances,
 collectors, gateway resources and upgrade plans remain cluster-specific.

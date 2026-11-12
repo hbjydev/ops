@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: litellm-operator
+  namespace: ai
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: litellm-operator
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: litellm-operator
+      namespace: ai
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/litellm/operator
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  timeout: 5m
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: litellm-operator
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: litellm-operator
+        spec:
+          values:
+            llmkube:
+              autoRegister: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: litellm
+  namespace: ai
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: litellm
+  components:
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/kanidm/private
+    - ../../../../../../components/postgres/base
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+    - name: litellm-operator
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/litellm/app
+  postBuild:
+    substitute:
+      APP: litellm
+      KOPIUR_CAPACITY: 1Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      LITELLM_DATABASE_URL: postgresql://litellm@pooler-rw.database.svc:5432/litellm?sslmode=require&sslaccept=strict&sslcert=/var/run/trusted-roots/ca.crt&sslidentity=/var/run/secrets/postgresql/keystore.p12&sslpassword=changeit
+      LITELLM_GENERIC_AUTHORIZATION_ENDPOINT: https://sso.hayden.moe/ui/oauth2
+      LITELLM_GENERIC_TOKEN_ENDPOINT: https://sso.hayden.moe/oauth2/token
+      LITELLM_GENERIC_USERINFO_ENDPOINT: https://sso.hayden.moe/oauth2/openid/litellm/userinfo
+      LITELLM_PROXY_BASE_URL: https://llm.hayden.moe
+      LITELLM_PUBLIC_MCP_SERVERS: '["context7", "kguardian", "hass"]'
+      LITELLM_REDIS_HOST: dragonfly.database.svc
+      LITELLM_ROUTE_HOSTNAMES: '["llm.hayden.moe"]'
+      LITELLM_ROUTE_PARENT_REFS: '[{"name": "external", "namespace": "network"}]'
+      NAMESPACE: ai
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_ALLOW_INSECURE_CLIENT_DISABLE_PKCE: 'true'
+      OIDC_DISPLAY_NAME: LiteLLM
+      OIDC_GROUP_PREFIX: litellm
+      OIDC_ORIGIN: https://llm.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://llm.hayden.moe/sso/callback"]'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  wait: false

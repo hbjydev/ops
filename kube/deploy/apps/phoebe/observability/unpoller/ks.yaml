@@ -1,0 +1,61 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: unpoller
+  namespace: observability
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/unpoller/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: unpoller
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: unpoller
+        spec:
+          values:
+            controllers:
+              unpoller:
+                containers:
+                  app:
+                    env:
+                      UP_UNIFI_DEFAULT_URL: https://192.168.4.1

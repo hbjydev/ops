@@ -1,37 +1,8 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: downloads
 resources:
-  - ../../../base/downloads/lidarr/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: lidarr-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: lidarr
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: lidarr
-      spec:
-        dependsOn:
-          - name: core-kyverno-config
-            namespace: kyverno
-          - name: miroir-config
-            namespace: miroir-system
-        postBuild:
-          substitute:
-            KOPIUR_CAPACITY: 5Gi
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap

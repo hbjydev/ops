@@ -1,7 +1,0 @@
----
-controllers:
-  spt:
-    containers:
-      app:
-        env:
-          SPT_BACKEND_IP: '46.62.132.125'

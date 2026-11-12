@@ -1,0 +1,105 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.bjw-s.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: navidrome
+  namespace: media
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: navidrome
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/media/navidrome/app
+  postBuild:
+    substitute:
+      APP: navidrome
+      KOPIUR_CAPACITY: 32Gi
+      KOPIUR_GID: '0'
+      KOPIUR_PRIVILEGED_MODE: 'true'
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_RUN_AS_NON_ROOT: 'false'
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      KOPIUR_UID: '0'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media
+  timeout: 5m
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: navidrome
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: navidrome
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - navidrome.hayden.moe
+                parentRefs:
+                  - name: external
+                    namespace: network
+
+            persistence:
+              media:
+                type: nfs
+                server: ds.hayden.moe
+                path: /volume1/media
+                globalMounts:
+                  - path: /media/music
+                    subPath: music
+              plugins:
+                type: nfs
+                globalMounts:
+                  - path: /config/plugins
+                server: ds.hayden.moe
+                path: /volume1/media/apps/navidrome/plugins
+            controllers:
+              navidrome:
+                containers:
+                  app:
+                    env:
+                      ND_REVERSEPROXYWHITELIST: 172.18.0.0/16,10.80.0.0/24
+                      ND_BASEURL: https://navidrome.hayden.moe

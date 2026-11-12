@@ -1,0 +1,143 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: victoria-metrics
+  namespace: observability
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: victoria-metrics
+  dependsOn:
+    - name: core-kopiur-config
+      namespace: kopiur-system
+    - name: victoria-metrics-operator
+  healthChecks:
+    - apiVersion: operator.victoriametrics.com/v1beta1
+      kind: VMSingle
+      name: victoria-metrics
+      namespace: observability
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/victoria-metrics-stack/metrics
+  postBuild:
+    substitute:
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      NAMESPACE: observability
+      RETENTION_PERIOD: '"12"'
+      STORAGE_CAPACITY: 50Gi
+      STORAGE_CLASS: miroir-local
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: victoria-logs
+  namespace: observability
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: victoria-logs
+  dependsOn:
+    - name: core-kopiur-config
+      namespace: kopiur-system
+    - name: victoria-metrics-operator
+  healthChecks:
+    - apiVersion: operator.victoriametrics.com/v1
+      kind: VLSingle
+      name: victoria-logs
+      namespace: observability
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/victoria-metrics-stack/logs
+  postBuild:
+    substitute:
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      RETENTION_PERIOD: '"12"'
+      STORAGE_CAPACITY: 50Gi
+      STORAGE_CLASS: miroir-local
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: victoria-traces
+  namespace: observability
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: victoria-traces
+  dependsOn:
+    - name: core-kopiur-config
+      namespace: kopiur-system
+    - name: victoria-metrics-operator
+  healthChecks:
+    - apiVersion: operator.victoriametrics.com/v1
+      kind: VTSingle
+      name: victoria-traces
+      namespace: observability
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/victoria-metrics-stack/traces
+  postBuild:
+    substitute:
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      RETENTION_PERIOD: '"12"'
+      STORAGE_CAPACITY: 50Gi
+      STORAGE_CLASS: miroir-local
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: victoria-metrics-alertmanager
+  namespace: observability
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: victoria-metrics-alertmanager
+  dependsOn:
+    - name: victoria-metrics-operator
+  healthChecks:
+    - apiVersion: operator.victoriametrics.com/v1beta1
+      kind: VMAlertmanager
+      name: alertmanager
+      namespace: observability
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/victoria-metrics-stack/alertmanager
+  postBuild:
+    substitute:
+      ALERTMANAGER_REPLICAS: '2'
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  timeout: 5m

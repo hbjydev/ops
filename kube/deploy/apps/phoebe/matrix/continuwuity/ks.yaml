@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: continuwuity
+  namespace: matrix
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: continuwuity
+  components:
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/kanidm/private
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/matrix/continuwuity/app
+  postBuild:
+    substitute:
+      APP: continuwuity
+      KOPIUR_CAPACITY: 15Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: matrix
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_DISPLAY_NAME: Continuwuity
+      OIDC_GROUP_PREFIX: continuwuity
+      OIDC_ORIGIN: https://matrix.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://matrix.hayden.moe/_continuwuity/oidc/complete"]'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: matrix
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: continuwuity
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: continuwuity
+        spec:
+          values:
+            route:
+              app:
+                hostnames: ["matrix.hayden.moe"]
+                parentRefs:
+                  - name: external
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: &port 8008
+
+            controllers:
+              continuwuity:
+                containers:
+                  app:
+                    env:
+                      CONTINUWUITY_SERVER_NAME: hayden.moe
+                      CONTINUWUITY_WELL_KNOWN__CLIENT: 'https://matrix.hayden.moe/'
+                      CONTINUWUITY_WELL_KNOWN__SERVER: 'matrix.hayden.moe:443'
+                      CONTINUWUITY_TRUSTED_SERVERS: '["starstruck.systems", "unredacted.org", "eno1.dev"]'
+                      CONTINUWUITY_OAUTH__OIDC__DISCOVERY_URL: 'https://sso.hayden.moe/oauth2/openid/continuwuity'
+                      CONTINUWUITY_MATRIX_RTC__FOCI: '[{ type = "livekit", livekit_service_url = "https://livekit.hayden.moe" }]'
+                      CONTINUWUITY_MATRIX_RTC__LIVEKIT__URL: wss://livekit.hayden.moe

@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: memini
+  namespace: ai
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: memini
+  components:
+    - ../../../../../../components/postgres/base
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/memini/app
+  postBuild:
+    substitute:
+      APP: memini
+      DATABASE_EXTENSIONS: "[\n  { name: vector },\n  { name: vchord }\n]\n"
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: ai
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: memini
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: memini
+        spec:
+          values:
+            route:
+              main:
+                enabled: true
+                parentRefs:
+                  - name: external
+                    namespace: network
+                    sectionName: https
+                hostnames:
+                  - memini.hayden.moe
+              ui:
+                enabled: true
+                annotations:
+                  gatus.home-operations.com/enabled: 'false'
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                    sectionName: https
+                hostnames:
+                  - memini.hayden.moe
+            controllers:
+              main:
+                containers:
+                  main:
+                    env:
+                      MEMINI_POSTGRES_DSN: "postgresql://memini@pooler-rw.database.svc:5432/memini?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
+                      MEMINI_EMBED_BASE_URL: http://text-embeddings-inference.ai.svc.cluster.local:8080/v1
+                      MEMINI_EMBED_DIMS: '384'
+                      MEMINI_EMBED_MODEL: all-MiniLM-L6-v2
+                      MEMINI_RERANK: http://llama-cpp-reranker.ai.svc.cluster.local:8080/v1
+                      MEMINI_RERANK_MODEL: qwen3-reranker-0.6b
+                replicas: 0

@@ -9,9 +9,107 @@ spec:
     kind: OCIRepository
     name: app-template
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: slskd-defaults
-    - kind: ConfigMap
-      name: slskd-values
-      optional: true
+  values:
+    controllers:
+      slskd:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: trusted-roots
+        pod:
+          labels:
+            trust.home.arpa/inject: "true"
+            egress.netpol.home.arpa/internet: allow
+        containers:
+          app:
+            image:
+              repository: ghcr.io/slskd/slskd
+              tag: 0.26.2@sha256:d0963a3e5b16facd295bf4f2156dad0182f246b1b21a032cae12f5494c694843
+            env:
+              DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
+              TZ: Europe/London
+              SLSKD_APP_DIR: /config
+              SLSKD_HTTP_PORT: &port 80
+              SLSKD_NO_AUTH: true
+              SLSKD_NO_HTTPS: true
+              SLSKD_NO_VERSION_CHECK: true
+              SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50429
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+        statefulset: {}
+    defaultPodOptions:
+      annotations: {}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        forceRename: "{{ .Release.Name }}"
+        primary: true
+        ports:
+          http:
+            port: *port
+    configMaps:
+      config:
+        data:
+          slskd.yml: |-
+            directories:
+              downloads: /media/downloads/soulseek/complete
+              incomplete: /media/downloads/soulseek/incomplete
+            transfers:
+              download:
+                destination:
+                  permissions:
+                    mode: 750
+            shares:
+              directories:
+                - /media/downloads/soulseek/shared
+              filters:
+                - \.ini$
+                - Thumbs.db$
+                - \.DS_Store$
+    persistence:
+      config-file:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /config/slskd.yml
+            subPath: slskd.yml
+      tmp:
+        type: emptyDir

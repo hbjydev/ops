@@ -9,9 +9,39 @@ spec:
     kind: OCIRepository
     name: app-template
   interval: 30m
-  valuesFrom:
-    - kind: ConfigMap
-      name: picard-defaults
-    - kind: ConfigMap
-      name: picard-values
-      optional: true
+  values:
+    controllers:
+      navidrome:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress.netpol.home.arpa/internet: allow
+        containers:
+          app:
+            image:
+              repository: aandree5/picard-web
+              tag: full-v1.6.1
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 0
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        ports:
+          http:
+            port: 5000
+
+    persistence:
+      config:
+        existingClaim: '{{ .Release.Name }}'
+        globalMounts:
+          - path: /picard-web

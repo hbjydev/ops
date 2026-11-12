@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./pvc.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: silo-defaults
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled

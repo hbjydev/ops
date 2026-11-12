@@ -9,9 +9,10 @@ spec:
     kind: OCIRepository
     name: stunner
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: stunner-defaults
-    - kind: ConfigMap
-      name: stunner-values
-      optional: true
+  values:
+    standardCrds:
+      enabled: false
+    stunnerGatewayOperator:
+      dataplane:
+        spec:
+          enableMetricsEndpoint: true

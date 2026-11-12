@@ -9,9 +9,12 @@ spec:
     kind: OCIRepository
     name: kro
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: kro-defaults
-    - kind: ConfigMap
-      name: kro-values
-      optional: true
+  values:
+    config:
+      featureGates:
+        CELOmitFunction: true
+    metrics:
+      service:
+        create: true
+      serviceMonitor:
+        enabled: true

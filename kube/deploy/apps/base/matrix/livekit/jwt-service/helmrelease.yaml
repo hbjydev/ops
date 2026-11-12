@@ -9,9 +9,50 @@ spec:
     kind: OCIRepository
     name: app-template
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: livekit-jwt-service-defaults
-    - kind: ConfigMap
-      name: livekit-jwt-service-values
-      optional: true
+  values:
+    controllers:
+      livekit-jwt-service:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/element-hq/lk-jwt-service
+              tag: 0.9.0@sha256:d210fd778ba38b7e42e6fc64e8a24a7d66ccc3b938fb20d73bd713224af2dfea
+            env:
+              LIVEKIT_JWT_BIND: :8081
+              LIVEKIT_REDIS_URL: redis://localhost:6379/0
+            envFrom:
+              - secretRef:
+                  name: livekit-keys
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 150Mi
+              limits:
+                memory: 300Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        forceRename: livekit-jwt-service
+        controller: livekit-jwt-service
+        ports:
+          http:
+            port: 8081

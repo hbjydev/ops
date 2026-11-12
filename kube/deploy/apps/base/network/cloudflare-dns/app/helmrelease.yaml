@@ -30,9 +30,25 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: cloudflare-dns-defaults
-    - kind: ConfigMap
-      name: cloudflare-dns-values
-      optional: true
+  values:
+    fullnameOverride: &app cloudflare-dns
+    provider:
+      name: cloudflare
+    env:
+      - name: &api_token CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: &secret cloudflare-dns-secret
+            key: *api_token
+      - name: &zone_id CF_ZONE_ID
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: *zone_id
+    triggerLoopOnEvent: true
+    policy: sync
+    sources: ["crd", "gateway-httproute"]
+    serviceMonitor:
+      enabled: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *secret

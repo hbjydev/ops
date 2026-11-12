@@ -1,0 +1,82 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: mimi
+  namespace: ai
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: mimi
+  components:
+    - ../../../../../../components/kopiur
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/mimi/app
+  postBuild:
+    substitute:
+      APP: mimi
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: ai
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: mimi
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: mimi
+        spec:
+          values:
+            controllers:
+              mimi:
+                replicas: 0
+                containers:
+                  mimi:
+                    env:
+                      LIVVI_MEMINI_BASE_URL: http://memini.ai:8080
+                      LIVVI_MEMINI_NAMESPACE: mimi
+                      LIVVI_OPENAI_API_URL: http://litellm.ai:4000
+                      LIVVI_OPENAI_MODEL_NAME: ms-kimi-k3
+                      LIVVI_SEARXNG_URL: http://searxng.selfhosted.svc:8080
+                      LIVVI_DISCORD_ALLOW_TOOL_USER_IDS: '508429235157729290'
+                      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: 'http://vmsingle-victoria-metrics.observability.svc:8428/opentelemetry/v1/metrics'
+                      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: 'http://vtsingle-victoria-traces.observability.svc:10428/insert/opentelemetry/v1/traces'

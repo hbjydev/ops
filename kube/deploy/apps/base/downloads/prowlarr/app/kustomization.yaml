@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
   - ./helmrelease.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-configMapGenerator:
-  - name: prowlarr-defaults
-    files:
-      - values.yaml=values.yaml

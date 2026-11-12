@@ -34,6 +34,23 @@ spec:
               CLUSTER_DNS_COREDNS_RESOLVERS: ${CLUSTER_DNS_COREDNS_RESOLVERS}
               CLUSTER_POD_CIDR: ${CLUSTER_POD_CIDR}
               CLUSTER_SVC_CIDR: ${CLUSTER_SVC_CIDR}
+          interval: 5m
+          prune: true
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+            namespace: flux-system
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
+    - # Allow child Kustomizations to manage their own HelmRelease patches
+      patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
           patches:
             - patch: |-
                 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -58,13 +75,7 @@ spec:
               target:
                 group: helm.toolkit.fluxcd.io
                 kind: HelmRelease
-          interval: 5m
-          prune: true
-          sourceRef:
-            kind: GitRepository
-            name: flux-system
-            namespace: flux-system
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled), kustomization.flux.home.arpa/helm-defaults notin (disabled)

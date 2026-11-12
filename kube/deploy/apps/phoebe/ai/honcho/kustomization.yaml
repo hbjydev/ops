@@ -4,14 +4,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ai
 resources:
-  - ../../../base/ai/honcho/ks.yaml
+  - ./ks.yaml
 configMapGenerator:
-  - name: honcho-values
-    files:
-      - values.yaml=values.yaml
-    options:
-      labels:
-        reconcile.fluxcd.io/watch: Enabled
   - name: honcho-configmap
     files:
       - ./resources/config.toml
@@ -23,17 +17,3 @@ configMapGenerator:
         app.kubernetes.io/name: &app honcho
 generatorOptions:
   disableNameSuffixHash: true
-patches:
-  - target:
-      kind: Kustomization
-      name: honcho
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: honcho
-      spec:
-        dependsOn:
-          - name: core-kyverno-config
-            namespace: kyverno

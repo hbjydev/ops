@@ -30,9 +30,10 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: cloudnative-pg-defaults
-    - kind: ConfigMap
-      name: cloudnative-pg-values
-      optional: true
+  values:
+    crds:
+      create: true
+    monitoring:
+      podMonitorEnabled: true
+      grafanaDashboard:
+        create: true

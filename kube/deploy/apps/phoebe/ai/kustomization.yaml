@@ -9,7 +9,8 @@ resources:
   - ./mimi
   - ./litellm
   - ./mcp-auth-proxy
-  - ./llmkube
+  - llmkube/controller.yaml
+  - llmkube/ks.yaml
 namespace: ai
 components:
   - ../../../../components/namespace

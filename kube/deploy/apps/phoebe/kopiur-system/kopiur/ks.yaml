@@ -1,0 +1,160 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: core-kopiur
+  namespace: kopiur-system
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  dependsOn:
+    - name: core-snapshot-controller
+      namespace: kube-system
+    - name: core-prometheus-crds
+      namespace: observability
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: kopiur
+      namespace: kopiur-system
+  interval: 1h
+  path: ./kube/deploy/apps/phoebe/kopiur-system/kopiur/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: kopiur-system
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: kopiur
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: kopiur
+        spec:
+          values:
+            defaultPodOptions:
+              annotations:
+                k8s.ksgate.org/kanidm-client-ready: |-
+                  {
+                    "apiVersion": "kaniop.rs/v1beta1",
+                    "kind": "KanidmOAuth2Client",
+                    "name": "kopiur",
+                    "namespace": "kopiur-system",
+                    "expression": "has(resource.status) && has(resource.status.conditions) && resource.status.conditions.exists(c, c.type == 'Exists' && c.status == 'True') && resource.status.conditions.filter(c, c.type != 'ImageUpdated').all(c, c.status == 'True' && has(c.observedGeneration) && c.observedGeneration == resource.metadata.generation)"
+                  }
+                k8s.ksgate.org/kanidm-client-secret-ready: |-
+                  {
+                    "apiVersion": "v1",
+                    "kind": "Secret",
+                    "name": "kopiur-kanidm-oauth2-credentials",
+                    "namespace": "kopiur-system",
+                    "expression": "has(resource.data) && 'CLIENT_ID' in resource.data && 'CLIENT_SECRET' in resource.data && resource.data.CLIENT_ID != '' && resource.data.CLIENT_SECRET != ''"
+                  }
+              schedulingGates:
+                - name: k8s.ksgate.org/kanidm-client-ready
+                - name: k8s.ksgate.org/kanidm-client-secret-ready
+            monitoring:
+              dashboards:
+                grafanaOperator:
+                  enabled: true
+                  matchLabels:
+                    grafana.internal/instance: grafana
+            ui:
+              auth:
+                allowedGroups:
+                  - kopiur_admins@sso.hayden.moe
+                  - kopiur_users@sso.hayden.moe
+                emailHeader: x-user-email
+                groupsFormat: base64Json
+                groupsHeader: x-user-groups
+                proxySecret:
+                  existingSecret: kopiur-ui-proxy-token
+                  key: credential
+                userHeader: x-user-username
+              enabled: true
+              networkPolicy:
+                enabled: true
+                proxySelector:
+                  namespaceSelector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: network
+                  podSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: proxy
+              rbac:
+                bindings:
+                  - groups:
+                      - kopiur_admins@sso.hayden.moe
+                    role: editor
+                  - groups:
+                      - kopiur_users@sso.hayden.moe
+                    role: user
+                browseRole: true
+                userRoles: true
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: core-kopiur-config
+  namespace: kopiur-system
+spec:
+  dependsOn:
+    - name: core-kopiur
+  healthChecks:
+    - apiVersion: external-secrets.io/v1
+      kind: ExternalSecret
+      name: kopia-hetzner
+      namespace: kopiur-system
+    - apiVersion: kopiur.home-operations.com/v1alpha1
+      kind: ClusterRepository
+      name: hetzner
+  interval: 1h
+  path: ./kube/deploy/apps/phoebe/kopiur-system/kopiur/config
+  postBuild:
+    substitute:
+      APP: kopiur
+      NAMESPACE: kopiur-system
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_DISPLAY_NAME: Kopiur
+      OIDC_GROUP_PREFIX: kopiur
+      OIDC_ORIGIN: https://kopiur.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://kopiur.hayden.moe/oauth2/callback"]'
+      OIDC_SECRET_KEY_ALIASES: '{clientId: [client-id], clientSecret: [client-secret]}'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: kopiur-system

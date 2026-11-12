@@ -1,0 +1,126 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: plex
+  namespace: media
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: plex
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/media/plex/app
+  postBuild:
+    substitute:
+      APP: plex
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: plex
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: plex
+        spec:
+          values:
+            route:
+              app:
+                annotations:
+                  gatus.home-operations.com/endpoint: |-
+                    conditions: ["[STATUS] == 401"]
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                parentRefs:
+                  - name: external
+                    namespace: network
+                rules:
+                    # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
+                  - backendRefs:
+                      - identifier: app
+                        port: &port 32400
+                    filters:
+                      - type: RequestHeaderModifier
+                        requestHeaderModifier:
+                          remove:
+                            - Range
+                    matches:
+                      - path:
+                          type: PathPrefix
+                          value: /library/streams
+                  - backendRefs:
+                      - identifier: app
+                        port: *port
+            persistence:
+              media:
+                type: nfs
+                server: ds.hayden.moe
+                path: /volume1/media
+                globalMounts:
+                  - path: /media
+              dev-dri:
+                type: hostPath
+                hostPath: /dev/dri
+              dev-kfd:
+                type: hostPath
+                hostPath: /dev/kfd
+            defaultPodOptions:
+              annotations:
+                k8s.v1.cni.cncf.io/networks: |-
+                  [{
+                    "name": "iot",
+                    "namespace": "kube-system",
+                    "ips": ["192.168.20.22/24"],
+                    "mac": "c6:07:27:af:fb:55"
+                  }]
+
+            controllers:
+              plex:
+                containers:
+                  app:
+                    env:
+                      PLEX_ADVERTISE_URL: https://plex.hayden.moe:443,http://192.168.20.22:32400

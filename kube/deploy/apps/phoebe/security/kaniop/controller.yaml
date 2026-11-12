@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kaniop
+  namespace: security
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: kaniop
+  components:
+    - ../../../../../../components/namespace
+    - ../../../../../../components/namespace-backups
+    - ../../../../../../components/app-template
+    - ../../../../../../components/infra-folder
+    - ../../../../../../clusters/phoebe/components/registry-credentials
+    - ../../../../../../clusters/phoebe/components/github-status
+    - ../../../../../../clusters/phoebe/components/sops
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/phoebe/security/kaniop/app
+  prune: true
+  retryInterval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: security
+  timeout: 5m
+  wait: false

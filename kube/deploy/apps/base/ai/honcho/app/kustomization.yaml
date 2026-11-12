@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: honcho-defaults
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled

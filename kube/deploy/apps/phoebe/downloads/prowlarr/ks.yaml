@@ -1,0 +1,98 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: prowlarr
+  namespace: downloads
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: prowlarr
+  components:
+    - ../../../../../../components/postgres/base
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/downloads/prowlarr/app
+  postBuild:
+    substitute:
+      APP: prowlarr
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: downloads
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: prowlarr
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: prowlarr
+        spec:
+          values:
+            route:
+              app:
+                hostnames: ["{{ .Release.Name }}.hayden.moe"]
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: &port 80
+            controllers:
+              prowlarr:
+                containers:
+                  app:
+                    env:
+                      PROWLARR__POSTGRES__MAINDBCONNECTIONSTRING: >-
+                        Host=pooler-rw.database.svc;
+                        Database=prowlarr;
+                        Username=prowlarr;
+                        SSL Mode=VerifyFull;
+                        SSL Certificate=/var/run/secrets/postgresql/tls.crt;
+                        SSL Key=/var/run/secrets/postgresql/tls.key;

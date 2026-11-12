@@ -1,5 +1,0 @@
----
-grafanaDashboard:
-  enabled: true
-serviceMonitor:
-  enabled: true

@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: trust-manager
+    kustomization.flux.home.arpa/helm-defaults: disabled
+  name: core-trust-manager
+  namespace: trust-manager
+spec:
+  dependsOn:
+    - name: core-cert-manager
+      namespace: cert-manager
+    - name: core-prometheus-crds
+      namespace: observability
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: trust-manager
+      namespace: trust-manager
+  path: ./kube/deploy/core/trust-manager/trust-manager/app
+  targetNamespace: trust-manager
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: trust-manager
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: trust-manager
+        spec:
+          values:
+            secretTargets:
+              enabled: true
+              authorizedSecrets:
+                - postgres-client-ca
+                - dfguard-client-ca
+                - dragonfly-client-ca
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: trust-manager
+  name: core-trust-manager-bundle
+  namespace: trust-manager
+spec:
+  dependsOn:
+    - name: core-trust-manager
+    - name: core-cert-manager-ca
+      namespace: cert-manager
+  healthChecks:
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: trusted-roots
+  path: ./kube/deploy/core/trust-manager/trust-manager/bundle
+  targetNamespace: trust-manager

@@ -1,0 +1,294 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: home-assistant
+  namespace: default
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: multus-networks
+      namespace: kube-system
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/app
+  postBuild:
+    substitute:
+      APP: home-assistant
+      CACHE_CAPACITY: 1Gi
+      CACHE_STORAGE_CLASS: miroir-local
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_GID: '0'
+      KOPIUR_PRIVILEGED_MODE: 'true'
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_RUN_AS_NON_ROOT: 'false'
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      KOPIUR_UID: '0'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: home-assistant
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: home-assistant
+        spec:
+          values:
+            route:
+              app:
+                annotations:
+                  gatus.home-operations.com/endpoint: |-
+                    conditions: ["[STATUS] == 200"]
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                  - hass.hayden.moe
+                parentRefs:
+                  - name: external
+                    namespace: network
+
+            defaultPodOptions:
+              annotations:
+                k8s.v1.cni.cncf.io/networks: |-
+                  [{
+                    "name": "iot",
+                    "namespace": "kube-system",
+                    "ips": ["192.168.20.20/24"],
+                    "mac": "c6:07:27:af:fb:53"
+                  }]
+            controllers:
+              home-assistant:
+                containers:
+                  app:
+                    env:
+                      HASS_HTTP_TRUSTED_PROXY_1: 172.18.0.0/16
+                      HASS_HTTP_TRUSTED_PROXY_2: 10.80.0.0/24
+            persistence:
+              zbt2:
+                type: hostPath
+                hostPath: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_A4CB8FD15F5C-if00
+              tty:
+                type: hostPath
+                hostPath: /dev/ttyACM0
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: matter-server
+  namespace: default
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: multus-networks
+      namespace: kube-system
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/matter-server
+  postBuild:
+    substitute:
+      APP: matter-server
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_GID: '0'
+      KOPIUR_PRIVILEGED_MODE: 'true'
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_RUN_AS_NON_ROOT: 'false'
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      KOPIUR_UID: '0'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: matter-server
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: matter-server
+        spec:
+          values:
+            routes:
+              matter-server:
+                hostnames:
+                  - matter.hayden.moe
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: http
+
+            controllers:
+              matter-server:
+                pod:
+                  annotations:
+                    k8s.v1.cni.cncf.io/networks: |-
+                      [{
+                        "name": "iot",
+                        "namespace": "kube-system",
+                        "ips": ["192.168.20.21/24", "fd74:f571:d3bd:40:b8e3:4d10:fa62:93c1/64"],
+                        "mac": "c6:07:27:af:fb:54"
+                      }]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: openthread
+  namespace: default
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: multus-networks
+      namespace: kube-system
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/openthread
+  postBuild:
+    substitute:
+      APP: openthread
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_GID: '0'
+      KOPIUR_PRIVILEGED_MODE: 'true'
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_RUN_AS_NON_ROOT: 'false'
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      KOPIUR_UID: '0'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: openthread
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: openthread
+        spec:
+          values:
+            defaultPodOptions:
+              annotations:
+                k8s.v1.cni.cncf.io/networks: |-
+                  [{
+                    "name": "iot",
+                    "namespace": "kube-system",
+                    "ips": ["192.168.20.23/24", "fd74:f571:d3bd:40:41d7:bb2e:6c90:a8f5/64"],
+                    "mac": "c6:07:27:af:fb:56"
+                  }]
+            persistence:
+              dev-tty:
+                type: hostPath
+                hostPath: /dev/ttyACM0
+                hostPathType: CharDevice

@@ -11,9 +11,44 @@ spec:
   interval: 30m
   install:
     crds: CreateReplace
-  valuesFrom:
-    - kind: ConfigMap
-      name: kopiur-defaults
-    - kind: ConfigMap
-      name: kopiur-values
-      optional: true
+  values:
+    defaultPodOptions:
+      annotations: {}
+      schedulingGates: []
+
+    installScope: cluster
+
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+
+    webhook:
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/apiserver: allow
+      tls:
+        mode: cert-manager
+      serviceMonitor:
+        enabled: true
+    features:
+      credentialProjection:
+        enabled: true
+
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      runAsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    logging:
+      level: info
+      format: json
+    monitoring:
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+      dashboards:
+        enabled: true

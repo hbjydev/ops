@@ -4,40 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: selfhosted
 resources:
-  - ../../../base/selfhosted/norish/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: norish-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: norish
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: norish
-      spec:
-        postBuild:
-          substitute:
-            OIDC_DISPLAY_NAME: Norish
-            OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/norish.svg
-            OIDC_ORIGIN: https://norish.hayden.moe/
-            OIDC_REDIRECT_URLS: '["https://norish.hayden.moe/api/auth/callback/oidc"]'
-            OIDC_GROUP_PREFIX: norish
-            OIDC_USERS_GROUP_MEMBERS: '[hayden, invisible]'
-            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap
-            KOPIUR_CAPACITY: 5Gi
-        dependsOn:
-          - name: miroir-config
-            namespace: miroir-system

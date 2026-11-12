@@ -9,9 +9,61 @@ spec:
     kind: OCIRepository
     name: app-template
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: smtp-relay-defaults
-    - kind: ConfigMap
-      name: smtp-relay-values
-      optional: true
+  values:
+    controllers:
+      smtp-relay:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.netpol.home.arpa/o11y: allow
+        containers:
+          app:
+            image:
+              repository: ghcr.io/foxcpp/maddy
+              tag: 0.9.7@sha256:b7423da1e97768ace9d790e441e59a698896d35432d8cdfa55b7c229d7847e72
+            env:
+              SMTP_RELAY_SMTP_PORT: &port 25
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+    service:
+      app:
+        ports:
+          smtp:
+            port: *port
+    persistence:
+      cache:
+        type: emptyDir
+      config-file:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /data/maddy.conf
+            subPath: maddy.conf

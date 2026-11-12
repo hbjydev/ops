@@ -9,9 +9,13 @@ spec:
     kind: OCIRepository
     name: garage-operator
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: garage-operator-defaults
-    - kind: ConfigMap
-      name: garage-operator-values
-      optional: true
+  values:
+    crds:
+      install: true
+      keep: true
+    webhooks:
+      enabled: true
+      certManager:
+        enabled: true
+    serviceMonitor:
+      enabled: true

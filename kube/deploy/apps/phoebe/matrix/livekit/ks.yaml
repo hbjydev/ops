@@ -1,0 +1,166 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: livekit
+  namespace: matrix
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: livekit
+  components:
+    - ../../../../../../components/dragonfly
+  interval: 1h
+  path: ./kube/deploy/apps/base/matrix/livekit/app
+  postBuild:
+    substitute:
+      APP: livekit
+      NAMESPACE: matrix
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: matrix
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: livekit
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: livekit
+        spec:
+          values:
+            route:
+              app:
+                annotations:
+                  gatus.home-operations.com/enabled: "false"
+                hostnames:
+                  - livekit.hayden.moe
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                  - name: external
+                    namespace: network
+                rules:
+                  - matches:
+                      - path:
+                          value: /sfu/get
+                      - path:
+                          value: /healthz
+                      - path:
+                          value: /get_token
+                    backendRefs:
+                      - name: livekit-jwt-service
+                        port: 8081
+                  - matches:
+                      - path:
+                          value: /
+                    backendRefs:
+                      - name: livekit
+                        port: 7880
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: livekit-jwt-service
+  namespace: matrix
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/component: jwt-service
+      app.kubernetes.io/name: livekit
+  components:
+    - ../../../../../../components/dragonfly
+  interval: 1h
+  path: ./kube/deploy/apps/base/matrix/livekit/jwt-service
+  postBuild:
+    substitute:
+      APP: livekit-jwt-service
+      NAMESPACE: matrix
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: matrix
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: livekit-jwt-service
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: livekit-jwt-service
+        spec:
+          values:
+            controllers:
+              livekit-jwt-service:
+                containers:
+                  app:
+                    env:
+                      LIVEKIT_URL: wss://livekit.hayden.moe
+                      LIVEKIT_FULL_ACCESS_HOMESERVERS: hayden.moe

@@ -11,3 +11,4 @@ components:
   - ../../../../clusters/phoebe/components/registry-credentials
   - ../../../../clusters/phoebe/components/github-status
   - ../../../../clusters/phoebe/components/sops
+resources: []

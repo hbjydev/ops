@@ -21,9 +21,123 @@ spec:
       annotations: {}
       labels: {}
       schedulingGates: []
-  valuesFrom:
-    - kind: ConfigMap
-      name: paperless-defaults
-    - kind: ConfigMap
-      name: paperless-values
-      optional: true
+    controllers:
+      paperless:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.netpol.home.arpa/external: allow
+            egress.netpol.home.arpa/internet: allow
+            egress.netpol.home.arpa/smtp-relay: allow
+            egress.netpol.home.arpa/dragonfly: allow
+        containers:
+          app:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 3.4.2
+            env:
+              PAPERLESS_PORT: &port 8000
+              PAPERLESS_TIME_ZONE: Europe/London
+              PAPERLESS_WEBSERVER_WORKERS: "2"
+              PAPERLESS_TASK_WORKERS: "2"
+              PAPERLESS_REDIS: "redis://localhost:6379"
+              PAPERLESS_DATA_DIR: /mnt/paperless/data
+              PAPERLESS_MEDIA_ROOT: /mnt/paperless/media
+              PAPERLESS_CONSUMPTION_DIR: /mnt/paperless/incoming
+              PAPERLESS_EXPORT_DIR: /mnt/paperless/export
+              PAPERLESS_CONSUMER_POLLING: "60"
+              PAPERLESS_CONSUMER_RECURSIVE: "true"
+              PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
+              PAPERLESS_TIKA_ENABLED: '1'
+              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: 'http://localhost:3000'
+              PAPERLESS_TIKA_ENDPOINT: 'http://localhost:9998'
+              PAPERLESS_OCR_LANGUAGE: "eng"
+              OIDC_CLIENT_ID:
+                secretKeyRef:
+                  name: paperless-kanidm-oauth2-credentials
+                  key: CLIENT_ID
+              OIDC_CLIENT_SECRET:
+                secretKeyRef:
+                  name: paperless-kanidm-oauth2-credentials
+                  key: CLIENT_SECRET
+              PAPERLESS_ENABLE_ALLAUTH: "true"
+              PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              PAPERLESS_AUTO_LOGIN: "true"
+              PAPERLESS_AUTO_CREATE: "true"
+              USERMAP_UID: 1000
+              USERMAP_GID: 1000
+            envFrom:
+              - secretRef:
+                  name: paperless-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /accounts/login/
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 2Gi
+          gotenberg:
+            image:
+              repository: gotenberg/gotenberg
+              tag: 8.40.0@sha256:53073e798c8ef39ea2187e44cb67bab77894ea2509100b94c4fe3b461f7b2996
+            command:
+              - gotenberg
+              - --chromium-disable-javascript=true
+              - --chromium-allow-list=file:///tmp/.*
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 2Gi
+          tika:
+            image:
+              repository: apache/tika
+              tag: 3.3.3.0-full@sha256:6ef30abd65df4b6c478907904099d0245bdb0e0686f94fb9bc7493558442bb74
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: paperless
+        ports:
+          http:
+            port: *port
+    persistence:
+      tmp:
+        type: emptyDir

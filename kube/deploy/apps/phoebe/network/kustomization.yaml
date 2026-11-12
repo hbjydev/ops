@@ -5,7 +5,8 @@ kind: Kustomization
 resources:
   - ./certificates/ks.yaml
   - ./cloudflare-dns
-  - ./stunner
+  - stunner/controller.yaml
+  - stunner/ks.yaml
   - ./tailscale
   - ./towonel-agent
   - ./unifi-cert-upload

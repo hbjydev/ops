@@ -1,0 +1,110 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: immich
+  namespace: selfhosted
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: immich
+  components:
+    - ../../../../../../components/postgres/cert
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/kanidm/private
+    - ../../../../../../components/dragonfly
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/selfhosted/immich/app
+  postBuild:
+    substitute:
+      APP: immich
+      DATABASE_EXTENSIONS: "[\n  { name: vector },\n  { name: vchord },\n  { name: earthdistance },\n  { name: cube },\n]\n"
+      KOPIUR_CAPACITY: 32Gi
+      KOPIUR_GID: '0'
+      KOPIUR_PRIVILEGED_MODE: 'true'
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_RUN_AS_NON_ROOT: 'false'
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      KOPIUR_UID: '0'
+      NAMESPACE: selfhosted
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_CLAIM_MAP: '[{name: immich_role, valuesMap: [{group: immich_users, values: [user]}, {group: immich_admins, values: [admin]}]}]'
+      OIDC_DISPLAY_NAME: Immich
+      OIDC_GROUP_PREFIX: immich
+      OIDC_ORIGIN: https://photos.hayden.moe/
+      OIDC_REDIRECT_URLS: '["app.immich:///oauth-callback", "https://photos.hayden.moe/auth/login", "https://photos.hayden.moe/user-settings"]'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden, invisible]'
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: selfhosted
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: immich
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: immich
+        spec:
+          values:
+            server:
+              persistence:
+                dev-dri:
+                  type: hostPath
+                  hostPath: /dev/dri
+                dev-kfd:
+                  type: hostPath
+                  hostPath: /dev/kfd
+            machine-learning:
+              persistence:
+                cache:
+                  enabled: true
+                  size: 10Gi
+                  type: persistentVolumeClaim
+                  accessMode: ReadWriteOnce
+                  storageClass: miroir-local
+                dev-dri:
+                  type: hostPath
+                  hostPath: /dev/dri
+                dev-kfd:
+                  type: hostPath
+                  hostPath: /dev/kfd

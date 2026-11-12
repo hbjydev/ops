@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: sabnzbd
+  namespace: downloads
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: sabnzbd
+  components:
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/downloads/sabnzbd/app
+  postBuild:
+    substitute:
+      APP: sabnzbd
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: downloads
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: sabnzbd
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: sabnzbd
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                  - sab.hayden.moe
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: &port 80
+            persistence:
+              media:
+                type: nfs
+                server: ds.hayden.moe
+                path: /volume1/media
+                globalMounts:
+                  - path: /media/downloads/sabnzbd
+                    subPath: downloads/sabnzbd
+            defaultPodOptions:
+              annotations:
+                k8s.v1.cni.cncf.io/networks: |-
+                  [{
+                    "name": "vpn",
+                    "namespace": "kube-system",
+                    "ips": ["10.90.0.11/24"],
+                    "mac": "d6:67:45:f6:29:e5"
+                  }]
+            controllers:
+              sabnzbd:
+                containers:
+                  app:
+                    env:
+                      SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                        sabnzbd,
+                        sabnzbd.downloads,
+                        sabnzbd.downloads.svc,
+                        sabnzbd.downloads.svc.cluster,
+                        sabnzbd.downloads.svc.cluster.local,
+                        sab.hayden.moe,
+                        sabnzbd.hayden.moe

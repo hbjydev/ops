@@ -1,7 +1,0 @@
----
-monitoring:
-  dashboards:
-    grafanaOperator:
-      enabled: true
-      matchLabels:
-        grafana.internal/instance: grafana

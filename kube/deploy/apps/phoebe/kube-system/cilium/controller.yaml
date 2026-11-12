@@ -1,0 +1,138 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: cilium
+    kustomization.flux.home.arpa/helm-defaults: disabled
+  name: core-cilium
+  namespace: kube-system
+spec:
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
+  path: ./kube/deploy/core/kube-system/cilium/app
+  targetNamespace: kube-system
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: cilium
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: cilium
+        spec:
+          values:
+            autoDirectNodeRoutes: true
+            bandwidthManager:
+              enabled: true
+              bbr: true
+            bpf:
+              datapathMode: netkit
+              masquerade: true
+              preallocateMaps: true
+              tproxy: false
+            bpfClockProbe: true
+            bgpControlPlane:
+              enabled: true
+            cgroup:
+              automount:
+                enabled: false
+            cni:
+              exclusive: false
+            devices: bond+
+            enableIPv4BIGTCP: false
+            endpointRoutes:
+              enabled: true
+            hubble:
+              relay:
+                rollOutPods: true
+              ui:
+                rollOutPods: true
+            # Clear the shared network-policy label during the ownership migration.
+            ipv4NativeRoutingCIDR: ${CLUSTER_POD_CIDR}
+            k8sServiceHost: 127.0.0.1
+            kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+            l2announcements:
+              enabled: false
+            loadBalancer:
+              algorithm: maglev
+              mode: snat
+            localRedirectPolicy: true
+            operator:
+              rollOutPods: true
+            pmtuDiscovery:
+              enabled: true
+            rollOutCiliumPods: true
+            routingMode: native
+            securityContext:
+              capabilities:
+                ciliumAgent:
+                  - CHOWN
+                  - KILL
+                  - NET_ADMIN
+                  - NET_RAW
+                  - IPC_LOCK
+                  - SYS_ADMIN
+                  - SYS_RESOURCE
+                  - PERFMON
+                  - BPF
+                  - DAC_OVERRIDE
+                  - FOWNER
+                  - SETGID
+                  - SETUID
+            socketLB:
+              enabled: true
+              hostNamespaceOnly: false
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: cilium
+      patch: |
+        ---
+          - op: add
+            path: /spec/values/hubble/ui/podLabels
+            value:
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: cilium
+  name: core-cilium-netpols
+  namespace: kube-system
+spec:
+  dependsOn:
+    - name: core-cilium
+  path: ./kube/deploy/core/kube-system/cilium/netpols
+  targetNamespace: kube-system

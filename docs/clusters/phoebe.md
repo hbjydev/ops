@@ -5,28 +5,25 @@ Its migration preserves workloads and storage while adopting shared core and cer
 
 ## Application layers
 
-The existing `cluster-apps` Flux Kustomization uses `kube/deploy/apps/phoebe` as its composition entry point.
-Shared definitions live in `kube/deploy/core`.
-Phoebe selects migrated workloads and applies its overrides under `kube/deploy/apps/phoebe/<namespace>`.
+`cluster-apps` selects `kube/deploy/apps/phoebe`. Phoebe owns the Flux deployment
+files under each namespace/application directory; these select shared controller
+manifests in `kube/deploy/core` and workload manifests in `kube/deploy/apps/base`.
+Cluster-specific values are direct HelmRelease patches in those local Flux
+Kustomizations. Shared defaults remain inline in the shared releases.
 
-The Phoebe layer temporarily includes `kubernetes/apps` for unmigrated workloads and namespace resources.
-The Flux operator is the first workload selected directly from shared core.
-Its Phoebe override enables monitoring; network-policy labels come from core.
-The override component lives at `kube/deploy/apps/phoebe/flux-system/flux-operator/overrides` and patches the HelmRelease directly.
-The shared `core-flux-operator` selects that component through the [cluster override convention](../core/gitops.md#cluster-overrides-for-shared-core).
+All workloads and infrastructure configuration now live under `kube/deploy`.
+The remaining `kubernetes/flux/cluster` files are the Flux compatibility entry
+point. See [deployment layers](../core/gitops.md#deployment-layers) for selection,
+namespace composition and the Helm-defaults opt-out label.
 
-For each later migration, add the shared workload to the Phoebe layer and remove its legacy selection.
-Complete any required ownership protection before deploying that change.
-Remove the compatibility include after the final legacy workload and namespace resources move.
-
-The [migration plan](phoebe-migration.md) covers the ownership transfer, compatibility requirements, certificate hierarchy and rollback conditions.
+The [migration plan](phoebe-migration.md) records the earlier ownership transfers,
+certificate hierarchy and rollback conditions.
 
 ## External Secrets
 
-Phoebe selects the shared `core-external-secrets` Flux owner. Its cluster patch
-keeps the app wrapper for the existing password generator and chart `2.15.0`.
-Health checks live in core. Chart values use the shared defaults and the
-optional `external-secrets-values` ConfigMap.
+Phoebe selects the shared `core-external-secrets` Flux owner. Its local declaration
+keeps the chart `2.15.0` overlay and the existing health checks. The password
+generator and default chart values are shared core resources.
 
 The cluster does not select the shared SDK store. Phoebe retains its 1Password
 Connect server and existing ClusterSecretStore indefinitely. Connect and the
@@ -34,8 +31,7 @@ GitHub generator depend on `core-external-secrets`.
 
 The External Secrets namespace composition, Connect server and GitHub generator
 live under `kube/deploy/apps/phoebe/external-secrets`. Their Flux owner names and
-resource identities are retained. Namespace support still imports the legacy
-common component until its secrets, alerts and repository resources are migrated.
+resource identities are retained. Namespace support selects the shared and Phoebe-specific components explicitly.
 
 ## Certificate management
 

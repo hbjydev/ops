@@ -10,13 +10,107 @@ spec:
     kind: OCIRepository
     name: app-template
   values:
+    controllers:
+      searxng:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: RollingUpdate
+        pod:
+          labels:
+            ingress.netpol.home.arpa/external: allow
+            egress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/o11y: allow
+            egress.netpol.home.arpa/dragonfly: allow
+        containers:
+          app:
+            image:
+              repository: searxng/searxng
+              tag: 2026.5.31-7159b8aed@sha256:35b089054ac9b4257976107e71673d9e30ac17c9b50bbf8b4783f2f6d1d1981f
+            env:
+              TZ: Europe/London
+            envFrom:
+              - secretRef:
+                  name: searxng-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1024Mi
     defaultPodOptions:
       annotations: {}
       labels: {}
       schedulingGates: []
-  valuesFrom:
-    - kind: ConfigMap
-      name: searxng-defaults
-    - kind: ConfigMap
-      name: searxng-values
-      optional: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    serviceMonitor:
+      app:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    configMaps:
+      config:
+        data:
+          settings.yml: |-
+            use_default_settings: true
+
+            server:
+              enable_metrics: true
+
+            redis:
+              url: redis://localhost:6379/0
+
+            search:
+              formats:
+                - html
+                - json
+    persistence:
+      data:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /etc/searxng
+      config-file:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /etc/searxng/settings.yml
+            subPath: settings.yml
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

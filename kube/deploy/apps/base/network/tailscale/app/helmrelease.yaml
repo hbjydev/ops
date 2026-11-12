@@ -30,9 +30,12 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: tailscale-operator-defaults
-    - kind: ConfigMap
-      name: tailscale-operator-values
-      optional: true
+  values:
+    operatorConfig:
+      image:
+        repository: ghcr.io/tailscale/k8s-operator
+    proxyConfig:
+      image:
+        repository: ghcr.io/tailscale/tailscale
+    podAnnotations:
+      secret.reloader.stakater.com/reload: operator-oauth

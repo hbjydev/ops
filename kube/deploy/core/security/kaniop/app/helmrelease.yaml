@@ -9,9 +9,14 @@ spec:
   chartRef:
     kind: OCIRepository
     name: *app
-  valuesFrom:
-    - kind: ConfigMap
-      name: kaniop-defaults
-    - kind: ConfigMap
-      name: kaniop-values
-      optional: true
+  values:
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRules:
+        enabled: true
+      dashboards:
+        enabled: true

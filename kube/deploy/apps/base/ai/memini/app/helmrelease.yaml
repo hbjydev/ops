@@ -21,9 +21,73 @@ spec:
       annotations: {}
       labels: {}
       schedulingGates: []
-  valuesFrom:
-    - kind: ConfigMap
-      name: memini-defaults
-    - kind: ConfigMap
-      name: memini-values
-      optional: true
+    global:
+      fullnameOverride: memini
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: trusted-roots
+        pod:
+          labels:
+            trust.home.arpa/inject: "true"
+            egress.netpol.home.arpa/postgres: allow
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+        containers:
+          main:
+            env:
+              MEMINI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: memini-secret
+                    key: MEMINI_API_KEY
+              MEMINI_BACKEND: postgres
+              MEMINI_DEFAULT_NAMESPACE: default
+              MEMINI_DEMOTE_AFTER: 1440h
+              MEMINI_TOMBSTONE_TTL: 720h
+              MEMINI_LOG_FORMAT: json
+              MEMINI_RERANK_TOP_N: '20'
+              MEMINI_RERANK_MAX_DOC_CHARS: '4000'
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    persistence:
+      postgres-certs:
+        type: custom
+        globalMounts:
+          - path: /var/run/secrets/postgresql
+            readOnly: true
+        volumeSpec:
+          csi:
+            driver: csi.cert-manager.io
+            readOnly: true
+            volumeAttributes:
+              csi.cert-manager.io/issuer-name: postgres-client-ca-v2
+              csi.cert-manager.io/issuer-kind: ClusterIssuer
+              csi.cert-manager.io/key-algorithm: ECDSA
+              csi.cert-manager.io/key-size: "384"
+              csi.cert-manager.io/key-encoding: PKCS8
+              csi.cert-manager.io/key-usages: client auth
+              csi.cert-manager.io/common-name: memini
+              csi.cert-manager.io/fs-group: "1000"
+      data:
+        existingClaim: memini
+    serviceMonitor:
+      main:
+        enabled: true
+    grafanaDashboards:
+      enabled: true

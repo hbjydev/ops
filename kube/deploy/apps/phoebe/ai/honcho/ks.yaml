@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: honcho
+  namespace: ai
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: honcho
+  components:
+    - ../../../../../../components/postgres/base
+    - ../../../../../../components/dragonfly
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/honcho/app
+  postBuild:
+    substitute:
+      APP: honcho
+      DATABASE_EXTENSIONS: "[\n  { name: vector }\n]\n"
+      NAMESPACE: ai
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: honcho
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: honcho
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - "honcho.hayden.moe"
+                parentRefs:
+                  - name: internal
+                    namespace: network
+                rules:
+                  - name: app
+                    backendRefs:
+                      - kind: Service
+                        name: honcho-openconcho
+                        port: &ocPort 8080
+                    matches:
+                      - path:
+                          type: PathPrefix
+                          value: /
+            controllers:
+              honcho:
+                containers:
+                  app:
+                    env:
+                      EMBEDDING_MODEL_CONFIG__MODEL: qwen3-embedding-0.6b
+                      EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+                      EMBEDDING_VECTOR_DIMENSIONS: "1024"
+                      OPENAI_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+                      DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
+                  deriver:
+                    env:
+                      EMBEDDING_MODEL_CONFIG__MODEL: qwen3-embedding-0.6b
+                      EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+                      EMBEDDING_VECTOR_DIMENSIONS: "1024"
+                      OPENAI_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+                      DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"

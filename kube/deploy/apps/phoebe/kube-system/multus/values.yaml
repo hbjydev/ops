@@ -1,4 +1,0 @@
----
-cni:
-  binPath: /opt/cni/bin
-  netPath: /etc/cni/net.d

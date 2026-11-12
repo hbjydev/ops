@@ -6,7 +6,7 @@ resources:
   - ./gatus
   - ./grafana
   - ./kube-prometheus-stack
-  - ../../base/observability/tsproxy/ks.yaml
+  - ./tsproxy/ks.yaml
   - ./unpoller
   - ./victoria-metrics-stack
   - ./opentelemetry/ks.yaml

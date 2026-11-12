@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-instance
+  namespace: observability
+spec:
+  dependsOn:
+    - name: core-kopiur-config
+      namespace: kopiur-system
+    - name: grafana
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/grafana/instance
+  postBuild:
+    substitute:
+      GRAFANA_ANONYMOUS_AUTH: '{"enabled": "true"}'
+      GRAFANA_AUTH: '{"disable_login_form": "false"}'
+      GRAFANA_OIDC_AUTH_URL: https://sso.hayden.moe/ui/oauth2
+      GRAFANA_OIDC_NAME: hayden.moe ID
+      GRAFANA_OIDC_ROLE_ATTRIBUTE: contains(groups[*], 'grafana_admins') && 'Admin' || contains(groups[*], 'grafana_editors') && 'Editor' || 'Viewer'
+      GRAFANA_OIDC_TOKEN_URL: https://sso.hayden.moe/oauth2/token
+      GRAFANA_OIDC_USERINFO_URL: https://sso.hayden.moe/oauth2/openid/grafana/userinfo
+      GRAFANA_PLUGINS: victoriametrics-logs-datasource,vonage-status-panel,grafana-piechart-panel
+      GRAFANA_ROUTE_HOSTNAMES: '["grafana.hayden.moe"]'
+      GRAFANA_ROUTE_PARENT_REFS: '[{"name": "internal", "namespace": "network"}]'
+      GRAFANA_URL: https://grafana.hayden.moe
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      STORAGE_CAPACITY: 10Gi
+      STORAGE_CLASS: miroir-local
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  wait: false

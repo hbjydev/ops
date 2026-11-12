@@ -1,8 +1,0 @@
----
-controllers:
-  livekit-jwt-service:
-    containers:
-      app:
-        env:
-          LIVEKIT_URL: wss://livekit.hayden.moe
-          LIVEKIT_FULL_ACCESS_HOMESERVERS: hayden.moe

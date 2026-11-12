@@ -1,0 +1,122 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: forgejo
+  namespace: dev
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: forgejo
+  components:
+    - ../../../../../../components/postgres/cert
+    - ../../../../../../components/kanidm/private
+    - ../../../../../../components/anubis
+    - ../../../../../../clusters/phoebe/components/anubis
+    - ../../../../../../components/dragonfly
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: cnpg-cluster
+      namespace: database
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/dev/forgejo/app
+  postBuild:
+    substitute:
+      ANUBIS_MEM_LIMIT: 384Mi
+      ANUBIS_TARGET: http://forgejo-http.dev.svc.cluster.local:3000
+      APP: forgejo
+      APP_GID: '1000'
+      APP_UID: '1000'
+      KOPIUR_CAPACITY: 50Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: dev
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_DISPLAY_NAME: Forgejo
+      OIDC_GROUP_PREFIX: forgejo
+      OIDC_ORIGIN: https://git.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://git.hayden.moe/user/oauth2/kanidm/callback"]'
+      OIDC_SECRET_KEY_ALIASES: '{clientId: [key], clientSecret: [secret]}'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: dev
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: forgejo
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: forgejo
+        spec:
+          values:
+            tcpRoute:
+              enabled: true
+              parentRefs:
+                - name: external
+                  namespace: network
+                  sectionName: ssh
+            gitea:
+              config:
+                APP_NAME: "Hayden's Git"
+                APP_SLOGAN: "because sometimes it takes a man to be best girl"
+                ui:
+                  THEMES: forgejo-auto,forgejo-light,forgejo-dark,gitdotgay,gitdotgay-light,gitdotgay-dark
+                  DEFAULT_THEME: gitdotgay
+
+                database:
+                  HOST: pooler-rw.database.svc:5432
+                repository.signing:
+                  SIGNING_NAME: git.hayden.moe Instance
+                  SIGNING_EMAIL: noreply@git.hayden.moe
+                security:
+                  REVERSE_PROXY_TRUSTED_PROXIES: 172.18.0.0/16
+                server:
+                  ROOT_URL: https://git.hayden.moe
+                  SSH_DOMAIN: git.hayden.moe:2468
+              oauth:
+                - name: kanidm
+                  adminGroup: forgejo_admins@sso.hayden.moe
+                  autoDiscoverUrl: https://sso.hayden.moe/oauth2/openid/forgejo/.well-known/openid-configuration
+                  existingSecret: forgejo-kanidm-oauth2-credentials
+                  groupClaimName: groups
+                  provider: openidConnect
+                  scopes: profile email groups

@@ -1,16 +1,9 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: observability
 resources:
-  - ../../../base/observability/unpoller/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
   - ./grafanadashboard.yaml
-configMapGenerator:
-  - name: unpoller-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled

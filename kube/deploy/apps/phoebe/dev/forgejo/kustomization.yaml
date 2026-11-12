@@ -4,7 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: dev
 resources:
-  - ../../../base/dev/forgejo/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
   - ./httproute.yaml
 configMapGenerator:
@@ -19,49 +19,5 @@ configMapGenerator:
         kustomize.toolkit.fluxcd.io/substitute: disabled
       labels:
         app.kubernetes.io/name: &name forgejo
-  - name: forgejo-values
-    files:
-      - values.yaml=values.yaml
-    options:
-      labels:
-        reconcile.fluxcd.io/watch: Enabled
 generatorOptions:
   disableNameSuffixHash: true
-patches:
-  - target:
-      kind: Kustomization
-      name: *name
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: &name forgejo
-      spec:
-        dependsOn:
-          - name: cnpg-cluster
-            namespace: database
-          - name: miroir-config
-            namespace: miroir-system
-        components:
-          - ../../../../../../components/postgres/cert
-          - ../../../../../../components/kanidm/private
-          - ../../../../../../components/anubis
-          - ../../../../../../clusters/phoebe/components/anubis
-          - ../../../../../../components/dragonfly
-          - ../../../../../../components/kopiur
-        postBuild:
-          substitute:
-            KOPIUR_CAPACITY: 50Gi
-            ANUBIS_TARGET: http://forgejo-http.dev.svc.cluster.local:3000
-            ANUBIS_MEM_LIMIT: 384Mi
-            OIDC_DISPLAY_NAME: Forgejo
-            OIDC_ORIGIN: https://git.hayden.moe/
-            OIDC_REDIRECT_URLS: '["https://git.hayden.moe/user/oauth2/kanidm/callback"]'
-            OIDC_SECRET_KEY_ALIASES: '{clientId: [key], clientSecret: [secret]}'
-            OIDC_GROUP_PREFIX: forgejo
-            OIDC_USERS_GROUP_MEMBERS: '[hayden]'
-            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap

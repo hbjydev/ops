@@ -4,15 +4,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ai
 resources:
-  - ../../../base/ai/hermes/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: hermes-values
-    files:
-      - values.yaml=values.yaml
-    options:
-      labels:
-        reconcile.fluxcd.io/watch: Enabled
   - name: hermes-config
     files:
       - ./resources/config.yaml
@@ -25,30 +19,3 @@ configMapGenerator:
         app.kubernetes.io/name: &app hermes
 generatorOptions:
   disableNameSuffixHash: true
-patches:
-  - target:
-      kind: Kustomization
-      name: hermes
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: hermes
-      spec:
-        postBuild:
-          substitute:
-            OIDC_DISPLAY_NAME: Hermes Agent
-            OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/hermes-agent.png
-            OIDC_ORIGIN: https://hermes.hayden.moe/
-            OIDC_REDIRECT_URLS: '["https://hermes.hayden.moe/auth/callback"]'
-            OIDC_GROUP_PREFIX: hermes
-            OIDC_USERS_GROUP_MEMBERS: '[hayden]'
-            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap
-            KOPIUR_CAPACITY: 5Gi
-        dependsOn:
-          - name: core-kyverno-config
-            namespace: kyverno

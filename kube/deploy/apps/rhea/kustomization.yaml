@@ -3,14 +3,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../core/cert-manager
-  - ../../core/external-secrets
-  - ../../core/flux-system
-  - ../../core/kopiur-system
-  - ../../core/kube-system
-  - ../../core/kyverno
-  - ../../core/trust-manager
-  - ../../core/observability
-  - ../../core/observability/opentelemetry-operator
+  - ./cert-manager
+  - ./external-secrets
+  - ./flux-system
+  - ./kopiur-system
+  - ./kube-system
+  - ./kyverno
+  - ./trust-manager
+  - ./observability
+  - ./observability/opentelemetry-operator/ks.yaml
   - ./network
   - ./system-upgrade

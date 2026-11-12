@@ -4,13 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: dev
 resources:
-  - ../../../base/dev/konflate/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: konflate-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled

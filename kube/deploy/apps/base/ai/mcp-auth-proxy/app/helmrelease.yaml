@@ -20,9 +20,94 @@ spec:
     defaultPodOptions:
       annotations: {}
       schedulingGates: []
-  valuesFrom:
-    - kind: ConfigMap
-      name: mcp-auth-proxy-defaults
-    - kind: ConfigMap
-      name: mcp-auth-proxy-values
-      optional: true
+
+    controllers:
+      app:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          configmap.reloader.stakater.com/reload: trusted-roots
+        containers:
+          app:
+            image:
+              repository: ghcr.io/sigbit/mcp-auth-proxy
+              tag: v2.10.2@sha256:f92e0ccd22b2a7585bccedc366a3c872bbfa3500c7fa5e7443b40962bf248e8d
+            env:
+              NO_AUTO_TLS: "true"
+              LISTEN: :8080
+              HTTP_STREAMING_ONLY: "true"
+              OIDC_SCOPES: openid,profile,email,groups
+              OIDC_USER_ID_FIELD: /email
+              OIDC_PROVIDER_NAME: Kanidm
+              OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: mcp-auth-proxy-kanidm-oauth2-credentials
+                    key: CLIENT_ID
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: mcp-auth-proxy-kanidm-oauth2-credentials
+                    key: CLIENT_SECRET
+              PROXY_BEARER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: mcp-auth-proxy-litellm
+                    key: PROXY_BEARER_TOKEN
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: ["ALL"]
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        pod:
+          labels:
+            # Go HTTP clients use system roots (SSL_CERT_FILE).
+            # https://github.com/sigbit/mcp-auth-proxy/blob/v2.10.2/pkg/backend/transparent.go
+            trust.home.arpa/inject: "true"
+            egress.netpol.home.arpa/litellm: allow
+            ingress.netpol.home.arpa/external: allow
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 1000
+            runAsUser: 1000
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
+    service:
+      app:
+        controller: app
+        ports:
+          http:
+            port: *port
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /data

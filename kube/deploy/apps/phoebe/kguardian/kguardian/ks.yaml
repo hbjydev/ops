@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kguardian
+  namespace: kguardian
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: kguardian
+  components:
+    - ../../../../../../components/postgres/base
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+  interval: 1h
+  path: ./kube/deploy/apps/base/kguardian/kguardian/app
+  postBuild:
+    substitute:
+      APP: kguardian
+      KGUARDIAN_DATABASE_URL: postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt
+      NAMESPACE: kguardian
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: kguardian
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: kguardian
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: kguardian
+        spec:
+          values:
+            ai:
+              enabled: true
+              provider: openai
+              secret: kguardian-litellm
+              baseUrl: http://litellm.ai.svc.cluster.local:4000/v1
+              model: gpt-6-luna
+              mcp:
+                enabled: true
+                auth:
+                  allowUnauthenticated: true
+            database:
+              external:
+                host: pooler-rw.database.svc.cluster.local
+                port: 5432
+                sslMode: verify-full

@@ -4,7 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ai
 resources:
-  - ../../../base/ai/litellm/ks.yaml
+  - ./ks.yaml
   - ./externalsecret.yaml
   - ./mcp-secrets.yaml
   - ./grafanadashboard.yaml
@@ -12,48 +12,3 @@ resources:
   - ./litellmvirtualkeys.yaml
   - ./litellmmcpservers.yaml
   - ./servicemonitor.yaml
-configMapGenerator:
-  - name: litellm-operator-values
-    files:
-      - values.yaml=operator-values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: litellm
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: litellm
-      spec:
-        postBuild:
-          substitute:
-            KOPIUR_CAPACITY: 1Gi
-            OIDC_DISPLAY_NAME: LiteLLM
-            OIDC_ALLOW_INSECURE_CLIENT_DISABLE_PKCE: 'true'
-            OIDC_ORIGIN: https://llm.hayden.moe/
-            OIDC_REDIRECT_URLS: '["https://llm.hayden.moe/sso/callback"]'
-            OIDC_GROUP_PREFIX: litellm
-            OIDC_USERS_GROUP_MEMBERS: '[hayden]'
-            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap
-            LITELLM_DATABASE_URL: "postgresql://litellm@pooler-rw.database.svc:5432/litellm?sslmode=require&sslaccept=strict&sslcert=/var/run/trusted-roots/ca.crt&sslidentity=/var/run/secrets/postgresql/keystore.p12&sslpassword=changeit"
-            LITELLM_REDIS_HOST: dragonfly.database.svc
-            LITELLM_PROXY_BASE_URL: https://llm.hayden.moe
-            LITELLM_GENERIC_AUTHORIZATION_ENDPOINT: https://sso.hayden.moe/ui/oauth2
-            LITELLM_GENERIC_TOKEN_ENDPOINT: https://sso.hayden.moe/oauth2/token
-            LITELLM_GENERIC_USERINFO_ENDPOINT: https://sso.hayden.moe/oauth2/openid/litellm/userinfo
-            LITELLM_ROUTE_HOSTNAMES: '["llm.hayden.moe"]'
-            LITELLM_ROUTE_PARENT_REFS: '[{"name": "external", "namespace": "network"}]'
-            LITELLM_PUBLIC_MCP_SERVERS: '["context7", "kguardian", "hass"]'
-        dependsOn:
-          - name: core-kyverno-config
-            namespace: kyverno
-          - name: litellm-operator

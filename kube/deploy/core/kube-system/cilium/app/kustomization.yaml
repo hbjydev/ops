@@ -6,11 +6,3 @@ namespace: kube-system
 resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-configMapGenerator:
-  - name: cilium-defaults
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled

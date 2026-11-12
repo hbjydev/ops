@@ -4,44 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: selfhosted
 resources:
-  - ../../../base/selfhosted/immich/ks.yaml
+  - ./ks.yaml
   - ./httproute.yaml
-configMapGenerator:
-  - name: immich-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: immich
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: immich
-      spec:
-        postBuild:
-          substitute:
-            KOPIUR_CAPACITY: 32Gi
-            KOPIUR_UID: '0'
-            KOPIUR_GID: '0'
-            KOPIUR_PRIVILEGED_MODE: "true"
-            KOPIUR_RUN_AS_NON_ROOT: "false"
-            OIDC_DISPLAY_NAME: Immich
-            OIDC_ORIGIN: https://photos.hayden.moe/
-            OIDC_REDIRECT_URLS: '["app.immich:///oauth-callback", "https://photos.hayden.moe/auth/login", "https://photos.hayden.moe/user-settings"]'
-            OIDC_GROUP_PREFIX: immich
-            OIDC_USERS_GROUP_MEMBERS: '[hayden, invisible]'
-            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-            OIDC_CLAIM_MAP: '[{name: immich_role, valuesMap: [{group: immich_users, values: [user]}, {group: immich_admins, values: [admin]}]}]'
-            KOPIUR_REPOSITORY: hetzner
-            KOPIUR_STORAGECLASS: miroir-local
-            KOPIUR_SNAPSHOTCLASS: miroir-snap
-        dependsOn:
-          - name: miroir-config
-            namespace: miroir-system

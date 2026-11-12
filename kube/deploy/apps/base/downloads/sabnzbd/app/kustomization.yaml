@@ -5,12 +5,3 @@ kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: sabnzbd-defaults
-    files:
-      - values.yaml=values.yaml
-    options:
-      labels:
-        reconcile.fluxcd.io/watch: Enabled
-generatorOptions:
-  disableNameSuffixHash: true

@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: hermes
+  namespace: ai
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: hermes
+  components:
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/kanidm/public
+  dependsOn:
+    - name: core-kyverno-config
+      namespace: kyverno
+  interval: 1h
+  path: ./kube/deploy/apps/base/ai/hermes/app
+  postBuild:
+    substitute:
+      APP: hermes
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: ai
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_DISPLAY_NAME: Hermes Agent
+      OIDC_GROUP_PREFIX: hermes
+      OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/hermes-agent.png
+      OIDC_ORIGIN: https://hermes.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://hermes.hayden.moe/auth/callback"]'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: ai
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: hermes
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: hermes
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                parentRefs:
+                  - name: external
+                    namespace: network
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: dashboard
+            controllers:
+              hermes:
+                containers:
+                  app:
+                    env:
+                      HERMES_DASHBOARD_PUBLIC_URL: "https://hermes.hayden.moe"
+                      HERMES_DASHBOARD_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/hermes
+                      SEERR_URL: http://seerr.media.svc.cluster.local
+                      SEARXNG_URL: http://searxng.selfhosted.svc.cluster.local:8080
+            defaultPodOptions:
+              imagePullSecrets:
+                - name: imp-forgejo

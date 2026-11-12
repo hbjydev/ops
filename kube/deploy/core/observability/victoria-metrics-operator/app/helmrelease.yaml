@@ -16,9 +16,13 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: victoria-metrics-operator-defaults
-    - kind: ConfigMap
-      name: victoria-metrics-operator-values
-      optional: true
+  values:
+    fullnameOverride: victoria-metrics-operator
+
+    operator:
+      enable_converter_ownership: true
+
+    admissionWebhooks:
+      enabled: true
+      certManager:
+        enabled: true

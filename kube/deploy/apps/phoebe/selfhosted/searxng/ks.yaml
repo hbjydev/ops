@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: searxng
+  namespace: selfhosted
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: searxng
+  components:
+    - ../../../../../../components/dragonfly
+    - ../../../../../../components/kopiur
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/selfhosted/searxng/app
+  postBuild:
+    substitute:
+      APP: searxng
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: selfhosted
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: selfhosted
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: not-used
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: searxng
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: searxng
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                  - search.hayden.moe
+                parentRefs:
+                  - name: external
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: &port 8080
+            controllers:
+              searxng:
+                containers:
+                  app:
+                    env:
+                      SEARXNG_BASE_URL: https://search.hayden.moe

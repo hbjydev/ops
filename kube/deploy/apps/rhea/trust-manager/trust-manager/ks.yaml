@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: trust-manager
+  name: core-trust-manager
+  namespace: trust-manager
+spec:
+  dependsOn:
+    - name: core-cert-manager
+      namespace: cert-manager
+    - name: core-prometheus-crds
+      namespace: observability
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: trust-manager
+      namespace: trust-manager
+  path: ./kube/deploy/core/trust-manager/trust-manager/app
+  targetNamespace: trust-manager
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+    kustomization.flux.home.arpa/helmpatches: 'false'
+    kustomization.flux.home.arpa/name: trust-manager
+  name: core-trust-manager-bundle
+  namespace: trust-manager
+spec:
+  dependsOn:
+    - name: core-trust-manager
+    - name: core-cert-manager-ca
+      namespace: cert-manager
+  healthChecks:
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: trusted-roots
+  path: ./kube/deploy/core/trust-manager/trust-manager/bundle
+  targetNamespace: trust-manager

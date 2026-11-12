@@ -23,9 +23,10 @@ spec:
     kind: OCIRepository
     name: multus
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: multus-defaults
-    - kind: ConfigMap
-      name: multus-values
-      optional: true
+  values:
+    multus:
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi

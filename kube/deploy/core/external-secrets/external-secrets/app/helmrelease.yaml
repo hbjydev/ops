@@ -16,9 +16,36 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: external-secrets-defaults
-    - kind: ConfigMap
-      name: external-secrets-values
-      optional: true
+  values:
+    installCRDs: true
+    replicaCount: 1
+    leaderElect: true
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
+    webhook:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/apiserver: allow
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+    certController:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/apiserver: allow
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+    serviceMonitor:
+      enabled: true
+      interval: 1m
+    grafanaDashboard:
+      enabled: true
+    genericTargets:
+      enabled: true

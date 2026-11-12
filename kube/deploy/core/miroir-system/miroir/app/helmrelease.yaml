@@ -13,9 +13,16 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
-  valuesFrom:
-    - kind: ConfigMap
-      name: miroir-defaults
-    - kind: ConfigMap
-      name: miroir-values
-      optional: true
+  values:
+    agent:
+      resources:
+        limits:
+          memory: 192Mi
+    autoTieBreaker: false
+    monitoring:
+      dashboards:
+        enabled: true
+      podMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true

@@ -1,32 +1,8 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.config.k8s.io/kustomization_v1beta1.json
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kguardian
 resources:
-  - ../../../base/kguardian/kguardian/ks.yaml
+  - ./ks.yaml
   - ./httproute.yaml
-configMapGenerator:
-  - name: kguardian-values
-    files:
-      - values.yaml=values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  labels:
-    reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: kguardian
-    patch: |
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: kguardian
-      spec:
-        postBuild:
-          substitute:
-            KGUARDIAN_DATABASE_URL: postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt
-        dependsOn:
-          - name: core-kyverno-config
-            namespace: kyverno

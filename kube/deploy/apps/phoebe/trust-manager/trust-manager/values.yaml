@@ -1,7 +1,0 @@
----
-secretTargets:
-  enabled: true
-  authorizedSecrets:
-    - postgres-client-ca
-    - dfguard-client-ca
-    - dragonfly-client-ca

@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
+    kustomization.flux.home.arpa/name: flux-operator
+  name: core-flux-operator
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: flux-operator
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: flux-operator
+      namespace: flux-system
+  interval: 1h
+  path: ./kube/deploy/core/flux-system/flux-operator/app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: flux-system
+  timeout: 5m
