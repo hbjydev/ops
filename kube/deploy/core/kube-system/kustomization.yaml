@@ -9,5 +9,6 @@ replacements:
   - path: ../../../components/replacements/ks.yaml
 resources:
   - ./cilium/ks.yaml
+  - ./cilium/netpols.yaml
   - ./coredns/ks.yaml
   - ./metrics-server/ks.yaml
