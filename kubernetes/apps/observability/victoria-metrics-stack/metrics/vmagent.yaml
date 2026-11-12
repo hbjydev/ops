@@ -5,6 +5,9 @@ kind: VMAgent
 metadata:
   name: metrics-agent
 spec:
+  podMetadata:
+    labels:
+      netpol.home.arpa/o11y: "true"
   selectAllByDefault: true
   replicaCount: 1
   scrapeInterval: 30s

@@ -21,8 +21,8 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           labels:
-            egress.policy.home.arpa/infra: "true"
-            egress.policy.home.arpa/internet: "true"
+            egress.policy.home.arpa/infra: allow
+            egress.netpol.home.arpa/internet: allow
         containers:
           app:
             image:

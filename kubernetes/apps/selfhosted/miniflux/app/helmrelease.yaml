@@ -21,9 +21,9 @@ spec:
             # https://github.com/miniflux/v2/blob/2.3.5/internal/reader/fetcher/request_builder.go
             trust.home.arpa/inject: "true"
             ingress.policy.home.arpa/external: allow
-            egress.policy.home.arpa/internet: "true"
+            egress.netpol.home.arpa/internet: allow
             db.policy.home.arpa/postgres: allow
-            prom.policy.home.arpa/kps: allow
+            ingress.netpol.home.arpa/o11y: allow
         strategy: RollingUpdate
         containers:
           app:

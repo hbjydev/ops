@@ -27,8 +27,8 @@ spec:
             egress.policy.home.arpa/radarr: allow
             egress.policy.home.arpa/seerr: allow
             ingress.policy.home.arpa/external: allow
-            prom.policy.home.arpa/kps: allow
-            egress.policy.home.arpa/internet: "true"
+            ingress.netpol.home.arpa/o11y: allow
+            egress.netpol.home.arpa/internet: allow
             egress.policy.home.arpa/smtp-relay: allow
             egress.policy.home.arpa/litellm: allow
             db.policy.home.arpa/postgres: allow

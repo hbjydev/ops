@@ -18,8 +18,8 @@ spec:
         pod:
           labels:
             ingress.policy.home.arpa/external: allow
-            egress.policy.home.arpa/internet: allow
-            prom.policy.home.arpa/kps: allow
+            egress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/o11y: allow
             db.policy.home.arpa/dragonfly: allow
         containers:
           app:

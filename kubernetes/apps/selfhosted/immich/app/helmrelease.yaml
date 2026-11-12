@@ -42,7 +42,7 @@ spec:
       main:
         pod:
           labels:
-            egress.policy.home.arpa/internet: allow
+            egress.netpol.home.arpa/internet: allow
             db.policy.home.arpa/postgres: allow
             db.policy.home.arpa/dragonfly: allow
             trust.home.arpa/inject: "true"

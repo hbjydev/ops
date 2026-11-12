@@ -58,8 +58,8 @@ spec:
     trust.home.arpa/inject: "true"
     db.policy.home.arpa/postgres: allow
     db.policy.home.arpa/df-litellm-redis: allow
-    egress.policy.home.arpa/cluster: allow
-    egress.policy.home.arpa/internet-https: allow
+    egress.netpol.home.arpa/cluster: allow
+    egress.netpol.home.arpa/internet-https: allow
 
   volumes:
     - name: postgres-certs

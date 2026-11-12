@@ -21,8 +21,8 @@ spec:
     admissionController:
       replicas: 1
       podLabels:
-        ingress.policy.home.arpa/apiserver: allow
-        egress.policy.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/apiserver: allow
+        egress.netpol.home.arpa/apiserver: allow
     backgroundController:
       enabled: false
     cleanupController:

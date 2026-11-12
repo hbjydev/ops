@@ -27,7 +27,7 @@ spec:
             # Linux .NET uses OpenSSL roots, including SSL_CERT_FILE.
             trust.home.arpa/inject: "true"
             ingress.policy.home.arpa/internal: allow
-            egress.policy.home.arpa/internet: allow
+            egress.netpol.home.arpa/internet: allow
             egress.policy.home.arpa/sabnzbd: allow
             egress.policy.home.arpa/qbittorrent: allow
             egress.policy.home.arpa/slskd: allow

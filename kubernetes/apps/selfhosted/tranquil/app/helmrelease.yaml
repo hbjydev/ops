@@ -17,11 +17,11 @@ spec:
         pod:
           labels:
             ingress.policy.home.arpa/external: allow
-            egress.policy.home.arpa/internet: "true"
+            egress.netpol.home.arpa/internet: allow
             egress.policy.home.arpa/smtp-relay: allow
             db.policy.home.arpa/postgres: allow
             trust.home.arpa/inject: "true"
-            prom.policy.home.arpa/kps: allow
+            ingress.netpol.home.arpa/o11y: allow
         strategy: RollingUpdate
         containers:
           app:
