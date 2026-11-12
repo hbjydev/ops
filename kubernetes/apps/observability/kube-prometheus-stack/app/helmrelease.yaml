@@ -9,7 +9,24 @@ spec:
     kind: OCIRepository
     name: kube-prometheus-stack
   interval: 1h
+  install:
+    crds: Skip
+    strategy:
+      name: RetryOnFailure
+  upgrade:
+    crds: Skip
+    cleanupOnFail: true
+    strategy:
+      name: RemediateOnFailure
+    remediation:
+      retries: 2
+      remediateLastFailure: false
+  rollback:
+    cleanupOnFail: true
+  timeout: 10m
   values:
+    crds:
+      enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       enabled: false

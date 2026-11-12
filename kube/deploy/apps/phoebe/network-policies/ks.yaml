@@ -5,12 +5,21 @@ kind: Kustomization
 metadata:
   name: phoebe-network-policies
   namespace: flux-system
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  suspend: true
+  deletionPolicy: Orphan
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
   dependsOn:
     - name: core-cilium-netpols
       namespace: kube-system
     - name: cilium-config
       namespace: kube-system
   path: ./kube/deploy/apps/phoebe/network-policies/app
-  prune: true
+  prune: false
   wait: false
