@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   # Keep unmigrated workloads and namespace resources under their current owners.
   - ../../../../kubernetes/apps
-  - ./flux-system
+  - ../../core/flux-system/flux-operator

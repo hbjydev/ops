@@ -12,6 +12,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: flux-operator
+  components:
+    - ../../../../apps/${CLUSTER}/flux-system/flux-operator/overrides
+  ignoreMissingComponents: true
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease

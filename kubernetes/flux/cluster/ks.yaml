@@ -12,6 +12,9 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kube/deploy/apps/phoebe
+  postBuild:
+    substitute:
+      CLUSTER: phoebe
   prune: true
   retryInterval: 2m
   sourceRef:
