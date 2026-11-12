@@ -14,11 +14,3 @@ generatorOptions:
   disableNameSuffixHash: true
   labels:
     reconcile.fluxcd.io/watch: Enabled
-patches:
-  - target:
-      kind: Kustomization
-      name: core-cert-manager-letsencrypt
-    patch: |-
-      - op: replace
-        path: /spec/path
-        value: ./kube/deploy/apps/phoebe/cert-manager/cert-manager/letsencrypt
