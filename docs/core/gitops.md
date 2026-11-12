@@ -24,8 +24,11 @@ Keep application network policies with their application definitions. A cluster
 using application defaults needs only a reference to the base definition; it
 does not need an empty local application wrapper.
 
-For example, once Navidrome is migrated to base, Phoebe's media composition can
-select it with `../../base/media/navidrome/ks.yaml`. A values-only override can
+Konflate is the first migrated workload. Its reusable definition lives in
+`base/dev/konflate`; Phoebe selects it through `phoebe/dev/konflate`, which
+generates its values ConfigMap and supplies its ExternalSecret. `cluster-apps`
+owns those cluster inputs, while the existing `dev/konflate` Flux Kustomization
+owns the release, chart source and default values. A values-only override can
 use the same optional `<release>-values` convention as core controllers. Keep
 cluster-specific hostnames, credentials and workload instances in the cluster
 layer rather than baking Phoebe assumptions into base.
