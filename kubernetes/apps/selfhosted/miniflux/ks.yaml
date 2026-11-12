@@ -10,8 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/postgres/cert
-    - ../../../../components/kanidm/private
+    - ../../../../../kube/components/postgres/cert
+    - ../../../../../kube/components/kanidm/private
   dependsOn:
     - name: core-kyverno-config
       namespace: kyverno

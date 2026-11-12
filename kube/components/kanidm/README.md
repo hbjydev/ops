@@ -45,7 +45,7 @@ other than HelmReleases are not patched.
 
 ```yaml
 components:
-  - ../../../../components/kanidm/private
+  - ../../../../../components/kanidm/private
 postBuild:
   substitute:
     APP: *app

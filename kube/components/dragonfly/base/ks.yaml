@@ -13,7 +13,7 @@ spec:
     - name: dragonfly
       namespace: database
   interval: 1h
-  path: ./kubernetes/components/redis/base/database
+  path: ./kube/components/dragonfly/base/database
   postBuild:
     substitute:
       APP: *app

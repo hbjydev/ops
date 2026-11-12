@@ -58,6 +58,38 @@ Kaniop also selects these components in its child Flux Kustomization, retaining
 its pre-existing overlap with namespace composition. Removing that overlap needs
 an explicit ownership handover and is separate from this layout change.
 
+### Reusable workload integrations
+
+Workloads select integrations from `kube/components`:
+
+| Component | Purpose |
+| --- | --- |
+| `kanidm/private`, `kanidm/public` | OAuth clients, access groups and readiness gates |
+| `postgres/base`, `postgres/cert`, `postgres/pass` | Database/role provisioning and client authentication |
+| `dragonfly`, `dragonfly/manual`, `dragonfly/noproxy` | Dragonfly ACL registration and optional dfguard client wiring |
+| `kopiur` | PVC restore, snapshot policy and scheduling |
+| `anubis` | Anubis release and application integration |
+
+These are opt-in integrations, not controller installers. Their existing service
+contracts remain: PostgreSQL and Dragonfly in `database`, Kanidm in `security`,
+and the existing client issuers and trusted-root bundle. Kopiur settings remain
+configurable through its `KOPIUR_*` inputs; current defaults use the `hetzner`
+repository and miroir storage. A cluster must provide the referenced services and
+choose suitable settings before selecting a dependent workload.
+
+The former `redis` component is named `dragonfly` to reflect its actual backend.
+Its `manual` variant registers ACLs only; `noproxy` adds direct-client certificate
+mounts and readiness gates; the default adds the dfguard tunnel.
+
+Anubis expects `${APP}-anubis-key` to be supplied by the cluster. Phoebe's
+1Password-backed ExternalSecret is a separate component at
+`kube/clusters/phoebe/components/anubis`. Forgejo selects both components under
+its existing Flux owner, preserving credential ownership.
+
+Component paths in a Flux Kustomization are relative to its `spec.path`; native
+Kustomize component paths are relative to the containing `kustomization.yaml`.
+Nested database and identity Kustomizations point directly at `kube/components`.
+
 ### Helm values
 
 A values-only override does not change the shared Flux Kustomization's path.

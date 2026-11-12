@@ -10,10 +10,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/kopiur
-    - ../../../../components/kanidm/private
-    - ../../../../components/postgres/cert
-    - ../../../../components/redis
+    - ../../../../../kube/components/kopiur
+    - ../../../../../kube/components/kanidm/private
+    - ../../../../../kube/components/postgres/cert
+    - ../../../../../kube/components/dragonfly
   dependsOn:
     - name: miroir-config
       namespace: miroir-system

@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: livekit
   components:
-    - ../../../../components/redis
+    - ../../../../../kube/components/dragonfly
   interval: 1h
   path: "./kubernetes/apps/matrix/livekit/app"
   prune: true
@@ -36,7 +36,7 @@ spec:
       app.kubernetes.io/name: livekit
       app.kubernetes.io/component: jwt-service
   components:
-    - ../../../../components/redis
+    - ../../../../../kube/components/dragonfly
   interval: 1h
   path: "./kubernetes/apps/matrix/livekit/jwt-service"
   prune: true

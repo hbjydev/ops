@@ -6,7 +6,7 @@ metadata:
   name: home-assistant
 spec:
   components:
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: multus-networks
       namespace: kube-system
@@ -38,7 +38,7 @@ metadata:
   name: matter-server
 spec:
   components:
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: multus-networks
       namespace: kube-system
@@ -70,7 +70,7 @@ metadata:
   name: openthread
 spec:
   components:
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: multus-networks
       namespace: kube-system

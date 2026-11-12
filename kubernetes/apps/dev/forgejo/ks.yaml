@@ -10,11 +10,12 @@ spec:
     labels:
       app.kubernetes.io/name: *name
   components:
-    - ../../../../components/postgres/cert
-    - ../../../../components/kanidm/private
-    - ../../../../components/anubis
-    - ../../../../components/redis
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/postgres/cert
+    - ../../../../../kube/components/kanidm/private
+    - ../../../../../kube/components/anubis
+    - ../../../../../kube/clusters/phoebe/components/anubis
+    - ../../../../../kube/components/dragonfly
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: cnpg-cluster
       namespace: database

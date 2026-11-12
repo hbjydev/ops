@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: navidrome
   components:
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: core-kyverno-config
       namespace: kyverno
@@ -44,7 +44,7 @@ spec:
     labels:
       app.kubernetes.io/name: picard
   components:
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: miroir-config
       namespace: miroir-system

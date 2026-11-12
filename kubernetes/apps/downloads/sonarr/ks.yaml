@@ -10,8 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/postgres/base
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/postgres/base
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: core-kyverno-config
       namespace: kyverno

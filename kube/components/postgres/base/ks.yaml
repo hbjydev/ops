@@ -15,7 +15,7 @@ spec:
       name: postgres-${APP}
       namespace: *namespace
   interval: 1h
-  path: ./kubernetes/components/postgres/base/database
+  path: ./kube/components/postgres/base/database
   postBuild:
     substitute:
       APP: ${APP}

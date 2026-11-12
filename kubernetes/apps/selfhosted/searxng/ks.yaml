@@ -10,8 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/redis
-    - ../../../../components/kopiur
+    - ../../../../../kube/components/dragonfly
+    - ../../../../../kube/components/kopiur
   dependsOn:
     - name: miroir-config
       namespace: miroir-system

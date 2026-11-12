@@ -11,4 +11,4 @@ resources:
   - ./externalsecret.yaml
   - ./clusterrepository.yaml
 components:
-  - ../../../../../../../kubernetes/components/kanidm/private
+  - ../../../../../../components/kanidm/private

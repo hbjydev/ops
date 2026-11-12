@@ -19,7 +19,7 @@ spec:
       name: ${APP}-admins
       namespace: ${NAMESPACE}
   interval: 1h
-  path: ./kubernetes/components/kanidm/base/groups
+  path: ./kube/components/kanidm/base/groups
   postBuild:
     substitute:
       APP: ${APP}
@@ -56,7 +56,7 @@ spec:
       name: ${APP}
       namespace: ${NAMESPACE}
   interval: 1h
-  path: ./kubernetes/components/kanidm/base/client
+  path: ./kube/components/kanidm/base/client
   postBuild:
     substitute:
       APP: ${APP}

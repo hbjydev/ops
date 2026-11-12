@@ -41,9 +41,9 @@ spec:
       namespace: kyverno
     - name: litellm-operator
   components:
-    - ../../../../components/kopiur
-    - ../../../../components/kanidm/private
-    - ../../../../components/postgres/base
+    - ../../../../../kube/components/kopiur
+    - ../../../../../kube/components/kanidm/private
+    - ../../../../../kube/components/postgres/base
   path: ./kubernetes/apps/ai/litellm/app
   prune: true
   postBuild:
