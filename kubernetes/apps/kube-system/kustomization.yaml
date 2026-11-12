@@ -9,8 +9,4 @@ resources:
   - ./runtimeclass.yaml
 
   - ./cilium/ks.yaml
-  - ./ksgate/ks.yaml
   - ./multus/ks.yaml
-  - ./reflector/ks.yaml
-  - ./reloader/ks.yaml
-  - ./snapshot-controller/ks.yaml

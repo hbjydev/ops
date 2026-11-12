@@ -24,7 +24,7 @@ Sharing a definition does not require deploying it to every cluster.
 
 ## Current state
 
-Updated November 12, 2026 after the Kyverno and Kopiur cutovers.
+Updated November 12, 2026 after the utility controller and cert-manager CSI cutovers.
 
 Phoebe reconciles from `ops`, with `kube/deploy/apps/phoebe` as its application
 composition layer. It still includes `kubernetes/apps` for unmigrated workloads.
@@ -32,6 +32,11 @@ The Flux entry point remains `kubernetes/flux/cluster`.
 
 - Flux operator, Cilium, CoreDNS, metrics-server, External Secrets,
   cert-manager, trust-manager, Kyverno and Kopiur use shared core definitions.
+- Reloader, Reflector, snapshot-controller, ksgate and cert-manager CSI now use
+  shared core definitions. Their release identities, chart versions and values
+  are unchanged. Kopiur depends on `core-snapshot-controller`.
+- Core owns the Prometheus CRDs and password ClusterGenerator (`pw`). Controller
+  monitoring resources are enabled in core, independently of a monitoring stack.
 - Phoebe retains 1Password Connect indefinitely and does not select the SDK store.
 - The CA and Let's Encrypt cutovers are complete. Database client authorities
   remain service-specific, with shared-root trust and application permissions.
@@ -45,11 +50,12 @@ The Flux entry point remains `kubernetes/flux/cluster`.
   retroactively and can retain their previous injected mounts until replaced.
 - Admission tests covered default injection, opt-out, Python profiles on regular
   and init containers, environment preservation and mount collisions.
-- Kyverno's namespace support resources remain unchanged and are selected from
-  Phoebe's composition through the existing common component.
+- Phoebe selects core Kyverno directly; its redundant namespace wrapper is gone.
+- Local-network policies live under Phoebe's Cilium directory. Application
+  policies deploy alongside their applications.
 
 Kopiur uses `core-kopiur` and `core-kopiur-config`. Phoebe retains its existing
-repository, UI/SSO integration and monitoring overrides under its application
+repository, UI/SSO integration and Grafana Operator bindings under its application
 directory. The HelmRelease and ClusterRepository identities were retained.
 
 Remaining Phoebe-specific infrastructure,
