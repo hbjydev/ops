@@ -92,19 +92,22 @@ and monitoring bindings. Application, integration and storage owners are retaine
 Forgejo, Silo, slskd, Continuwuity, LiveKit and Home Assistant now use base
 as well, including LiveKit's JWT service and Home Assistant's Matter Server and
 OpenThread releases. Their credentials, generated configuration and cluster
-network/device settings live under Phoebe. The remaining infrastructure/config selections still use the compatibility tree.
+network/device settings live under Phoebe. The remaining infrastructure/config selections were migrated in the final layout batch below.
 Both LiveKit HelmReleases were already failing upgrades/rollbacks before this
 batch; that operational issue remains separate from the layout migration.
 
 Gatus, Grafana and VictoriaMetrics now use the layered layout too. Their
 operators are optional core selections; reusable instance definitions live in
-base, with cluster settings and bindings in Phoebe. Only infrastructure/config
-selections still reference `kubernetes/apps`.
+base, with cluster settings and bindings in Phoebe. The subsequent infrastructure batch completes the active application-path migration.
 
-Remaining Phoebe-specific infrastructure,
-workloads and operations still need migration out of the compatibility tree.
-Keep each legacy workload path until its application definition has moved to base
-and its cluster selection has been updated.
+The final infrastructure batch moves PostgreSQL, Dragonfly, Garage, Kanidm,
+certificate import/export, Cilium configuration, the runtime class and the Flux
+instance into Phoebe's application tree. Kaniop's controller is optional core.
+All active application paths now use `kube/deploy`; the old `kubernetes/apps`
+files, including unselected controller leftovers, have been removed.
+
+`kubernetes/flux/cluster` remains the active Flux entry point. Bootstrap redesign,
+entry-point cutover and non-Kubernetes operational migration remain separate work.
 
 ## Compatibility requirements
 

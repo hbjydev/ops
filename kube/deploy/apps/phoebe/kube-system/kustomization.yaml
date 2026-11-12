@@ -3,8 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../../../kubernetes/apps/kube-system/runtimeclass.yaml
-  - ../../../../../kubernetes/apps/kube-system/cilium/ks.yaml
+  - ./runtimeclass.yaml
   - ./multus
   - ./cilium
 namespace: kube-system

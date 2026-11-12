@@ -202,6 +202,25 @@ routing. Existing PVCs and Kopiur policies retain their application owners. The
 unselected `logs/vlagent.yaml` configuration stays unselected in Phoebe; the
 migration does not enable another log collector.
 
+### Phoebe infrastructure configuration
+
+Phoebe's PostgreSQL, Dragonfly, Garage, Kanidm, certificate import/export,
+Cilium network configuration and runtime class live under `apps/phoebe`.
+These are cluster instances and configuration, not installations selected for
+every cluster. Their existing Flux names, resource ownership, storage and
+recovery settings are retained.
+
+Kaniop is an optional shared controller in `core/security/kaniop`. Phoebe's
+operator composition imports that definition with its local dashboard binding
+and existing namespace components, keeping those resources under the Kaniop
+owner. The Kanidm instance and its external Git source remain cluster-local.
+
+The Flux instance definition also lives under Phoebe. Its sync path remains
+`kubernetes/flux/cluster`; the two files there are the remaining compatibility
+entry point. Moving the configuration does not switch bootstrap or alter Flux
+controller recovery settings. The old, unselected Cilium, CoreDNS and
+cert-manager application copies have been removed.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:

@@ -3,8 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../../../kubernetes/apps/database/dragonfly/ks.yaml
-  - ../../../../../kubernetes/apps/database/postgres/ks.yaml
+  - ./dragonfly/ks.yaml
+  - ./postgres/ks.yaml
 namespace: database
 components:
   - ../../../../components/namespace
