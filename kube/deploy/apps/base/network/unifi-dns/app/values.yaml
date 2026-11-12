@@ -5,7 +5,7 @@ provider:
   webhook:
     image:
       repository: ghcr.io/home-operations/external-dns-unifi-webhook
-      tag: 
+      tag:
         0.11.0@sha256:663442f116d7b45546782bdf7ace50d05ac15cc630c7236d443d69593845e992
     livenessProbe:
       httpGet:

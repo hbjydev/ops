@@ -4,8 +4,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-ap-insights
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -21,8 +19,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-client-insights
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -38,8 +34,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-usw-insights
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -55,8 +49,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-client-dpi
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -72,8 +64,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-usg-insights
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -89,8 +79,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-network-sites
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -106,8 +94,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-pdu-insights
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
