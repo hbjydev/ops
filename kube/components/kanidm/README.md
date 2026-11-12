@@ -43,9 +43,11 @@ other than HelmReleases are not patched.
 
 ## Example
 
+For a Flux build root at `kube/deploy/apps/base/<namespace>/<app>/app`:
+
 ```yaml
 components:
-  - ../../../../../components/kanidm/private
+  - ../../../../../../components/kanidm/private
 postBuild:
   substitute:
     APP: *app
