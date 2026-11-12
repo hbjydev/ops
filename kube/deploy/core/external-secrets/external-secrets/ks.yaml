@@ -8,6 +8,16 @@ metadata:
     kustomization.flux.home.arpa/name: "external-secrets"
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: external-secrets
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: external-secrets
+      namespace: external-secrets
+  retryInterval: 2m
+  timeout: 15m
   path: ./kube/deploy/core/external-secrets/external-secrets/app
   dependsOn:
     - name: core-cert-manager

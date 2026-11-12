@@ -14,12 +14,3 @@ generatorOptions:
   disableNameSuffixHash: true
   labels:
     reconcile.fluxcd.io/watch: Enabled
-# Activate only after the legacy owner is suspended and set to Orphan.
-patches:
-  - target:
-      kind: Kustomization
-      name: core-cilium
-    patch: |-
-      - op: add
-        path: /spec/suspend
-        value: false
