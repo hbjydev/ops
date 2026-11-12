@@ -17,7 +17,7 @@ spec:
       name: otel-daemonset
       namespace: *namespace
   interval: 1h
-  path: ./kubernetes/apps/observability/opentelemetry/collector
+  path: ./kube/deploy/apps/phoebe/observability/opentelemetry/collector
   prune: true
   retryInterval: 2m
   sourceRef:

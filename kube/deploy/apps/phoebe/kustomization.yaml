@@ -32,3 +32,5 @@ resources:
   - ./flux-system/tofu-controller
   - ./system-upgrade/tuppr
   - ./miroir-system/miroir
+  - ./network/envoy-gateway
+  - ./observability/opentelemetry

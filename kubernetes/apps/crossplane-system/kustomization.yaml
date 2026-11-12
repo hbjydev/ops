@@ -5,5 +5,3 @@ kind: Kustomization
 namespace: crossplane-system
 components:
   - ../../components/common
-resources:
-  - ./crossplane/ks.yaml

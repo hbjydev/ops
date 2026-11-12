@@ -41,6 +41,9 @@ The Flux entry point remains `kubernetes/flux/cluster`.
   Crossplane, kro, tofu-controller, tuppr and miroir now use optional core
   definitions. Phoebe selects the whole batch; Rhea selects only OpenTelemetry,
   Envoy Gateway and tuppr. Cluster configuration stays separate.
+- Miroir configuration, tuppr upgrade plans, Crossplane GCP resources, Envoy
+  gateways and OpenTelemetry collectors now live in `kube/deploy/apps/phoebe`.
+  Their existing Flux owners and resource definitions are unchanged.
 - Phoebe retains 1Password Connect indefinitely and does not select the SDK store.
 - The CA and Let's Encrypt cutovers are complete. Database client authorities
   remain service-specific, with shared-root trust and application permissions.
