@@ -6,6 +6,8 @@ metadata:
   name: litellm
   labels:
     job: litellm
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   endpoints:
     - port: http

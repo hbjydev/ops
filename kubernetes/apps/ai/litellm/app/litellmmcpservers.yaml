@@ -4,6 +4,8 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-context7
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: context7
   url: https://mcp.context7.com/mcp
@@ -14,26 +16,28 @@ spec:
   authTokenRef:
     name: context7-api-key
     key: token
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-kguardian
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: kguardian
   url: http://kguardian-llm-bridge.kguardian.svc.cluster.local:8080/mcp
   transport: http
   params:
     available_on_public_internet: true
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-hass
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: hass
   params:
@@ -62,13 +66,14 @@ spec:
     volumeMounts:
       - name: tmp
         mountPath: /tmp
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-miniflux
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: miniflux
   params:
@@ -121,6 +126,8 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-victorialogs
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: victorialogs
   params:
@@ -146,13 +153,14 @@ spec:
     volumeMounts:
       - name: tmp
         mountPath: /tmp
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-victoriametrics
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   alias: victoriametrics
   params:

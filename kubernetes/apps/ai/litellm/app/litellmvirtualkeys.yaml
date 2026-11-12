@@ -5,6 +5,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: kguardian
   namespace: ai
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: kguardian-litellm
@@ -24,6 +26,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: hermes
   namespace: ai
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: hermes-litellm
@@ -39,7 +43,6 @@ spec:
     - gpt-image-2
     - deepseek-v4.1-flash
     - deepseek-v4-flash
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmvirtualkey_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
@@ -47,6 +50,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: openclaw
   namespace: ai
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: openclaw-litellm
@@ -63,7 +68,6 @@ spec:
     - gpt-image-2
     - deepseek-v4.1-flash
     - deepseek-v4-flash
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmvirtualkey_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
@@ -71,6 +75,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: honcho
   namespace: ai
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: honcho-litellm
@@ -80,7 +86,6 @@ spec:
     - gpt-6-luna
     - deepseek-v4-flash
     - qwen3-embedding-0.6b
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmvirtualkey_v1alpha1.json
 apiVersion: litellm.home-operations.com/v1alpha1
@@ -88,6 +93,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: silo
   namespace: ai
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: silo-litellm
