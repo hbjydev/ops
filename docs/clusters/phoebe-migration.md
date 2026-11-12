@@ -72,6 +72,10 @@ from `apps/base`; their values, credentials and workload instances live in
 `apps/phoebe`. See [the deployment conventions](../core/gitops.md#independent-application-migration)
 for the migrated set and its selection criteria.
 
+The Kopiur-only batch is also migrated: Mimi, Navidrome, Picard, Plex, Seerr,
+qBittorrent, Qui, SABnzbd and SPT. Their storage and backup resources retain their
+existing application owners, identities and settings.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base

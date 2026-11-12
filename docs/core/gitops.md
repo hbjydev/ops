@@ -93,6 +93,27 @@ HTTP-boundary tests with:
 python3 -m unittest discover -s kube/deploy/apps/base/network/unifi-cert-upload/tests
 ```
 
+### Kopiur-backed application migration
+
+Mimi, Navidrome, Picard, Plex, Seerr, qBittorrent, Qui, SABnzbd and SPT select
+reusable definitions from base. Picard is selected independently of Navidrome.
+Each shared Flux Kustomization includes `kube/components/kopiur`; the existing
+application owner continues to own its PVC, Restore, SnapshotPolicy and
+SnapshotSchedule. Moving an app definition does not transfer storage ownership.
+
+Phoebe's application compositions supply Helm values and patch the selected Flux
+Kustomization with cluster-specific `KOPIUR_*` inputs and dependencies. Repository,
+storage class, snapshot class and capacities are explicit cluster settings;
+backup schedules and existing security settings are preserved. Seerr's separate
+cache PVC uses `SEERR_CACHE_STORAGE_CLASS` and `SEERR_CACHE_CAPACITY` inputs and
+retains the Seerr owner.
+
+Cluster values contain routes, NFS mounts, Multus addresses, device mounts,
+external endpoints and other deployment choices. Credentials and SPT's DNS
+record belong to the Phoebe composition. Application policies and SPT's pinned
+mod-install script stay with their base definitions. Mimi's zero replica count
+is a Phoebe setting, preserved during migration.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:
