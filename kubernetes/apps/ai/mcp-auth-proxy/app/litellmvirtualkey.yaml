@@ -4,6 +4,8 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMVirtualKey
 metadata:
   name: mcp-auth-proxy
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   proxyRef: litellm
   secretName: mcp-auth-proxy-litellm

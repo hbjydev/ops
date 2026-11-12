@@ -5,6 +5,8 @@ kind: StorageBucket
 metadata:
   name: tranquil-media
   namespace: selfhosted
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   serviceProjectRef:
     name: tranquil
