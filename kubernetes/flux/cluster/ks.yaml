@@ -111,4 +111,4 @@ spec:
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
-        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled),kustomization.flux.home.arpa/helm-defaults notin (disabled)
