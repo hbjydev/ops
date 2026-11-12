@@ -31,6 +31,9 @@ spec:
             substitute:
               CLUSTER: ${CLUSTER}
               CLUSTER_DNS_IP: ${CLUSTER_DNS_IP}
+              CLUSTER_DNS_COREDNS_RESOLVERS: ${CLUSTER_DNS_COREDNS_RESOLVERS}
+              CLUSTER_POD_CIDR: ${CLUSTER_POD_CIDR}
+              CLUSTER_SVC_CIDR: ${CLUSTER_SVC_CIDR}
           patches:
             - patch: |-
                 apiVersion: helm.toolkit.fluxcd.io/v2

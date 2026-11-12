@@ -13,10 +13,9 @@ spec:
   interval: 1h
   path: ./kube/deploy/apps/phoebe
   postBuild:
-    substitute:
-      CLUSTER: phoebe
-      CLUSTER_DNS_IP: 172.19.0.53
-      CLUSTER_DNS_COREDNS_RESOLVERS: /etc/resolv.conf
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-info
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -54,6 +53,8 @@ spec:
             substitute:
               CLUSTER: ${CLUSTER}
               CLUSTER_DNS_IP: ${CLUSTER_DNS_IP}
+              CLUSTER_POD_CIDR: ${CLUSTER_POD_CIDR}
+              CLUSTER_SVC_CIDR: ${CLUSTER_SVC_CIDR}
               CLUSTER_DNS_COREDNS_RESOLVERS: ${CLUSTER_DNS_COREDNS_RESOLVERS}
           interval: 5m
           prune: true

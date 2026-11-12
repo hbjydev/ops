@@ -83,6 +83,25 @@ kustomization` with the real Flux definition and the required substitution input
 Keep Flux owner names unchanged during layout-only moves. Moving a resource to a
 different owner requires staged pruning protection and verification of adoption.
 
+## Cluster metadata
+
+Phoebe's deployment metadata is defined in
+`kube/clusters/phoebe/flux/clusterinfo.yaml`. Its active compatibility entry point
+in `kubernetes/flux/cluster` imports that file, so both the current and future
+entry points use the same `flux-system/cluster-info` ConfigMap.
+
+`cluster-apps` requires this ConfigMap via `postBuild.substituteFrom`. Its child
+Kustomization defaults forward `CLUSTER`, `CLUSTER_DNS_IP`,
+`CLUSTER_DNS_COREDNS_RESOLVERS`, `CLUSTER_POD_CIDR` and `CLUSTER_SVC_CIDR` as
+inline substitutions. This avoids requiring a metadata ConfigMap in every
+namespace and preserves each application's own substitution variables.
+Children opting out of defaults keep their explicit configuration.
+
+The CIDRs and DNS address must agree with the cluster's Talos network and
+kubelet configuration. These are metadata inputs, not instructions to change
+an existing cluster's networks. Phoebe's Flux sync path and Helm recovery
+settings remain unchanged by introducing this ConfigMap.
+
 ## Prometheus CRDs
 
 `core-prometheus-crds` installs the standalone `prometheus-operator-crds` chart
