@@ -9,8 +9,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *name
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
   interval: 1h
-  path: "./kubernetes/apps/dev/konflate/app"
+  path: "./kube/deploy/apps/base/dev/konflate/app"
   prune: true
   sourceRef:
     kind: GitRepository
