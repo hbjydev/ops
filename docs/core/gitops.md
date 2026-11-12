@@ -56,3 +56,15 @@ To adopt the convention for another shared workload:
 Keep Flux Kustomization names unchanged during this refactor to preserve resource ownership.
 The parent substitution also processes its other rendered resources, so compare the complete parent output when enabling it.
 See the [Flux component documentation](https://fluxcd.io/flux/components/kustomize/kustomizations/#components) for component path rules.
+
+## Prometheus CRDs
+
+`core-prometheus-crds` installs the standalone `prometheus-operator-crds` chart
+from `kube/deploy/core/observability/prometheus-operator-crds`. Both Phoebe and
+Rhea select it. It installs the monitoring API definitions, not a Prometheus
+server or operator. CRDs carry Helm's resource-retention annotation.
+
+Phoebe's kube-prometheus-stack disables its bundled CRDs and skips Helm CRD
+installation/upgrades. The stack and shared External Secrets controller wait
+for the core CRD owner. Keep the CRD chart compatible with the deployed
+Prometheus Operator when updating either chart.

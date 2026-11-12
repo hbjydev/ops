@@ -43,3 +43,15 @@ Allow rules combine their permissions. A broad `cluster`, `host`, or `world` lab
 ### Host scope
 
 This baseline governs Cilium-managed pods. It does not change the host firewall or govern pods that use host networking. On rhea, the Kubernetes control-plane processes and Cilium agent/operator use host networking. CoreDNS and Hubble remain within the pod policy scope.
+
+## Policy placement
+
+Shared baseline policies live in `kube/deploy/core/kube-system/cilium/netpols`.
+Phoebe's local-network policies live in
+`kube/deploy/apps/phoebe/kube-system/cilium/netpols`.
+
+Keep application policies, including label-selected client allowances, beside
+the application manifests and include them in that application's Kustomization.
+The application owns their deployment and removal. Gateway allowances belong
+beside the Envoy gateway manifests. Applications still in `kubernetes/apps`
+keep their policies there until the application itself moves.
