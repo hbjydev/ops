@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/networking.k8s.io/ingress_v1.json
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vmsingle-ingress
+  annotations:
+    tailscale.com/proxy-group: ts-o11y-proxy
+    kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app victoria-metrics
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - victoriametrics
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: vmsingle-victoria-metrics
+                port:
+                  number: 8429

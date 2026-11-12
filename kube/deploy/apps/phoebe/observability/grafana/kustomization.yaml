@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: observability
+resources:
+  - ../../../base/observability/grafana/ks.yaml
+  - ../../../../core/observability/grafana-operator/ks.yaml
+  - ./operator/externalsecret.yaml
+  - ./operator/grafanadashboard.yaml
+  - ./instance/kanidm.yaml
+patches:
+  - target:
+      kind: Kustomization
+      name: grafana-instance
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: grafana-instance
+      spec:
+        dependsOn:
+          - name: core-kopiur-config
+            namespace: kopiur-system
+          - name: grafana
+          - name: miroir-config
+            namespace: miroir-system
+        postBuild:
+          substitute:
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
+            GRAFANA_AUTH: '{"disable_login_form": "false"}'
+            GRAFANA_ANONYMOUS_AUTH: '{"enabled": "true"}'
+            GRAFANA_URL: https://grafana.hayden.moe
+            GRAFANA_PLUGINS: victoriametrics-logs-datasource,vonage-status-panel,grafana-piechart-panel
+            GRAFANA_ROUTE_HOSTNAMES: '["grafana.hayden.moe"]'
+            GRAFANA_ROUTE_PARENT_REFS: '[{"name": "internal", "namespace": "network"}]'
+            STORAGE_CLASS: miroir-local
+            STORAGE_CAPACITY: 10Gi
+            GRAFANA_OIDC_NAME: hayden.moe ID
+            GRAFANA_OIDC_AUTH_URL: "https://sso.hayden.moe/ui/oauth2"
+            GRAFANA_OIDC_TOKEN_URL: "https://sso.hayden.moe/oauth2/token"
+            GRAFANA_OIDC_USERINFO_URL: "https://sso.hayden.moe/oauth2/openid/grafana/userinfo"
+            GRAFANA_OIDC_ROLE_ATTRIBUTE: "contains(groups[*], 'grafana_admins') && 'Admin' || contains(groups[*], 'grafana_editors') && 'Editor' || 'Viewer'"

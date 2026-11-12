@@ -3,12 +3,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../../../kubernetes/apps/observability/gatus/ks.yaml
-  - ../../../../../kubernetes/apps/observability/grafana/ks.yaml
+  - ./gatus
+  - ./grafana
   - ./kube-prometheus-stack
   - ../../base/observability/tsproxy/ks.yaml
   - ./unpoller
-  - ../../../../../kubernetes/apps/observability/victoria-metrics-stack/ks.yaml
+  - ./victoria-metrics-stack
   - ./opentelemetry/ks.yaml
 namespace: observability
 components:

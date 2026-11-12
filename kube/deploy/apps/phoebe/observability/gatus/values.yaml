@@ -1,0 +1,20 @@
+---
+route:
+  app:
+    annotations:
+      gatus.home-operations.com/enabled: "false"
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+      - status.hayden.moe
+    parentRefs:
+      - name: external
+        namespace: network
+        sectionName: https
+controllers:
+  gatus:
+    statefulset:
+      volumeClaimTemplates:
+        - name: config
+          storageClass: miroir-local
+          accessMode: ReadWriteOnce
+          size: 5Gi
