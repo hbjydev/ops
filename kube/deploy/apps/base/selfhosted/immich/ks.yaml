@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app immich
+  namespace: selfhosted
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../../../components/postgres/cert
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/kanidm/private
+    - ../../../../../../components/dragonfly
+  interval: 1h
+  path: ./kube/deploy/apps/base/selfhosted/immich/app
+  postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: &namespace selfhosted
+      DATABASE_EXTENSIONS: |
+        [
+          { name: vector },
+          { name: vchord },
+          { name: earthdistance },
+          { name: cube },
+        ]
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false

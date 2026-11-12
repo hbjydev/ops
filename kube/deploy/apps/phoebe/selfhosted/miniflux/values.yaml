@@ -1,0 +1,23 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+    parentRefs:
+      - name: external
+        namespace: network
+        sectionName: https
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: &port 8080
+controllers:
+  miniflux:
+    containers:
+      app:
+        env:
+          TRUSTED_REVERSE_PROXY_NETWORKS: '172.18.0.0/16'
+          METRICS_ALLOWED_NETWORKS: '172.18.0.0/16'
+          OAUTH2_OIDC_DISCOVERY_ENDPOINT: 'https://sso.hayden.moe/oauth2/openid/miniflux'
+          OAUTH2_OIDC_PROVIDER_NAME: 'Hayden.moe SSO'
+          OAUTH2_REDIRECT_URL: 'https://miniflux.hayden.moe/oauth2/oidc/callback'

@@ -1,0 +1,37 @@
+---
+defaultPodOptions:
+  annotations:
+    trust.home.arpa/profile: node
+  labels:
+    trust.home.arpa/inject: "true"
+  schedulingGates: []
+controllers:
+  main:
+    pod:
+      labels:
+        egress.netpol.home.arpa/internet: allow
+        egress.netpol.home.arpa/postgres: allow
+        egress.netpol.home.arpa/dragonfly: allow
+        trust.home.arpa/inject: "true"
+    containers:
+      main:
+        image:
+          tag: v3.3.6
+        env:
+          DB_URL:
+            valueFrom:
+              secretKeyRef:
+                name: ${APP}-postgres
+                key: url
+          REDIS_HOSTNAME: localhost
+          REDIS_PORT: 6379
+          REDIS_DBINDEX: 0
+immich:
+  metrics:
+    enabled: false
+  persistence:
+    library:
+      existingClaim: immich
+server: {}
+machine-learning:
+  enabled: true

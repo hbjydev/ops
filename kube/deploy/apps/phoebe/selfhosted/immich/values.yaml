@@ -1,0 +1,23 @@
+---
+server:
+  persistence:
+    dev-dri:
+      type: hostPath
+      hostPath: /dev/dri
+    dev-kfd:
+      type: hostPath
+      hostPath: /dev/kfd
+machine-learning:
+  persistence:
+    cache:
+      enabled: true
+      size: 10Gi
+      type: persistentVolumeClaim
+      accessMode: ReadWriteOnce
+      storageClass: miroir-local
+    dev-dri:
+      type: hostPath
+      hostPath: /dev/dri
+    dev-kfd:
+      type: hostPath
+      hostPath: /dev/kfd
