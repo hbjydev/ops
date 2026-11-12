@@ -1,0 +1,39 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: media
+resources:
+  - ../../../base/media/seerr/ks.yaml
+  - ./externalsecret.yaml
+configMapGenerator:
+  - name: seerr-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+patches:
+  - target:
+      kind: Kustomization
+      name: &app seerr
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: &app seerr
+      spec:
+        postBuild:
+          substitute:
+            KOPIUR_CAPACITY: 10Gi
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_STORAGECLASS: miroir-local
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
+            SEERR_CACHE_STORAGE_CLASS: miroir-local
+            SEERR_CACHE_CAPACITY: 10Gi
+        dependsOn:
+          - name: core-kyverno-config
+            namespace: kyverno
+          - name: miroir-config
+            namespace: miroir-system

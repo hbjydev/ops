@@ -1,0 +1,15 @@
+---
+controllers:
+  mimi:
+    replicas: 0
+    containers:
+      mimi:
+        env:
+          LIVVI_MEMINI_BASE_URL: http://memini.ai:8080
+          LIVVI_MEMINI_NAMESPACE: mimi
+          LIVVI_OPENAI_API_URL: http://litellm.ai:4000
+          LIVVI_OPENAI_MODEL_NAME: ms-kimi-k3
+          LIVVI_SEARXNG_URL: http://searxng.selfhosted.svc:8080
+          LIVVI_DISCORD_ALLOW_TOOL_USER_IDS: '508429235157729290'
+          OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: 'http://vmsingle-victoria-metrics.observability.svc:8428/opentelemetry/v1/metrics'
+          OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: 'http://vtsingle-victoria-traces.observability.svc:10428/insert/opentelemetry/v1/traces'

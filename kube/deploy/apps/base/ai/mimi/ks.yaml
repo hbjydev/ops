@@ -4,19 +4,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app mimi
-  namespace: &namespace ai
+  namespace: ai
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../kube/components/kopiur
+    - ../../../../../../components/kopiur
   interval: 1h
-  path: ./kubernetes/apps/ai/mimi/app
+  path: ./kube/deploy/apps/base/ai/mimi/app
   postBuild:
     substitute:
       APP: *app
-      NAMESPACE: *namespace
+      NAMESPACE: &namespace ai
   prune: true
   sourceRef:
     kind: GitRepository
