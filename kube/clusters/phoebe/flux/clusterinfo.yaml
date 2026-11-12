@@ -9,3 +9,4 @@ metadata:
     reconcile.fluxcd.io/watch: Enabled
 data:
   CLUSTER: phoebe
+  CLUSTER_DNS_IP: 172.19.0.53

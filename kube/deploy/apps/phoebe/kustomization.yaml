@@ -6,4 +6,5 @@ resources:
   # Keep unmigrated workloads and namespace resources under their current owners.
   - ../../../../kubernetes/apps
   - ../../core/flux-system/flux-operator
+  - ../../core/kube-system/coredns
   - ../../core/kube-system/metrics-server

@@ -22,7 +22,7 @@ spec:
       create: true
     service:
       name: kube-dns
-      clusterIP: 10.96.0.10
+      clusterIP: ${CLUSTER_DNS_IP}
     replicaCount: 2
     podDisruptionBudget:
       minAvailable: 1

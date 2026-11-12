@@ -9,7 +9,6 @@ resources:
   - ./runtimeclass.yaml
 
   - ./cilium/ks.yaml
-  - ./coredns/ks.yaml
   - ./ksgate/ks.yaml
   - ./multus/ks.yaml
   - ./reflector/ks.yaml

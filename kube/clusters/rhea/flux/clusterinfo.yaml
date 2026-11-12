@@ -9,3 +9,4 @@ metadata:
     reconcile.fluxcd.io/watch: Enabled
 data:
   CLUSTER: rhea
+  CLUSTER_DNS_IP: 10.96.0.10
