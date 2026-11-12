@@ -11,10 +11,6 @@ spec:
         operator: DoesNotExist
       - key: egress.netpol.home.arpa/internet
         operator: DoesNotExist
-      - key: egress.policy.home.arpa/internet
-        operator: DoesNotExist
-      - key: egress.policy.home.arpa/kube-api
-        operator: DoesNotExist
       - key: egress.policy.home.arpa/lan
         operator: DoesNotExist
       - key: egress.policy.home.arpa/infra
