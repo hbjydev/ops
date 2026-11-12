@@ -5,6 +5,7 @@ metadata:
   name: core-trust-manager
   namespace: &ns trust-manager
   labels:
+    kustomization.flux.home.arpa/decryption: disabled
     kustomization.flux.home.arpa/name: "trust-manager"
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
@@ -20,6 +21,7 @@ metadata:
   name: core-trust-manager-bundle
   namespace: &ns trust-manager
   labels:
+    kustomization.flux.home.arpa/decryption: disabled
     kustomization.flux.home.arpa/name: "trust-manager"
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
