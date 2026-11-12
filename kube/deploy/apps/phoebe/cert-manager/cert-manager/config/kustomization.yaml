@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./selfsigned.yaml
   - ./postgres.yaml
+  - ./client-ca-v2.yaml
   - ./dragonfly.yaml
   - ./prometheusrule.yaml
   - ./grafanadashboard.yaml

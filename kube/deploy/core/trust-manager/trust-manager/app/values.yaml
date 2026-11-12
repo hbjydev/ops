@@ -1,0 +1,13 @@
+---
+defaultPackageImage:
+  repository: quay.io/jetstack/trust-pkg-debian-trixie
+  tag: 20250419-deb13u1.0@sha256:0591b21e1dd3e649660f80d89d44bbfa6a16e8b305612339f7d093857d852cf8
+
+commonLabels:
+  egress.netpol.home.arpa/apiserver: allow
+
+app:
+  podLabels:
+    ingress.netpol.home.arpa/apiserver: allow
+  trust:
+    namespace: cert-manager

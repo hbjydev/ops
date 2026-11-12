@@ -1,0 +1,87 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-client-ca-v2
+spec:
+  secretName: postgres-client-ca-v2
+  commonName: Phoebe postgres client CA v2
+  isCA: true
+  duration: 8760h
+  renewBefore: 2160h
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+    rotationPolicy: Never
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: postgres-client-ca-v2
+spec:
+  ca:
+    secretName: postgres-client-ca-v2
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dfguard-client-ca-v2
+spec:
+  secretName: dfguard-client-ca-v2
+  commonName: Phoebe dfguard client CA v2
+  isCA: true
+  duration: 8760h
+  renewBefore: 2160h
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+    rotationPolicy: Never
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: dfguard-client-ca-v2
+spec:
+  ca:
+    secretName: dfguard-client-ca-v2
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dragonfly-client-ca-v2
+spec:
+  secretName: dragonfly-client-ca-v2
+  commonName: Phoebe dragonfly client CA v2
+  isCA: true
+  duration: 8760h
+  renewBefore: 2160h
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+    rotationPolicy: Never
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: cluster-ca
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: dragonfly-client-ca-v2
+spec:
+  ca:
+    secretName: dragonfly-client-ca-v2

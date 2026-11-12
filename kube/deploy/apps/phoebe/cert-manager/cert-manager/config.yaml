@@ -10,6 +10,7 @@ spec:
   suspend: false
   dependsOn:
     - name: core-cert-manager
+    - name: core-cert-manager-ca
   targetNamespace: cert-manager
   commonMetadata:
     labels:
