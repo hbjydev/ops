@@ -8,4 +8,5 @@ components:
 replacements:
   - path: ../../../components/replacements/ks.yaml
 resources:
-  - ./flux-operator/ks.yaml
+  - ./flux-operator
+  - ./flux-operator/netpols.yaml

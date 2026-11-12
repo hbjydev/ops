@@ -11,7 +11,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 1h
-  path: ./kubernetes/apps
+  path: ./kube/deploy/apps/phoebe
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -35,6 +35,7 @@ spec:
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
 
     - # Add HelmRelease defaults to all Kustomizations
       patch: |-
@@ -80,3 +81,4 @@ spec:
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)

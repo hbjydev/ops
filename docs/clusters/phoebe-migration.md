@@ -24,9 +24,12 @@ Sharing a definition does not require deploying it to every cluster.
 
 ## Current state
 
-The `phoebe` repository still governs the cluster.
-The `ops` Phoebe entry point selects shared core but does not include its existing application inventory.
-Switching Flux directly to this incomplete tree risks deleting resources through pruning.
+The repository transfer is complete. Phoebe now reconciles the compatibility tree from `ops`.
+The next ownership transfer moves the operator to `core-flux-operator` and makes `kube/deploy/apps/phoebe` the application composition layer.
+That layer selects migrated core workloads and temporarily includes `kubernetes/apps` for the remaining resources.
+Keep the existing Flux entry point at `kubernetes/flux/cluster` during this step.
+Its `cluster-apps` resource changes its build path without changing its name or inventory ownership.
+Removing the compatibility include before the remaining resources move risks deleting those resources through pruning.
 Pruning deletes resources that disappear from a Flux deployment's inventory.
 
 The following preparation exists in `ops`:
