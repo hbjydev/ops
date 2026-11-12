@@ -10,7 +10,6 @@ resources:
   - ./litellmmodels.yaml
   - ./litellmvirtualkeys.yaml
   - ./mcp-secrets.yaml
-  - ./networkpolicy.yaml
   - ./litellmmcpservers.yaml
   - ./servicemonitor.yaml
 configMapGenerator:

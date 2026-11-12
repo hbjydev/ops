@@ -5,6 +5,3 @@ kind: Kustomization
 resources:
   - ./allow-default-egress.yaml
   - ./block-all-egress.yaml
-
-  - ./labelled-allow-egress.yaml
-  - ./labelled-allow-ingress.yaml
