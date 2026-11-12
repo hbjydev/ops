@@ -21,7 +21,7 @@ spec:
       lidarr:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         pod:
           labels:
             # Linux .NET uses OpenSSL roots, including SSL_CERT_FILE.
@@ -122,7 +122,7 @@ spec:
             driver: csi.cert-manager.io
             readOnly: true
             volumeAttributes:
-              csi.cert-manager.io/issuer-name: postgres-client-ca
+              csi.cert-manager.io/issuer-name: postgres-client-ca-v2
               csi.cert-manager.io/issuer-kind: ClusterIssuer
               csi.cert-manager.io/key-algorithm: ECDSA
               csi.cert-manager.io/key-size: "384"

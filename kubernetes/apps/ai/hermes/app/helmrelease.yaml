@@ -21,7 +21,7 @@ spec:
       hermes:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         replicas: 1
         strategy: Recreate
         type: deployment

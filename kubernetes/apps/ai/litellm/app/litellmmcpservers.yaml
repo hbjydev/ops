@@ -43,7 +43,7 @@ spec:
       trust.home.arpa/inject: "true"
     podAnnotations:
       trust.home.arpa/profile: python
-      configmap.reloader.stakater.com/reload: cluster-roots
+      configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/homeassistant-ai/ha-mcp
     image: ghcr.io/homeassistant-ai/ha-mcp:9.1.2
     port: 8086
@@ -82,7 +82,7 @@ spec:
     podLabels:
       trust.home.arpa/inject: "true"
     podAnnotations:
-      configmap.reloader.stakater.com/reload: cluster-roots
+      configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=jwonder/miniflux-mcp
     image: jwonder/miniflux-mcp:0.8.0
     env:
@@ -129,7 +129,7 @@ spec:
     podLabels:
       trust.home.arpa/inject: "true"
     podAnnotations:
-      configmap.reloader.stakater.com/reload: cluster-roots
+      configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victorialogs
     image: ghcr.io/victoriametrics/mcp-victorialogs:v1.9.0
     port: 8080
@@ -161,7 +161,7 @@ spec:
     podLabels:
       trust.home.arpa/inject: "true"
     podAnnotations:
-      configmap.reloader.stakater.com/reload: cluster-roots
+      configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victoriametrics
     image: ghcr.io/victoriametrics/mcp-victoriametrics:v1.120.1
     port: 8080

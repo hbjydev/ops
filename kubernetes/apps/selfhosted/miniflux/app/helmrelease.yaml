@@ -14,7 +14,7 @@ spec:
       miniflux:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         pod:
           labels:
             # 2.3.5's feed transport uses Go's system roots; keep ignore_tls_errors=false.

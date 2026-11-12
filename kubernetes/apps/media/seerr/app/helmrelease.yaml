@@ -21,7 +21,7 @@ spec:
       seerr:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         pod:
           annotations:
             # Node HTTPS agents use default CAs plus NODE_EXTRA_CA_CERTS.

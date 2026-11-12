@@ -25,7 +25,7 @@ spec:
       app:
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         containers:
           app:
             image:

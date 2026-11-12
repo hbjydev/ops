@@ -10,6 +10,11 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   path: ./kube/deploy/core/trust-manager/trust-manager/app
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: trust-manager
+      namespace: trust-manager
   dependsOn:
     - name: core-cert-manager
       namespace: cert-manager

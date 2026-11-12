@@ -97,7 +97,7 @@ spec:
             op: "add", path: "/spec/volumes",
             value: (has(object.spec.volumes) ? object.spec.volumes : []) + [{
               "name": dyn("phoebe-cluster-roots"),
-              "configMap": dyn({"name": dyn("cluster-roots"), "items": dyn([{"key": "ca.crt", "path": "ca.crt"}])})
+              "configMap": dyn({"name": dyn("trusted-roots"), "items": dyn([{"key": "ca.crt", "path": "ca.crt"}])})
             }]
           }] +
           variables.containers.map(c, JSONPatch{

@@ -22,7 +22,7 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-          configmap.reloader.stakater.com/reload: cluster-roots
+          configmap.reloader.stakater.com/reload: trusted-roots
         pod:
           labels:
             # v5.38.0 uses Go's system roots (RootCAs unset); keep client.insecure=false.

@@ -8,7 +8,7 @@ spec:
   secretName: litellm-postgres-client
   commonName: litellm
   issuerRef:
-    name: postgres-client-ca
+    name: postgres-client-ca-v2
     kind: ClusterIssuer
   privateKey:
     algorithm: ECDSA

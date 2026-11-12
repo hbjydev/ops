@@ -52,7 +52,7 @@ spec:
     labels:
       cnpg.io/reload: ""
   issuerRef:
-    name: postgres-client-ca
+    name: postgres-client-ca-v2
     kind: ClusterIssuer
     group: cert-manager.io
   secretName: *name
@@ -104,7 +104,7 @@ spec:
     labels:
       cnpg.io/reload: ""
   issuerRef:
-    name: postgres-client-ca
+    name: postgres-client-ca-v2
     kind: ClusterIssuer
     group: cert-manager.io
   secretName: *name

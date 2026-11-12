@@ -24,7 +24,7 @@ spec:
               metadata:
                 name: kguardian-broker
                 annotations:
-                  configmap.reloader.stakater.com/reload: cluster-roots
+                  configmap.reloader.stakater.com/reload: trusted-roots
               spec:
                 template:
                   metadata:
@@ -48,7 +48,7 @@ spec:
                           driver: csi.cert-manager.io
                           readOnly: true
                           volumeAttributes:
-                            csi.cert-manager.io/issuer-name: postgres-client-ca
+                            csi.cert-manager.io/issuer-name: postgres-client-ca-v2
                             csi.cert-manager.io/issuer-kind: ClusterIssuer
                             csi.cert-manager.io/key-algorithm: ECDSA
                             csi.cert-manager.io/key-size: "384"

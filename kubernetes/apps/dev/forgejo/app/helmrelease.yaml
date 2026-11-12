@@ -169,7 +169,7 @@ spec:
           driver: csi.cert-manager.io
           readOnly: true
           volumeAttributes:
-            csi.cert-manager.io/issuer-name: postgres-client-ca
+            csi.cert-manager.io/issuer-name: postgres-client-ca-v2
             csi.cert-manager.io/issuer-kind: ClusterIssuer
             csi.cert-manager.io/key-algorithm: ECDSA
             csi.cert-manager.io/key-size: "384"
@@ -180,9 +180,9 @@ spec:
             csi.cert-manager.io/fs-group: "1000"
 
       - name: root-ca
-        secret:
+        configMap:
           defaultMode: 0o600
-          secretName: root-ca
+          name: trusted-roots
 
       - name: signing-key
         secret:

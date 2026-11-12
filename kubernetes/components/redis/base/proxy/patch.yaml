@@ -27,7 +27,7 @@ spec:
                           driver: csi.cert-manager.io
                           readOnly: true
                           volumeAttributes:
-                            csi.cert-manager.io/issuer-name: dfguard-client-ca
+                            csi.cert-manager.io/issuer-name: dfguard-client-ca-v2
                             csi.cert-manager.io/issuer-kind: ClusterIssuer
                             csi.cert-manager.io/key-algorithm: ECDSA
                             csi.cert-manager.io/key-size: "384"
@@ -89,7 +89,7 @@ spec:
                           driver: csi.cert-manager.io
                           readOnly: true
                           volumeAttributes:
-                            csi.cert-manager.io/issuer-name: dfguard-client-ca
+                            csi.cert-manager.io/issuer-name: dfguard-client-ca-v2
                             csi.cert-manager.io/issuer-kind: ClusterIssuer
                             csi.cert-manager.io/key-algorithm: ECDSA
                             csi.cert-manager.io/key-size: "384"
