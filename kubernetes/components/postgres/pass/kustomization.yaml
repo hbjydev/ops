@@ -99,5 +99,5 @@ patches:
           name: k8s.ksgate.org/database-role-applied
 
       - op: add
-        path: /spec/values/defaultPodOptions/labels/db.policy.home.arpa~1postgres
+        path: /spec/values/defaultPodOptions/labels/egress.netpol.home.arpa~1postgres
         value: allow

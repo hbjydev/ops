@@ -34,7 +34,7 @@ spec:
         pod:
           labels:
             trust.home.arpa/inject: "true"
-            db.policy.home.arpa/postgres: allow
+            egress.netpol.home.arpa/postgres: allow
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch

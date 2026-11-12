@@ -56,8 +56,8 @@ spec:
 
   podLabels:
     trust.home.arpa/inject: "true"
-    db.policy.home.arpa/postgres: allow
-    db.policy.home.arpa/df-litellm-redis: allow
+    egress.netpol.home.arpa/postgres: allow
+    egress.netpol.home.arpa/dragonfly: allow
     egress.netpol.home.arpa/cluster: allow
     egress.netpol.home.arpa/internet-https: allow
 

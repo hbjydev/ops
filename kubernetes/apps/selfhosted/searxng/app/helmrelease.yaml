@@ -20,7 +20,7 @@ spec:
             ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
             ingress.netpol.home.arpa/o11y: allow
-            db.policy.home.arpa/dragonfly: allow
+            egress.netpol.home.arpa/dragonfly: allow
         containers:
           app:
             image:

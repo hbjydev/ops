@@ -31,8 +31,8 @@ spec:
             egress.netpol.home.arpa/internet: allow
             egress.netpol.home.arpa/smtp-relay: allow
             egress.netpol.home.arpa/litellm: allow
-            db.policy.home.arpa/postgres: allow
-            db.policy.home.arpa/dragonfly: allow
+            egress.netpol.home.arpa/postgres: allow
+            egress.netpol.home.arpa/dragonfly: allow
         containers:
           app:
             image:

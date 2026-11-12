@@ -128,8 +128,8 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
       labels:
-        db.policy.home.arpa/postgres: allow
-        db.policy.home.arpa/dragonfly: allow
+        egress.netpol.home.arpa/postgres: allow
+        egress.netpol.home.arpa/dragonfly: allow
       env:
         - name: PGSSLROOTCERT
           value: /var/run/secrets/root-ca/ca.crt

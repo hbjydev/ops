@@ -32,7 +32,7 @@ spec:
             egress.netpol.home.arpa/qbittorrent: allow
             egress.netpol.home.arpa/slskd: allow
             egress.netpol.home.arpa/prowlarr: allow
-            db.policy.home.arpa/postgres: allow
+            egress.netpol.home.arpa/postgres: allow
         containers:
           app:
             image:
