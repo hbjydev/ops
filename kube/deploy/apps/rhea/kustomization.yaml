@@ -10,3 +10,4 @@ resources:
   - ../../core/kube-system
   - ../../core/kyverno
   - ../../core/trust-manager
+  - ../../core/observability

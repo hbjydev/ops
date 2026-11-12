@@ -8,6 +8,8 @@ metadata:
     kustomization.flux.home.arpa/defaults: disabled
 spec:
   dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
     - name: miroir-config
       namespace: miroir-system
   interval: 1h

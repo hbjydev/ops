@@ -1,0 +1,99 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-apps-to-postgres
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      egress.netpol.home.arpa/postgres: allow
+  egress:
+    - toEndpoints: &pg
+        - matchLabels:
+            cnpg.io/cluster: postgres
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+    - toEndpoints: *pg
+      icmps: [{}]
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-postgres
+  namespace: database
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector: &cnpg
+    matchLabels:
+      cnpg.io/cluster: postgres
+  ingress:
+    # allow postgres pods to talk to each other
+    - fromEndpoints: [*cnpg]
+
+    # allow operator to connect
+    - fromEndpoints:
+        - matchLabels: &operator
+            io.kubernetes.pod.namespace: cnpg-system
+            app.kubernetes.io/name: cloudnative-pg
+
+    - fromEndpoints: &pg
+        - matchLabels:
+            egress.netpol.home.arpa/postgres: allow
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "5432"
+    - fromEndpoints: *pg
+      icmps: [{}]
+  egress:
+    # allow postgres pods to talk to each other
+    - toEndpoints: [*cnpg]
+
+    # connect to operator
+    - toEndpoints:
+        - matchLabels: *operator
+
+    # to hetzner for backups
+    - toFQDNs:
+        - matchPattern: '*.your-objectstorage.com'
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: ANY
+
+    # cnpg webhook
+    - toServices:
+        - k8sService:
+            serviceName: cnpg-webhook-service
+            namespace: cnpg
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-postgres-pooler
+  namespace: database
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: postgres
+      cnpg.io/podRole: pooler
+  egress:
+    # allow pooler pods to talk to the kube apiserver
+    - toEntities:
+        - kube-apiserver

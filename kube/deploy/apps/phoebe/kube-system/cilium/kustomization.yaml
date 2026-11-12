@@ -6,6 +6,7 @@ namespace: kube-system
 resources:
   - ../../../../core/kube-system/cilium/ks.yaml
   - ./app/httproute.yaml
+  - ./ks.yaml
 configMapGenerator:
   - name: cilium-values
     files:

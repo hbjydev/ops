@@ -14,5 +14,6 @@ resources:
   - ./cert-manager/cert-manager
   - ./trust-manager
   - ./network-policies/ks.yaml
-  - ./kyverno
+  - ../../core/kyverno
   - ./kopiur-system
+  - ../../core/observability/prometheus-operator-crds/ks.yaml
