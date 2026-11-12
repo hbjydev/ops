@@ -19,7 +19,6 @@ resources:
   - ./kopiur-system
   - ./kro-system
   - ./kube-system
-  - ./kyverno
   - ./matrix
   - ./media
   - ./miroir-system

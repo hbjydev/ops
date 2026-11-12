@@ -4,8 +4,8 @@ Move the existing Phoebe cluster into `ops` in three stages: transfer repository
 Keep workloads, storage and cluster identity intact throughout the move.
 Each stage has its own acceptance criteria and rollback point.
 
-This is a proposed migration plan, based on repository configuration reviewed on November 11, 2026.
-Live cluster state and 1Password contents need comparison before cutover.
+The original plan was reviewed on November 11, 2026.
+The current-state section records completed cutovers; the detailed stages below retain the original migration guidance.
 
 ## Target structure
 
@@ -24,25 +24,33 @@ Sharing a definition does not require deploying it to every cluster.
 
 ## Current state
 
-The repository transfer is complete. Phoebe now reconciles the compatibility tree from `ops`.
-The next ownership transfer moves the operator to `core-flux-operator` and makes `kube/deploy/apps/phoebe` the application composition layer.
-That layer selects migrated core workloads and temporarily includes `kubernetes/apps` for the remaining resources.
-Keep the existing Flux entry point at `kubernetes/flux/cluster` during this step.
-Its `cluster-apps` resource changes its build path without changing its name or inventory ownership.
-Removing the compatibility include before the remaining resources move risks deleting those resources through pruning.
-Pruning deletes resources that disappear from a Flux deployment's inventory.
+Updated November 12, 2026 after the Kyverno cutover.
 
-The following preparation exists in `ops`:
+Phoebe reconciles from `ops`, with `kube/deploy/apps/phoebe` as its application
+composition layer. It still includes `kubernetes/apps` for unmigrated workloads.
+The Flux entry point remains `kubernetes/flux/cluster`.
 
-- Phoebe's cluster identity is `CLUSTER: phoebe`.
-- Shared core includes External Secrets with the 1Password SDK provider.
-- The `cluster-ca` issuer reads the `cert-manager/ca-phoebe-v1` Secret after cluster substitution.
-- External Secrets maps the authority's `chain` and `private-key` fields into that Secret.
-- The `trusted-roots` bundle includes public roots and the root from the `pki-root` ConfigMap.
-- The root permits two subordinate authority levels, and each cluster intermediate permits one.
+- Flux operator, Cilium, CoreDNS, metrics-server, External Secrets,
+  cert-manager, trust-manager and Kyverno use shared core definitions.
+- Phoebe retains 1Password Connect indefinitely and does not select the SDK store.
+- The CA and Let's Encrypt cutovers are complete. Database client authorities
+  remain service-specific, with shared-root trust and application permissions.
+- Network policies use the standard names and labels. Legacy default policies
+  are removed; active allowances explicitly disable default-deny.
+- `core-kyverno` and `core-kyverno-config` own the existing release and trust
+  policy. The HelmRelease UID was retained during transfer.
+- Core trust injection applies by default to eligible new pods, mounts
+  `/var/run/trusted-roots`, and honours the opt-out and profile annotations.
+  Explicit application references use that path. Existing pods are not mutated
+  retroactively and can retain their previous injected mounts until replaced.
+- Admission tests covered default injection, opt-out, Python profiles on regular
+  and init containers, environment preservation and mount collisions.
+- Kyverno's namespace support resources remain unchanged and are selected from
+  Phoebe's composition through the existing common component.
 
-These manifests still need deployment and acceptance testing on Phoebe.
-Earlier proposals used the names `service-ca` and `internal-services`. The current manifests use `ca-phoebe-v1` and `cluster-ca` instead.
+Kopiur remains to adopt shared core. Remaining Phoebe-specific infrastructure,
+workloads and operations still need migration out of the compatibility tree.
+Do not remove that tree's root include until its retained resources have moved.
 
 ## Compatibility requirements
 
