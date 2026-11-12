@@ -4,8 +4,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: litellm
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:

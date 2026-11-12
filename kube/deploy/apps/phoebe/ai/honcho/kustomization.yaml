@@ -19,7 +19,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       annotations:
         kustomize.toolkit.fluxcd.io/substitute: disabled
-        kustomize.toolkit.fluxcd.io/prune: disabled
       labels:
         app.kubernetes.io/name: &app honcho
 generatorOptions:

@@ -4,8 +4,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-context7
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -24,8 +22,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-kguardian
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -40,8 +36,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-hass
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -78,8 +72,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-miniflux
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -134,8 +126,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-victorialogs
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -169,8 +159,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMMCPServer
 metadata:
   name: mcp-victoriametrics
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:

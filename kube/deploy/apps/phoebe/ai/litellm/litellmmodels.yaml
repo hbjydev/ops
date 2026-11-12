@@ -4,8 +4,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-6-astra
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -20,8 +18,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-6-luna
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -36,8 +32,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-6-sol
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -52,8 +46,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-6.1-sol
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -68,8 +60,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-5.6-luna
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -84,8 +74,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-5.6-terra
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -100,8 +88,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-5.6-sol
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -116,8 +102,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: chatgpt-gpt-image-2
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -132,8 +116,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: dsv4f
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:
@@ -163,8 +145,6 @@ apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
   name: dsv4.1f
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
     app.kubernetes.io/name: &app litellm
 spec:

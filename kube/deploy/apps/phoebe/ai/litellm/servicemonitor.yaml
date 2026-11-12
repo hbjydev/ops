@@ -7,8 +7,6 @@ metadata:
   labels:
     job: litellm
     app.kubernetes.io/name: &app litellm
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   endpoints:
     - port: http

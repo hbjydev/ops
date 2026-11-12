@@ -84,6 +84,11 @@ Sonarr, Radarr, Lidarr and Prowlarr now use the layered application layout with
 their PostgreSQL and Kopiur integrations. Storage and database identities remain
 unchanged.
 
+Hermes, Honcho, Memini, LiteLLM, Immich, Miniflux, Norish, Paperless and SearXNG
+now select base definitions. Phoebe owns their cluster configuration, including
+Hermes/Honcho's generated config files and LiteLLM's models, keys, MCP servers
+and monitoring bindings. Application, integration and storage owners are retained.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base

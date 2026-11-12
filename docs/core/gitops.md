@@ -143,6 +143,25 @@ mounts and backup resources retain their existing owners. Sonarr and Radarr's
 cache PVCs use cluster-supplied `CACHE_STORAGE_CLASS` and `CACHE_CAPACITY` inputs
 without changing their resource identities.
 
+### AI and selfhosted application configuration
+
+Hermes, Honcho, Memini, LiteLLM, Immich, Miniflux, Norish, Paperless and SearXNG
+have reusable definitions in base. Phoebe supplies their endpoints, identity
+settings, credentials, device mounts and storage choices. Memini's zero replica
+count remains a cluster value.
+
+Hermes and Honcho's file-generated configuration ConfigMaps live beside their
+Phoebe selections. Their names and file contents stay unchanged, and their
+`substitute: disabled` annotation applies only to those configuration generators.
+Helm defaults and override ConfigMaps still allow Flux substitutions.
+
+LiteLLM selects both its operator and proxy. The proxy is a native resource, so
+Phoebe supplies its deployment settings through `LITELLM_*` substitutions rather
+than Helm values. Model definitions, virtual keys, MCP servers and credentials,
+the Grafana dashboard binding and VictoriaMetrics scrape resource belong to the
+Phoebe composition. The compatibility callback and application network policies
+remain with the shared proxy definition.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:
