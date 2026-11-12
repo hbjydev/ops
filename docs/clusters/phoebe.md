@@ -20,3 +20,14 @@ Complete any required ownership protection before deploying that change.
 Remove the compatibility include after the final legacy workload and namespace resources move.
 
 The [migration plan](phoebe-migration.md) covers the ownership transfer, compatibility requirements, certificate hierarchy and rollback conditions.
+
+## External Secrets
+
+Phoebe selects the shared `core-external-secrets` Flux owner. Its cluster patch
+keeps the app wrapper for the existing password generator and chart `2.15.0`,
+and preserves its health checks. Chart values use the shared defaults and the
+optional `external-secrets-values` ConfigMap.
+
+The cluster does not select the shared SDK store. Phoebe retains its 1Password
+Connect server and existing ClusterSecretStore indefinitely. Connect and the
+GitHub generator depend on `core-external-secrets`.
