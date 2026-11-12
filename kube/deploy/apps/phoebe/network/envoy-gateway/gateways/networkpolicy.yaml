@@ -42,7 +42,7 @@ spec:
   clientIPDetection:
     xForwardedFor:
       trustedCIDRs:
-        - 172.18.0.0/16
+        - ${CLUSTER_POD_CIDR}
   http2:
     onInvalidMessage: TerminateStream
   http3: {}

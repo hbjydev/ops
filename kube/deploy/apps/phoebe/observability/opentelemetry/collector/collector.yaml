@@ -178,10 +178,10 @@ spec:
       resource:
         attributes:
           - key: cluster.name
-            value: phoebe
+            value: ${CLUSTER}
             action: upsert
           - key: k8s.cluster.name
-            value: phoebe
+            value: ${CLUSTER}
             action: upsert
 
       batch:

@@ -27,7 +27,7 @@ hubble:
     rollOutPods: true
     # Clear the shared network-policy label during the ownership migration.
     podLabels:
-ipv4NativeRoutingCIDR: 172.18.0.0/16
+ipv4NativeRoutingCIDR: ${CLUSTER_POD_CIDR}
 k8sServiceHost: 127.0.0.1
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
