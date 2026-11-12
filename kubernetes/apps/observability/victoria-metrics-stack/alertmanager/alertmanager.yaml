@@ -21,6 +21,8 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMAlertmanagerConfig
 metadata:
   name: alertmanager
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   route:
     receiver: blackhole

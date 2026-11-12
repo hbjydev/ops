@@ -6,6 +6,7 @@ metadata:
   name: vtsingle-ingress
   annotations:
     tailscale.com/proxy-group: ts-o11y-proxy
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   ingressClassName: tailscale
   tls:
