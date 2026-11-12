@@ -3,9 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../../../kubernetes/apps/ai/hermes/ks.yaml
-  - ../../../../../kubernetes/apps/ai/honcho/ks.yaml
-  - ../../../../../kubernetes/apps/ai/memini/ks.yaml
+  - ./hermes
+  - ./honcho
+  - ./memini
   - ./mimi
   - ../../../../../kubernetes/apps/ai/litellm/ks.yaml
   - ./mcp-auth-proxy

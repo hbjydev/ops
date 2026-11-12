@@ -1,0 +1,32 @@
+---
+route:
+  main:
+    enabled: true
+    parentRefs:
+      - name: external
+        namespace: network
+        sectionName: https
+    hostnames:
+      - memini.hayden.moe
+  ui:
+    enabled: true
+    annotations:
+      gatus.home-operations.com/enabled: 'false'
+    parentRefs:
+      - name: internal
+        namespace: network
+        sectionName: https
+    hostnames:
+      - memini.hayden.moe
+controllers:
+  main:
+    containers:
+      main:
+        env:
+          MEMINI_POSTGRES_DSN: "postgresql://memini@pooler-rw.database.svc:5432/memini?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
+          MEMINI_EMBED_BASE_URL: http://text-embeddings-inference.ai.svc.cluster.local:8080/v1
+          MEMINI_EMBED_DIMS: '384'
+          MEMINI_EMBED_MODEL: all-MiniLM-L6-v2
+          MEMINI_RERANK: http://llama-cpp-reranker.ai.svc.cluster.local:8080/v1
+          MEMINI_RERANK_MODEL: qwen3-reranker-0.6b
+    replicas: 0

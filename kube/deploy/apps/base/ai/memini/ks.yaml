@@ -4,23 +4,20 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app memini
-  namespace: &namespace ai
+  namespace: ai
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../kube/components/postgres/base
-    - ../../../../../kube/components/kopiur
-  dependsOn:
-    - name: core-kyverno-config
-      namespace: kyverno
+    - ../../../../../../components/postgres/base
+    - ../../../../../../components/kopiur
   interval: 1h
-  path: ./kubernetes/apps/ai/memini/app
+  path: ./kube/deploy/apps/base/ai/memini/app
   postBuild:
     substitute:
       APP: *app
-      NAMESPACE: *namespace
+      NAMESPACE: &namespace ai
       DATABASE_EXTENSIONS: |
         [
           { name: vector },

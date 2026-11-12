@@ -1,0 +1,35 @@
+---
+route:
+  app:
+    hostnames:
+      - "honcho.hayden.moe"
+    parentRefs:
+      - name: internal
+        namespace: network
+    rules:
+      - name: app
+        backendRefs:
+          - kind: Service
+            name: honcho-openconcho
+            port: &ocPort 8080
+        matches:
+          - path:
+              type: PathPrefix
+              value: /
+controllers:
+  honcho:
+    containers:
+      app:
+        env:
+          EMBEDDING_MODEL_CONFIG__MODEL: qwen3-embedding-0.6b
+          EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+          EMBEDDING_VECTOR_DIMENSIONS: "1024"
+          OPENAI_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+          DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
+      deriver:
+        env:
+          EMBEDDING_MODEL_CONFIG__MODEL: qwen3-embedding-0.6b
+          EMBEDDING_MODEL_CONFIG__OVERRIDES__BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+          EMBEDDING_VECTOR_DIMENSIONS: "1024"
+          OPENAI_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
+          DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"

@@ -1,0 +1,24 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+    parentRefs:
+      - name: external
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: dashboard
+controllers:
+  hermes:
+    containers:
+      app:
+        env:
+          HERMES_DASHBOARD_PUBLIC_URL: "https://hermes.hayden.moe"
+          HERMES_DASHBOARD_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/hermes
+          SEERR_URL: http://seerr.media.svc.cluster.local
+          SEARXNG_URL: http://searxng.selfhosted.svc.cluster.local:8080
+defaultPodOptions:
+  imagePullSecrets:
+    - name: imp-forgejo
