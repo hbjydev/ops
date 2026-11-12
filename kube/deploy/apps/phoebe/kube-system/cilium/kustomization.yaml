@@ -5,7 +5,6 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ../../../../core/kube-system/cilium/ks.yaml
-  - ../../../../core/kube-system/cilium/netpols.yaml
   - ./app/httproute.yaml
 configMapGenerator:
   - name: cilium-values
