@@ -9,7 +9,7 @@ spec:
     - name: core-external-secrets
     - name: onepassword
   interval: 1h
-  path: ./kubernetes/apps/external-secrets/github-generator/app
+  path: ./kube/deploy/apps/phoebe/external-secrets/github-generator/app
   prune: true
   sourceRef:
     kind: GitRepository

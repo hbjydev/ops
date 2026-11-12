@@ -31,3 +31,8 @@ optional `external-secrets-values` ConfigMap.
 The cluster does not select the shared SDK store. Phoebe retains its 1Password
 Connect server and existing ClusterSecretStore indefinitely. Connect and the
 GitHub generator depend on `core-external-secrets`.
+
+The External Secrets namespace composition, Connect server and GitHub generator
+live under `kube/deploy/apps/phoebe/external-secrets`. Their Flux owner names and
+resource identities are retained. Namespace support still imports the legacy
+common component until its secrets, alerts and repository resources are migrated.

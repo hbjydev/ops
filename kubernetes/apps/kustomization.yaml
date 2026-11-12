@@ -12,7 +12,6 @@ resources:
   - ./dev
   - ./downloads
   - ./dragonfly-system
-  - ./external-secrets
   - ./flux-system
   - ./gameservers
   - ./garage-system
