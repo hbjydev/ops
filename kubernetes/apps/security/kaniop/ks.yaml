@@ -12,7 +12,7 @@ spec:
     - ../../../../../kube/components/namespace
     - ../../../../../kube/components/namespace-backups
     - ../../../../../kube/components/app-template
-    - ../../../../../kube/components/grafana-folder
+    - ../../../../../kube/components/infra-folder
     - ../../../../../kube/clusters/phoebe/components/registry-credentials
     - ../../../../../kube/clusters/phoebe/components/github-status
     - ../../../../../kube/clusters/phoebe/components/sops

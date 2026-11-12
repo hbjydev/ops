@@ -12,7 +12,7 @@ components:
   - ../../../../components/namespace
   - ../../../../components/namespace-backups
   - ../../../../components/app-template
-  - ../../../../components/grafana-folder
+  - ../../../../components/infra-folder
   - ../../../../clusters/phoebe/components/registry-credentials
   - ../../../../clusters/phoebe/components/github-status
   - ../../../../clusters/phoebe/components/sops

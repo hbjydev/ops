@@ -38,8 +38,8 @@ Namespace composition uses these independently selectable components:
 - `kube/components/namespace`: namespace creation and pruning protection.
 - `kube/components/namespace-backups`: backup mover annotations.
 - `kube/components/app-template`: the namespace-local chart source.
-- `kube/components/grafana-folder`: the NamespaceFolder integration, where its
-  controller is installed.
+- `kube/components/infra-folder`: the Crossplane NamespaceFolder integration for GCP
+  infrastructure folders, where its composition is installed.
 - `kube/clusters/phoebe/components/registry-credentials`: Phoebe registry secrets.
 - `kube/clusters/phoebe/components/github-status`: Phoebe GitHub credentials and
   Flux status reporting.
