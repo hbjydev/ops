@@ -6,4 +6,3 @@ resources:
   - ./client-ca-v2.yaml
   - ./prometheusrule.yaml
   - ./grafanadashboard.yaml
-  - ./ciliumnetworkpolicy.yaml

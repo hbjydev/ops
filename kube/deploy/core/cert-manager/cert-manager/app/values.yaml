@@ -7,6 +7,7 @@ dns01RecursiveNameservers:
 dns01RecursiveNameserversOnly: true
 podLabels:
   egress.netpol.home.arpa/apiserver: allow
+  egress.netpol.home.arpa/cloudflare-dns: allow
 cainjector:
   podLabels:
     egress.netpol.home.arpa/apiserver: allow

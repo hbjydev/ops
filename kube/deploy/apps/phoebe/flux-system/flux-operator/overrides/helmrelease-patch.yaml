@@ -7,7 +7,5 @@ metadata:
   namespace: flux-system
 spec:
   values:
-    # Adopt the new network policy labels separately.
-    commonLabels: null
     serviceMonitor:
       create: true

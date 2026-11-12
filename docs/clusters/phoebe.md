@@ -11,7 +11,7 @@ Phoebe selects migrated workloads and applies its overrides under `kube/deploy/a
 
 The Phoebe layer temporarily includes `kubernetes/apps` for unmigrated workloads and namespace resources.
 The Flux operator is the first workload selected directly from shared core.
-Its Phoebe override enables monitoring and defers the new network labels.
+Its Phoebe override enables monitoring; network-policy labels come from core.
 The override component lives at `kube/deploy/apps/phoebe/flux-system/flux-operator/overrides` and patches the HelmRelease directly.
 The shared `core-flux-operator` selects that component through the [cluster override convention](../core/gitops.md#cluster-overrides-for-shared-core).
 
@@ -24,8 +24,8 @@ The [migration plan](phoebe-migration.md) covers the ownership transfer, compati
 ## External Secrets
 
 Phoebe selects the shared `core-external-secrets` Flux owner. Its cluster patch
-keeps the app wrapper for the existing password generator and chart `2.15.0`,
-and preserves its health checks. Chart values use the shared defaults and the
+keeps the app wrapper for the existing password generator and chart `2.15.0`.
+Health checks live in core. Chart values use the shared defaults and the
 optional `external-secrets-values` ConfigMap.
 
 The cluster does not select the shared SDK store. Phoebe retains its 1Password
@@ -73,3 +73,16 @@ The cutover was verified with a PostgreSQL mTLS login as `streaming_replica` and
 an application-side Redis `PING` through dfguard to Dragonfly. Both passed after
 removing the old client CAs from the distributed bundles and reloading database
 trust. Active pods no longer reference the old client issuers or trust mounts.
+
+## Network policy migration
+
+Phoebe selects `core-cilium-netpols` and `core-flux-netpols`. Core's blanket
+default-deny policy is excluded; its DNS, label-based and controller allowances
+explicitly avoid enabling isolation. Existing workload-specific policies still
+apply, so this does not disable Cilium policy enforcement globally.
+
+Cert-manager, External Secrets and Flux operator now inherit their core pod
+labels. Trust-manager, CoreDNS and metrics-server already supplied those labels;
+the core label policies are now selected on Phoebe. Cert-manager's old broad
+namespace allowances have been retired in favour of the staged core rules.
+Its scheduling override and all controller monitoring settings are unchanged.
