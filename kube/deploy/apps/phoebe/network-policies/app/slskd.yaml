@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-slskd
+  name: np-e-a-apps-to-slskd
 spec:
   enableDefaultDeny:
     egress: false

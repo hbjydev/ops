@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-searxng
+  name: np-e-a-apps-to-searxng
 spec:
   enableDefaultDeny:
     egress: false
@@ -25,7 +25,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-searxng
+  name: np-i-a-searxng
   namespace: selfhosted
 spec:
   enableDefaultDeny:

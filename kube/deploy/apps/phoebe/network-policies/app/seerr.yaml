@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-seerr
+  name: np-x-a-seerr
   namespace: media
 spec:
   enableDefaultDeny:
@@ -58,7 +58,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-seerr
+  name: np-e-a-apps-to-seerr
 spec:
   enableDefaultDeny:
     egress: false

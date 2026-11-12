@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-sonarr
+  name: np-e-a-apps-to-sonarr
 spec:
   enableDefaultDeny:
     egress: false
@@ -25,7 +25,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-sonarr
+  name: np-i-a-sonarr
   namespace: downloads
 spec:
   enableDefaultDeny:

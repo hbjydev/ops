@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-qbittorrent
+  name: np-e-a-apps-to-qbittorrent
 spec:
   enableDefaultDeny:
     egress: false

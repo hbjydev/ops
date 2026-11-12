@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-allow-envoy-external-ingress
+  name: np-i-a-from-envoy-external
 spec:
   enableDefaultDeny:
     ingress: false
@@ -21,7 +21,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-allow-envoy-internal-ingress
+  name: np-i-a-from-envoy-internal
 spec:
   enableDefaultDeny:
     ingress: false

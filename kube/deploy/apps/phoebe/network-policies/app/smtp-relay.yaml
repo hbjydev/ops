@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-smtp-relay
+  name: np-e-a-apps-to-smtp-relay
 spec:
   enableDefaultDeny:
     egress: false
@@ -31,7 +31,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-smtp-relay
+  name: np-x-a-smtp-relay
   namespace: selfhosted
 spec:
   enableDefaultDeny:

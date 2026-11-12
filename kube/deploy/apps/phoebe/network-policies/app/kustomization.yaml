@@ -19,3 +19,4 @@ resources:
   - ./local-ingress.yaml
   - ./local-egress.yaml
   - ./gateways.yaml
+  - ./migration-previous.yaml

@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-honcho
+  name: np-x-a-honcho
   namespace: ai
 spec:
   enableDefaultDeny:
@@ -42,7 +42,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-honcho
+  name: np-e-a-apps-to-honcho
 spec:
   enableDefaultDeny:
     egress: false

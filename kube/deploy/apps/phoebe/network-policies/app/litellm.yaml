@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-litellm
+  name: np-e-a-apps-to-litellm
 spec:
   enableDefaultDeny:
     egress: false
@@ -27,7 +27,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-litellm
+  name: np-e-a-litellm
   namespace: ai
 spec:
   enableDefaultDeny:

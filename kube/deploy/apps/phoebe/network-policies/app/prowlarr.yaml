@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-prowlarr
+  name: np-e-a-apps-to-prowlarr
 spec:
   enableDefaultDeny:
     egress: false
@@ -27,7 +27,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-prowlarr
+  name: np-i-a-prowlarr
   namespace: downloads
 spec:
   enableDefaultDeny:

@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-labelled-allow-egress-lan
+  name: np-e-a-to-lan
 spec:
   enableDefaultDeny:
     egress: false
@@ -19,7 +19,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-labelled-allow-egress-iot
+  name: np-e-a-to-iot
 spec:
   enableDefaultDeny:
     egress: false
@@ -35,7 +35,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-labelled-allow-egress-management
+  name: np-e-a-to-management
 spec:
   enableDefaultDeny:
     egress: false
@@ -51,7 +51,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-labelled-allow-egress-infra
+  name: np-e-a-to-infra
 spec:
   enableDefaultDeny:
     egress: false
@@ -67,7 +67,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-labelled-allow-egress-nas
+  name: np-e-a-to-nas
 spec:
   enableDefaultDeny:
     egress: false

@@ -49,6 +49,31 @@ should be documented below.
 | `ingress.netpol.home.arpa/host` | Allow incoming traffic from the local node. | Pods | `allow` |
 | `ingress.netpol.home.arpa/world` | Allow incoming traffic from outside the cluster, including private networks. | Pods | `allow` |
 | `ingress.netpol.home.arpa/internet` | Allow incoming IPv4 traffic except the three private ranges defined in the policy. | Pods | `allow` |
+| `egress.netpol.home.arpa/lan` | Allow outgoing traffic to Phoebe’s `lan` CIDR group. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/iot` | Allow outgoing traffic to Phoebe’s `iot` CIDR group. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/management` | Allow outgoing traffic to Phoebe’s `management` CIDR group. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/infra` | Allow outgoing traffic to Phoebe’s `infra` CIDR group. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/nas` | Allow outgoing traffic to Phoebe’s `nas` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/lan` | Allow incoming traffic from Phoebe’s `lan` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/iot` | Allow incoming traffic from Phoebe’s `iot` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/management` | Allow incoming traffic from Phoebe’s `management` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/infra` | Allow incoming traffic from Phoebe’s `infra` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/nas` | Allow incoming traffic from Phoebe’s `nas` CIDR group. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/internal` | Allow incoming traffic from the `internal` Envoy gateway. | Pods on Phoebe | `allow` |
+| `ingress.netpol.home.arpa/external` | Allow incoming traffic from the `external` Envoy gateway. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/sonarr` | Allow outgoing traffic to `sonarr` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/radarr` | Allow outgoing traffic to `radarr` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/lidarr` | Allow outgoing traffic to `lidarr` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/prowlarr` | Allow outgoing traffic to `prowlarr` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/sabnzbd` | Allow outgoing traffic to `sabnzbd` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/qbittorrent` | Allow outgoing traffic to `qbittorrent` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/slskd` | Allow outgoing traffic to `slskd` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/seerr` | Allow outgoing traffic to `seerr` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/searxng` | Allow outgoing traffic to `searxng` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/smtp-relay` | Allow outgoing traffic to `smtp-relay` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/litellm` | Allow outgoing traffic to `litellm` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/honcho` | Allow outgoing traffic to `honcho` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/memini` | Allow outgoing traffic to `memini` on its configured service ports. | Pods on Phoebe | `allow` |
 
 Apply network labels to pod templates. Labels on a HelmRelease or Deployment alone do not select its pods.
 

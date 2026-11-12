@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-lidarr
+  name: np-e-a-apps-to-lidarr
 spec:
   enableDefaultDeny:
     egress: false
@@ -25,7 +25,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-lidarr
+  name: np-i-a-lidarr
   namespace: downloads
 spec:
   enableDefaultDeny:

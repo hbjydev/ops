@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: np-apps-to-radarr
+  name: np-e-a-apps-to-radarr
 spec:
   enableDefaultDeny:
     egress: false
@@ -25,7 +25,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-radarr
+  name: np-i-a-radarr
   namespace: downloads
 spec:
   enableDefaultDeny:
