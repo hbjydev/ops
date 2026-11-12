@@ -35,7 +35,7 @@ spec:
       memory: 512Mi
 
   labels:
-    egress.policy.home.arpa/block-all: "true"
+    ingress.netpol.home.arpa/o11y: allow
     role: master
 
   aclFromSecret:

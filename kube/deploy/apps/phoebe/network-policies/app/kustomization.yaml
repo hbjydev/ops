@@ -21,3 +21,6 @@ resources:
   - ./gateways.yaml
   - ./postgres.yaml
   - ./dragonfly.yaml
+  - ./miniflux.yaml
+  - ./immich.yaml
+  - ./home-assistant.yaml

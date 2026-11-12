@@ -5,6 +5,10 @@ kind: Pooler
 metadata:
   name: pooler-rw
 spec:
+  template:
+    metadata:
+      labels:
+        ingress.netpol.home.arpa/o11y: allow
   cluster:
     name: postgres
 
