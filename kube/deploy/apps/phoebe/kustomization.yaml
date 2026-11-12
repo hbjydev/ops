@@ -13,3 +13,4 @@ resources:
   - ./external-secrets
   - ./cert-manager/cert-manager
   - ./trust-manager
+  - ./network-policies/ks.yaml

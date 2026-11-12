@@ -11,9 +11,15 @@ spec:
         operator: DoesNotExist
       - key: egress.netpol.home.arpa/internet
         operator: DoesNotExist
+      - key: egress.netpol.home.arpa/lan
+        operator: DoesNotExist
       - key: egress.policy.home.arpa/lan
         operator: DoesNotExist
+      - key: egress.netpol.home.arpa/infra
+        operator: DoesNotExist
       - key: egress.policy.home.arpa/infra
+        operator: DoesNotExist
+      - key: egress.netpol.home.arpa/management
         operator: DoesNotExist
       - key: egress.policy.home.arpa/management
         operator: DoesNotExist
