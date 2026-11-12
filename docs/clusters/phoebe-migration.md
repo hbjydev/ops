@@ -67,6 +67,11 @@ Kopiur uses `core-kopiur` and `core-kopiur-config`. Phoebe retains its existing
 repository, UI/SSO integration and Grafana Operator bindings under its application
 directory. The HelmRelease and ClusterRepository identities were retained.
 
+Thirteen independent application/platform deployments now select definitions
+from `apps/base`; their values, credentials and workload instances live in
+`apps/phoebe`. See [the deployment conventions](../core/gitops.md#independent-application-migration)
+for the migrated set and its selection criteria.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base

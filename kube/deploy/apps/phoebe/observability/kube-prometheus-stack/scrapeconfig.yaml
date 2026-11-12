@@ -4,8 +4,6 @@ apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
   name: node-exporter
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   staticConfigs:
     - targets:

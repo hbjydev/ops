@@ -4,8 +4,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-api-server
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -21,8 +19,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-coredns
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -38,8 +34,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-global
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -55,8 +49,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-namespaces
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -72,8 +64,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-nodes
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -89,8 +79,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-pods
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -106,8 +94,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: kubernetes-volumes
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -123,8 +109,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: node-exporter-full
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -140,8 +124,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: prometheus
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:

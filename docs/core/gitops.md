@@ -58,6 +58,41 @@ Kaniop also selects these components in its child Flux Kustomization, retaining
 its pre-existing overlap with namespace composition. Removing that overlap needs
 an explicit ownership handover and is separate from this layout change.
 
+### Independent application migration
+
+The following deployments now use base definitions selected by Phoebe:
+
+- Garage webui, tsproxy, unpoller and smtp-relay.
+- Cloudflare DNS, towonel-agent, UniFi DNS and the UniFi certificate uploader.
+- llmkube, Multus, STUNner, Tailscale and kube-prometheus-stack.
+
+They do not consume the Kanidm, PostgreSQL, Dragonfly, Kopiur or Anubis workload
+integrations. This does not imply they have no dependencies: they still require
+applicable controllers, credentials, gateways and backend services. Apps with
+inline identity or backup manifests, including slskd, Gatus, Grafana and the
+VictoriaMetrics stack, are excluded from this batch just like component users.
+
+Shared release definitions use `<release>-defaults` and optional
+`<release>-values` ConfigMaps. Phoebe owns endpoint addresses, domains, DNS
+ownership settings, credentials and Grafana bindings. An app still needs its
+required external inputs even though the override ConfigMap itself is optional.
+Application network policies remain with the app definition. tsproxy needs no
+cluster override and is selected directly from base.
+
+Models, network attachments, STUNner gateways and Tailscale configuration retain
+their existing Flux owners under Phoebe. Tailscale's Terraform source paths now
+point into Phoebe's deployment tree; Terraform configuration, state identity and
+approval policy are unchanged. Bootstrap and Flux-instance migration remain
+separate work.
+
+The UniFi uploader requires `UNIFI_URL`; Phoebe supplies its existing console
+address. Its certificate Secret name is also a cluster value. Run its isolated
+HTTP-boundary tests with:
+
+```sh
+python3 -m unittest discover -s kube/deploy/apps/base/network/unifi-cert-upload/tests
+```
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:
