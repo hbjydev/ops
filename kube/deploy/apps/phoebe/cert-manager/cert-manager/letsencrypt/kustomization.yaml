@@ -5,5 +5,4 @@ kind: Kustomization
 resources:
   - ../../../../../core/cert-manager/cert-manager/letsencrypt
 patches:
-  - path: ./production-patch.yaml
   - path: ./token-patch.yaml

@@ -41,9 +41,11 @@ common component until its secrets, alerts and repository resources are migrated
 
 Phoebe selects all three shared cert-manager owners: `core-cert-manager`,
 `core-cert-manager-ca` and `core-cert-manager-letsencrypt`. Its controller values
-preserve monitoring and current behaviour. The production ACME override retains
-the existing account key and DNS-zone restrictions; the core Cloudflare Secret
-uses the existing Connect item's `password` field.
+preserve monitoring and current behaviour. Both Let's Encrypt issuers use the
+shared `hayden+letsencrypt@hayden.moe` account email, `tlsserver` profile and
+account-key Secret names. The core Cloudflare Secret uses the existing Connect
+item's `password` field. The previous production account Secret is retained for
+rollback; existing certificates are not forcibly renewed.
 
 `cluster-ca` signs with `ca-phoebe-v1`, the ops-root-signed intermediate. Existing
 certificates are not forcibly renewed by the signer change. Both the ops root
