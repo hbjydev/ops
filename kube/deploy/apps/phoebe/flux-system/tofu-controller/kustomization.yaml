@@ -13,5 +13,3 @@ generatorOptions:
   labels:
     reconcile.fluxcd.io/watch: Enabled
     app.kubernetes.io/name: &app tofu-controller
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled

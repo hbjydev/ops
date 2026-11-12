@@ -4,8 +4,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: cnpg
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:

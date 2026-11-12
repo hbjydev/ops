@@ -14,5 +14,3 @@ generatorOptions:
   labels:
     reconcile.fluxcd.io/watch: Enabled
     app.kubernetes.io/name: &app tuppr
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
