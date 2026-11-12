@@ -40,6 +40,28 @@ spec:
         kind: Kustomization
         labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
 
+    - # Add defaults to Kustomizations
+      patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: _
+        spec:
+          deletionPolicy: WaitForTermination
+          postBuild:
+            substitute:
+              CLUSTER: ${CLUSTER}
+          interval: 5m
+          prune: true
+          sourceRef:
+            kind: GitRepository
+            name: flux-system
+            namespace: flux-system
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        labelSelector: kustomization.flux.home.arpa/defaults notin (disabled)
+
     - # Add HelmRelease defaults to all Kustomizations
       patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
