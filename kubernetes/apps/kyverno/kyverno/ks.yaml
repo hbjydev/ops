@@ -28,8 +28,8 @@ metadata:
 spec:
   dependsOn:
     - name: kyverno
-    - name: trust-manager-config
-      namespace: cert-manager
+    - name: core-trust-manager-bundle
+      namespace: trust-manager
   interval: 1h
   path: ./kubernetes/apps/kyverno/kyverno/config
   prune: true

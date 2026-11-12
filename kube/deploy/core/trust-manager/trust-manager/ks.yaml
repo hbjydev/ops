@@ -31,6 +31,10 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   path: ./kube/deploy/core/trust-manager/trust-manager/bundle
+  healthChecks:
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: trusted-roots
   dependsOn:
     - name: core-trust-manager
     - name: core-cert-manager-ca
