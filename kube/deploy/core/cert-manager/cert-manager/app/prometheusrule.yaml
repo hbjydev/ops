@@ -4,6 +4,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: cert-manager-rules
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   groups:
     - name: cert-manager.rules
@@ -14,7 +16,7 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              Cert Manager has dissapeared from Prometheus service discovery
+              Cert Manager has disappeared from Prometheus service discovery
           labels:
             severity: critical
 

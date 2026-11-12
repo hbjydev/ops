@@ -28,6 +28,6 @@ serviceMonitor:
   enabled: true
   interval: 1m
 grafanaDashboard:
-  enabled: false
+  enabled: true
 genericTargets:
   enabled: true

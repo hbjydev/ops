@@ -14,24 +14,11 @@ webhook:
     ingress.netpol.home.arpa/apiserver: allow
   tls:
     mode: cert-manager
-      # serviceMonitor:
-      #   enabled: true
-
+  serviceMonitor:
+    enabled: true
 features:
   credentialProjection:
     enabled: true
-
-    # monitoring:
-    #   serviceMonitor:
-    #     enabled: true
-    #   prometheusRule:
-    #     enabled: true
-    #   dashboards:
-    #     enabled: true
-    #     grafanaOperator:
-    #       enabled: true
-    #       matchLabels:
-    #         grafana.internal/instance: grafana
 
 podSecurityContext:
   fsGroup: 1000
@@ -45,3 +32,10 @@ podSecurityContext:
 logging:
   level: info
   format: json
+monitoring:
+  serviceMonitor:
+    enabled: true
+  prometheusRule:
+    enabled: true
+  dashboards:
+    enabled: true

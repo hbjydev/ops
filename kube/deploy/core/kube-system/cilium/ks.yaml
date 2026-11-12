@@ -9,7 +9,9 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   path: ./kube/deploy/core/kube-system/cilium/app
-  dependsOn: []
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
   targetNamespace: *ns
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

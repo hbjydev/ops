@@ -10,3 +10,6 @@ metadata:
 spec:
   path: ./kube/deploy/core/kube-system/metrics-server/app
   targetNamespace: *ns
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability

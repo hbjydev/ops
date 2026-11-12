@@ -30,3 +30,6 @@ spec:
     namespace: *ns
   targetNamespace: *ns
   timeout: 5m
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability

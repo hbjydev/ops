@@ -19,6 +19,9 @@ spec:
       kind: HelmRelease
       name: kyverno
       namespace: kyverno
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

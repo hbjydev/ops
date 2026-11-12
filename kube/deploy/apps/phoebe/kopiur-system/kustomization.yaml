@@ -22,6 +22,8 @@ patches:
         dependsOn:
           - name: snapshot-controller
             namespace: kube-system
+          - name: core-prometheus-crds
+            namespace: observability
   - target:
       kind: Kustomization
       name: core-kopiur-config

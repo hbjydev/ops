@@ -17,6 +17,9 @@ spec:
       kind: HelmRelease
       name: kopiur
       namespace: kopiur-system
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

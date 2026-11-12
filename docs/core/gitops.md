@@ -41,7 +41,7 @@ Phoebe selects `../../core/flux-system/flux-operator` without a namespace wrappe
 For a cluster that uses shared defaults, the override directory is absent.
 
 With `ignoreMissingComponents: true`, Flux uses shared defaults when the override directory is absent.
-Rhea uses this behavior for the Flux operator.
+Phoebe and Rhea use this behaviour for the Flux operator.
 A misspelled path or accidental deletion also selects shared defaults, so render comparisons must protect required cluster behavior.
 
 To adopt the convention for another shared workload:
@@ -65,6 +65,12 @@ Rhea select it. It installs the monitoring API definitions, not a Prometheus
 server or operator. CRDs carry Helm's resource-retention annotation.
 
 Phoebe's kube-prometheus-stack disables its bundled CRDs and skips Helm CRD
-installation/upgrades. The stack and shared External Secrets controller wait
-for the core CRD owner. Keep the CRD chart compatible with the deployed
+installation/upgrades. The stack and shared controllers that create monitoring
+resources wait for the core CRD owner. Keep the CRD chart compatible with the deployed
 Prometheus Operator when updating either chart.
+
+Shared controllers enable their ServiceMonitors by default. Alert rules and
+dashboard ConfigMaps are included where configured, even on clusters without
+a monitoring stack. Installing a scraper is a separate cluster choice.
+Grafana Operator dashboard bindings remain cluster-specific because they
+require additional CRDs and a matching Grafana instance.

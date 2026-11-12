@@ -29,12 +29,20 @@ spec:
       podLabels:
         ingress.netpol.home.arpa/apiserver: allow
         egress.netpol.home.arpa/apiserver: allow
+      serviceMonitor:
+        enabled: true
     backgroundController:
       enabled: false
+      serviceMonitor:
+        enabled: true
     cleanupController:
       enabled: false
+      serviceMonitor:
+        enabled: true
     reportsController:
       enabled: false
+      serviceMonitor:
+        enabled: true
     features:
       admissionReports:
         enabled: false

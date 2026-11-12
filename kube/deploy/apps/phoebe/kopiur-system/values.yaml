@@ -22,15 +22,10 @@ defaultPodOptions:
     - name: k8s.ksgate.org/kanidm-client-secret-ready
 monitoring:
   dashboards:
-    enabled: true
     grafanaOperator:
       enabled: true
       matchLabels:
         grafana.internal/instance: grafana
-  prometheusRule:
-    enabled: true
-  serviceMonitor:
-    enabled: true
 ui:
   auth:
     allowedGroups:
@@ -63,6 +58,3 @@ ui:
         role: user
     browseRole: true
     userRoles: true
-webhook:
-  serviceMonitor:
-    enabled: true

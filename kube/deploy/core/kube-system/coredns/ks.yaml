@@ -9,6 +9,7 @@ metadata:
     kustomization.flux.home.arpa/helmpatches: "false"
 spec:
   path: ./kube/deploy/core/kube-system/coredns/app
-  # dependsOn:
-  #   - name: core-cilium
   targetNamespace: *ns
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability

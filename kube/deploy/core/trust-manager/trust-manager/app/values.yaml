@@ -11,3 +11,8 @@ app:
     ingress.netpol.home.arpa/apiserver: allow
   trust:
     namespace: cert-manager
+  metrics:
+    service:
+      enabled: true
+      servicemonitor:
+        enabled: true

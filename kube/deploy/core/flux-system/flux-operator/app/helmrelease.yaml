@@ -32,3 +32,5 @@ spec:
     commonLabels:
       egress.netpol.home.arpa/apiserver: allow
       egress.netpol.home.arpa/internet-https: allow
+    serviceMonitor:
+      create: true
