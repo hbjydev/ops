@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: home-assistant
+  namespace: default
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/app
+  postBuild:
+    substitute:
+      APP: home-assistant
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: matter-server
+  namespace: default
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/matter-server
+  postBuild:
+    substitute:
+      APP: matter-server
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: openthread
+  namespace: default
+spec:
+  components:
+    - ../../../../../../components/kopiur
+  interval: 1h
+  path: ./kube/deploy/apps/base/default/home-assistant/openthread
+  postBuild:
+    substitute:
+      APP: openthread
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false

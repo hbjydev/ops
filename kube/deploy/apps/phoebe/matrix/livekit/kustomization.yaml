@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: matrix
+resources:
+  - ../../../base/matrix/livekit/ks.yaml
+  - ./externalsecret.yaml
+  - ./udproute.yaml
+configMapGenerator:
+  - name: livekit-values
+    files:
+      - values.yaml=values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+  - name: livekit-jwt-service-values
+    files:
+      - values.yaml=jwt-service-values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+generatorOptions:
+  disableNameSuffixHash: true

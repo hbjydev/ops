@@ -3,7 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../../../../kubernetes/apps/default/home-assistant/ks.yaml
+  - ./home-assistant
 namespace: default
 components:
   - ../../../../components/namespace

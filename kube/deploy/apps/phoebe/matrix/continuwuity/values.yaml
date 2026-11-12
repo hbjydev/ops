@@ -1,0 +1,25 @@
+---
+route:
+  app:
+    hostnames: ["matrix.hayden.moe"]
+    parentRefs:
+      - name: external
+        namespace: network
+        sectionName: https
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: &port 8008
+
+controllers:
+  continuwuity:
+    containers:
+      app:
+        env:
+          CONTINUWUITY_SERVER_NAME: hayden.moe
+          CONTINUWUITY_WELL_KNOWN__CLIENT: 'https://matrix.hayden.moe/'
+          CONTINUWUITY_WELL_KNOWN__SERVER: 'matrix.hayden.moe:443'
+          CONTINUWUITY_TRUSTED_SERVERS: '["starstruck.systems", "unredacted.org", "eno1.dev"]'
+          CONTINUWUITY_OAUTH__OIDC__DISCOVERY_URL: 'https://sso.hayden.moe/oauth2/openid/continuwuity'
+          CONTINUWUITY_MATRIX_RTC__FOCI: '[{ type = "livekit", livekit_service_url = "https://livekit.hayden.moe" }]'
+          CONTINUWUITY_MATRIX_RTC__LIVEKIT__URL: wss://livekit.hayden.moe

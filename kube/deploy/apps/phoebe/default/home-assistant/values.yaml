@@ -1,0 +1,36 @@
+---
+route:
+  app:
+    annotations:
+      gatus.home-operations.com/endpoint: |-
+        conditions: ["[STATUS] == 200"]
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+      - hass.hayden.moe
+    parentRefs:
+      - name: external
+        namespace: network
+
+defaultPodOptions:
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |-
+      [{
+        "name": "iot",
+        "namespace": "kube-system",
+        "ips": ["192.168.20.20/24"],
+        "mac": "c6:07:27:af:fb:53"
+      }]
+controllers:
+  home-assistant:
+    containers:
+      app:
+        env:
+          HASS_HTTP_TRUSTED_PROXY_1: 172.18.0.0/16
+          HASS_HTTP_TRUSTED_PROXY_2: 10.80.0.0/24
+persistence:
+  zbt2:
+    type: hostPath
+    hostPath: /dev/serial/by-id/usb-Nabu_Casa_ZBT-2_A4CB8FD15F5C-if00
+  tty:
+    type: hostPath
+    hostPath: /dev/ttyACM0

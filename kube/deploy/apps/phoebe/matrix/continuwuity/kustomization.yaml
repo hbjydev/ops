@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: matrix
+resources:
+  - ../../../base/matrix/continuwuity/ks.yaml
+  - ./externalsecret.yaml
+configMapGenerator:
+  - name: unbound-configmap
+    files:
+      - unbound.conf=./resources/unbound.conf
+
+    options:
+      disableNameSuffixHash: true
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+        kustomize.toolkit.fluxcd.io/prune: disabled
+      labels:
+        app.kubernetes.io/name: &app continuwuity
+  - name: continuwuity-values
+    files:
+      - values.yaml=values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+generatorOptions:
+  disableNameSuffixHash: true
+patches:
+  - target:
+      kind: Kustomization
+      name: *app
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: &app continuwuity
+      spec:
+        dependsOn:
+          - name: miroir-config
+            namespace: miroir-system
+        postBuild:
+          substitute:
+            KOPIUR_CAPACITY: 15Gi
+            OIDC_DISPLAY_NAME: Continuwuity
+            OIDC_ORIGIN: https://matrix.hayden.moe/
+            OIDC_REDIRECT_URLS: '["https://matrix.hayden.moe/_continuwuity/oidc/complete"]'
+            OIDC_GROUP_PREFIX: continuwuity
+            OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+            OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_STORAGECLASS: miroir-local
+            KOPIUR_SNAPSHOTCLASS: miroir-snap

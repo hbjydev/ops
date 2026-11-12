@@ -1,0 +1,117 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+resources:
+  - ../../../base/default/home-assistant/ks.yaml
+  - ./externalsecret.yaml
+  - ./vmservicescrape.yaml
+configMapGenerator:
+  - name: home-assistant-configmap
+    files:
+      - ./resources/configuration.yaml
+
+    options:
+      disableNameSuffixHash: true
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+        kustomize.toolkit.fluxcd.io/prune: disabled
+  - name: home-assistant-values
+    files:
+      - values.yaml=values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+  - name: matter-server-values
+    files:
+      - values.yaml=matter-server-values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+  - name: openthread-values
+    files:
+      - values.yaml=openthread-values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+generatorOptions:
+  disableNameSuffixHash: true
+patches:
+  - target:
+      kind: Kustomization
+      name: home-assistant
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: home-assistant
+      spec:
+        dependsOn:
+          - name: multus-networks
+            namespace: kube-system
+          - name: miroir-config
+            namespace: miroir-system
+        postBuild:
+          substitute:
+            KOPIUR_CAPACITY: 5Gi
+            KOPIUR_UID: "0"
+            KOPIUR_GID: "0"
+            KOPIUR_PRIVILEGED_MODE: "true"
+            KOPIUR_RUN_AS_NON_ROOT: "false"
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_STORAGECLASS: miroir-local
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
+            CACHE_STORAGE_CLASS: miroir-local
+            CACHE_CAPACITY: 1Gi
+  - target:
+      kind: Kustomization
+      name: matter-server
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: matter-server
+      spec:
+        dependsOn:
+          - name: multus-networks
+            namespace: kube-system
+          - name: miroir-config
+            namespace: miroir-system
+        postBuild:
+          substitute:
+            KOPIUR_CAPACITY: 5Gi
+            KOPIUR_UID: "0"
+            KOPIUR_GID: "0"
+            KOPIUR_PRIVILEGED_MODE: "true"
+            KOPIUR_RUN_AS_NON_ROOT: "false"
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_STORAGECLASS: miroir-local
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
+  - target:
+      kind: Kustomization
+      name: openthread
+    patch: |
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: openthread
+      spec:
+        dependsOn:
+          - name: multus-networks
+            namespace: kube-system
+          - name: miroir-config
+            namespace: miroir-system
+        postBuild:
+          substitute:
+            KOPIUR_CAPACITY: 5Gi
+            KOPIUR_UID: "0"
+            KOPIUR_GID: "0"
+            KOPIUR_PRIVILEGED_MODE: "true"
+            KOPIUR_RUN_AS_NON_ROOT: "false"
+            KOPIUR_REPOSITORY: hetzner
+            KOPIUR_STORAGECLASS: miroir-local
+            KOPIUR_SNAPSHOTCLASS: miroir-snap
