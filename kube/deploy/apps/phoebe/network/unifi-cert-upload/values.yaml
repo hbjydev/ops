@@ -1,0 +1,10 @@
+---
+persistence:
+  certs:
+    name: hayden-moe-tls
+controllers:
+  unifi-cert-upload:
+    containers:
+      app:
+        env:
+          UNIFI_URL: https://10.70.0.1

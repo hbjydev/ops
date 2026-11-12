@@ -1,0 +1,28 @@
+---
+controllers:
+  main:
+    replicas: 2
+    annotations:
+      reloader.stakater.com/auto: "true"
+
+agent:
+  logLevel: info
+  healthPort: 9090
+  inviteTokenSecret:
+    name: towonel-agent-secret
+    key: TOWONEL_INVITE_TOKEN
+
+serviceMonitor:
+  main:
+    enabled: true
+    endpoints:
+      - port: metrics
+        interval: 1m
+        scrapeTimeout: 10s
+        path: /metrics
+
+monitoring:
+  prometheusRule:
+    enabled: true
+  dashboards:
+    enabled: true

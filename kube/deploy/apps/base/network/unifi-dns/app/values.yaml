@@ -1,0 +1,28 @@
+---
+fullnameOverride: &app unifi-dns
+provider:
+  name: webhook
+  webhook:
+    image:
+      repository: ghcr.io/home-operations/external-dns-unifi-webhook
+      tag: 
+        0.11.0@sha256:663442f116d7b45546782bdf7ace50d05ac15cc630c7236d443d69593845e992
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http-webhook
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: http-webhook
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+triggerLoopOnEvent: true
+policy: sync
+sources: ["gateway-httproute", "service"]
+serviceMonitor:
+  enabled: true
+podAnnotations:
+  secret.reloader.stakater.com/reload: &secret unifi-dns-secret

@@ -4,12 +4,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../../../../kubernetes/apps/network/certificates/ks.yaml
-  - ../../../../../kubernetes/apps/network/cloudflare-dns/ks.yaml
+  - ./cloudflare-dns
   - ../../../../../kubernetes/apps/network/stunner/ks.yaml
   - ../../../../../kubernetes/apps/network/tailscale/ks.yaml
-  - ../../../../../kubernetes/apps/network/towonel-agent/ks.yaml
-  - ../../../../../kubernetes/apps/network/unifi-cert-upload/ks.yaml
-  - ../../../../../kubernetes/apps/network/unifi-dns/ks.yaml
+  - ./towonel-agent
+  - ./unifi-cert-upload
+  - ./unifi-dns
   - ./envoy-gateway/ks.yaml
 namespace: network
 components:
