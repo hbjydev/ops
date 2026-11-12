@@ -1,0 +1,13 @@
+---
+podLabels:
+cainjector:
+  podLabels:
+webhook:
+  podLabels:
+startupapicheck:
+  podLabels:
+topologySpreadConstraints:
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true

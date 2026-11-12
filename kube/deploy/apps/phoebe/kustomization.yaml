@@ -10,3 +10,4 @@ resources:
   - ../../core/kube-system/metrics-server
   - ./kube-system/cilium
   - ./external-secrets
+  - ./cert-manager/cert-manager

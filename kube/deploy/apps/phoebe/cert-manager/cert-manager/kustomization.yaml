@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+resources:
+  - ../../../../core/cert-manager/cert-manager/ks.yaml
+  - ./config.yaml
+configMapGenerator:
+  - name: cert-manager-values
+    files:
+      - values.yaml=app/values.yaml
+  - name: phoebe-legacy-root
+    files:
+      - root.pem=legacy-root.pem
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+patches:
+  - target:
+      kind: Kustomization
+      name: core-cert-manager.*
+    patch: |-
+      - op: add
+        path: /spec/suspend
+        value: true
+  - target:
+      kind: Kustomization
+      name: core-cert-manager
+    patch: |-
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: core-cert-manager
+      spec:
+        path: ./kube/deploy/apps/phoebe/cert-manager/cert-manager/app
+        commonMetadata:
+          labels:
+            app.kubernetes.io/name: cert-manager
+        healthChecks:
+          - apiVersion: helm.toolkit.fluxcd.io/v2
+            kind: HelmRelease
+            name: cert-manager
+            namespace: cert-manager
+        retryInterval: 2m
+        timeout: 5m
+  - target:
+      kind: Kustomization
+      name: core-cert-manager-ca
+    patch: |-
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: core-cert-manager-ca
+      spec:
+        dependsOn:
+          - name: core-cert-manager
+          - name: core-external-secrets
+            namespace: external-secrets
+        healthChecks:
+          - apiVersion: external-secrets.io/v1
+            kind: ExternalSecret
+            name: ca-phoebe-v1
+            namespace: cert-manager
+          - apiVersion: cert-manager.io/v1
+            kind: ClusterIssuer
+            name: cluster-ca
+  - target:
+      kind: Kustomization
+      name: core-cert-manager-letsencrypt
+    patch: |-
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: core-cert-manager-letsencrypt
+      spec:
+        path: ./kube/deploy/apps/phoebe/cert-manager/cert-manager/letsencrypt
+        dependsOn:
+          - name: core-cert-manager
+          - name: core-external-secrets
+            namespace: external-secrets
+        healthChecks:
+          - apiVersion: external-secrets.io/v1
+            kind: ExternalSecret
+            name: cf-api-token
+            namespace: cert-manager
+          - apiVersion: cert-manager.io/v1
+            kind: ClusterIssuer
+            name: letsencrypt-production
+          - apiVersion: cert-manager.io/v1
+            kind: ClusterIssuer
+            name: letsencrypt-staging

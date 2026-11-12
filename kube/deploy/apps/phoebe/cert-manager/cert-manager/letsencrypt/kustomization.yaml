@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../../core/cert-manager/cert-manager/letsencrypt
+patches:
+  - path: ./production-patch.yaml
+  - path: ./token-patch.yaml
