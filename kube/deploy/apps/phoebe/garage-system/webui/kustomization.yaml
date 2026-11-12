@@ -1,0 +1,21 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: garage-system
+resources:
+  - ../../../base/garage-system/webui/ks.yaml
+configMapGenerator:
+  - name: garage-webui-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+patches:
+  - target:
+      kind: Kustomization
+      name: garage-webui
+    patch: "apiVersion: kustomize.toolkit.fluxcd.io/v1\nkind: Kustomization\nmetadata:\n\
+      \  name: garage-webui\nspec:\n  dependsOn:\n    - name: garage\n      namespace:
+      garage-system\n"

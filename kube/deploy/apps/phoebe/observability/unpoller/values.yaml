@@ -1,0 +1,7 @@
+---
+controllers:
+  unpoller:
+    containers:
+      app:
+        env:
+          UP_UNIFI_DEFAULT_URL: https://192.168.4.1

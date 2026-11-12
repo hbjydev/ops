@@ -6,8 +6,8 @@ resources:
   - ../../../../../kubernetes/apps/observability/gatus/ks.yaml
   - ../../../../../kubernetes/apps/observability/grafana/ks.yaml
   - ../../../../../kubernetes/apps/observability/kube-prometheus-stack/ks.yaml
-  - ../../../../../kubernetes/apps/observability/tsproxy/ks.yaml
-  - ../../../../../kubernetes/apps/observability/unpoller/ks.yaml
+  - ../../base/observability/tsproxy/ks.yaml
+  - ./unpoller
   - ../../../../../kubernetes/apps/observability/victoria-metrics-stack/ks.yaml
   - ./opentelemetry/ks.yaml
 namespace: observability

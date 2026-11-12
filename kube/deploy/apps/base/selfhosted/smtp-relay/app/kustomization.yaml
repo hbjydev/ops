@@ -4,5 +4,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
-  - ./externalsecret.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: smtp-relay-defaults
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled

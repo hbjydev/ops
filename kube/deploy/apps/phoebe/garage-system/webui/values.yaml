@@ -1,0 +1,20 @@
+---
+route:
+  app:
+    hostnames:
+      - "garage.hayden.moe"
+    parentRefs:
+      - name: internal
+        namespace: network
+controllers:
+  garage-webui:
+    containers:
+      app:
+        env:
+          API_BASE_URL: http://garage.garage-system.svc.cluster.local:3903
+          S3_ENDPOINT_URL: http://garage.garage-system.svc.cluster.local:3900
+          API_ADMIN_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: garage-operator-secret
+                key: admin-token

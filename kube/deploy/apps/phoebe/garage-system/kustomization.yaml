@@ -4,7 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../../../../kubernetes/apps/garage-system/garage/ks.yaml
-  - ../../../../../kubernetes/apps/garage-system/webui/ks.yaml
+  - ./webui
 namespace: garage-system
 components:
   - ../../../../components/namespace

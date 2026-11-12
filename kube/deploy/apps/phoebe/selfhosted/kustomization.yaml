@@ -8,7 +8,7 @@ resources:
   - ../../../../../kubernetes/apps/selfhosted/norish/ks.yaml
   - ../../../../../kubernetes/apps/selfhosted/paperless/ks.yaml
   - ../../../../../kubernetes/apps/selfhosted/searxng/ks.yaml
-  - ../../../../../kubernetes/apps/selfhosted/smtp-relay/ks.yaml
+  - ./smtp-relay
   - ../../../../../kubernetes/apps/selfhosted/tranquil/ks.yaml
 namespace: selfhosted
 components:

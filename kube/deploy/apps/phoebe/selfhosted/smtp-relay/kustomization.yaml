@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: selfhosted
+resources:
+  - ../../../base/selfhosted/smtp-relay/ks.yaml
+  - ./externalsecret.yaml
+configMapGenerator:
+  - name: smtp-relay-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
