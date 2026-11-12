@@ -6,7 +6,7 @@ resources:
   - ./qbittorrent
   - ./qui
   - ./sabnzbd
-  - ../../../../../kubernetes/apps/downloads/slskd/ks.yaml
+  - ./slskd
   - ./radarr
   - ./sonarr
   - ./lidarr

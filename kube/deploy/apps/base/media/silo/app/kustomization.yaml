@@ -3,7 +3,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./externalsecret.yaml
-  - ./grafanadashboard.yaml
   - ./pvc.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: silo-defaults
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled

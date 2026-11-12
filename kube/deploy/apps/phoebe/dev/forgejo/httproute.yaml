@@ -6,6 +6,8 @@ metadata:
   name: forgejo
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &name forgejo
 spec:
   hostnames:
     - git.hayden.moe

@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: forgejo
+  interval: 30m
+  values:
+    defaultPodOptions:
+      annotations: {}
+      labels: {}
+      schedulingGates: []
+  valuesFrom:
+    - kind: ConfigMap
+      name: forgejo-defaults
+    - kind: ConfigMap
+      name: forgejo-values
+      optional: true

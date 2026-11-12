@@ -1,0 +1,177 @@
+---
+defaultPodOptions:
+  annotations: {}
+  labels: {}
+  schedulingGates: []
+
+gitea:
+  admin:
+    username: ""
+
+  config:
+    database:
+      DB_TYPE: postgres
+      USER: forgejo
+      NAME: forgejo
+      SSL_MODE: verify-full
+
+    cache:
+      ENABLED: true
+      ADAPTER: redis
+      HOST: &redis redis://localhost:6379?pool_size=100&idle_timeout=180s
+
+    cron.archive_cleanup:
+      ENABLED: true
+      RUN_AT_START: true
+      SCHEDULE: "@every 1h"
+      OLDER_THAN: 2h
+
+    indexer:
+      ISSUE_INDEXER_TYPE: bleve
+      REPO_INDEXER_ENABLED: true
+
+    lfs:
+      PATH: /data/git/lfs
+
+    mailer:
+      ENABLED: false
+
+    openid:
+      ENABLE_OPENID_SIGNIN: false
+      ENABLE_OPENID_SIGNUP: false
+
+    queue:
+      TYPE: redis
+      CONN_STR: *redis
+
+    repository:
+      DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
+      DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
+      ROOT: /data/git/repositories
+
+    repository.pull-request:
+      DEFAULT_MERGE_STYLE: squash
+      DEFAULT_MERGE_MESSAGE_SIZE: 2048
+      POPULATE_SQUASH_COMMENT_WITH_COMMIT_MESSAGES: false
+      POPULATE_SQUASH_COMMENT_WITH_COMMIT_MESSAGES_FOOTER: false
+
+    repository.signing:
+      FORMAT: ssh
+      SIGNING_KEY: /data/signing/ed25519.pub
+      INITIAL_COMMIT: pubkey
+      CRUD_ACTIONS: pubkey, parentsigned
+      WIKI: never
+      MERGES: pubkey
+
+    security: {}
+    server:
+      APP_DATA_PATH: /data/gitea
+      SSH_PORT: &sshPort 22
+      SSH_SERVER_HOST_KEYS: ssh/ssh_host_ed25519_key
+
+    service:
+      ALLOW_ONLY_EXTERNAL_REGISTRATION: true
+      DEFAULT_ENABLE_TIMETRACKING: false
+      ENABLE_INTERNAL_SIGNIN: false
+      ENABLE_PASSWORD_SIGNIN_FORM: false
+      SHOW_REGISTRATION_BUTTON: false
+
+    service.explore:
+      DISABLE_CODE_PAGE: false
+      DISABLE_ORGANIZATIONS_PAGE: true
+      DISABLE_USERS_PAGE: true
+      REQUIRE_SIGNIN_VIEW: false
+
+    session:
+      PROVIDER: redis
+      PROVIDER_CONFIG: *redis
+      SESSION_LIFE_TIME: "1209600"
+
+    webhook:
+      ALLOWED_HOST_LIST: "*"
+
+deployment:
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    egress.netpol.home.arpa/postgres: allow
+    egress.netpol.home.arpa/dragonfly: allow
+  env:
+    - name: PGSSLROOTCERT
+      value: /var/run/secrets/root-ca/ca.crt
+    - name: PGSSLCERT
+      value: /var/run/secrets/postgresql/tls.crt
+    - name: PGSSLKEY
+      value: /var/run/secrets/postgresql/tls.key
+
+valkey-cluster:
+  enabled: false
+postgresql-ha:
+  enabled: false
+
+extraContainerVolumeMounts:
+  - name: forgejo-themes
+    mountPath: "/data/gitea/public/assets/css"
+  - name: postgres-forgejo
+    mountPath: "/var/run/secrets/postgresql"
+  - name: root-ca
+    mountPath: "/var/run/secrets/root-ca"
+  - name: signing-key
+    mountPath: /data/signing
+    readOnly: true
+
+extraInitVolumeMounts:
+  - name: postgres-forgejo
+    mountPath: "/var/run/secrets/postgresql"
+  - name: root-ca
+    mountPath: "/var/run/secrets/root-ca"
+  - name: signing-key
+    mountPath: /data/signing
+    readOnly: true
+
+extraVolumes:
+  - name: postgres-forgejo
+    csi:
+      driver: csi.cert-manager.io
+      readOnly: true
+      volumeAttributes:
+        csi.cert-manager.io/issuer-name: postgres-client-ca-v2
+        csi.cert-manager.io/issuer-kind: ClusterIssuer
+        csi.cert-manager.io/key-algorithm: ECDSA
+        csi.cert-manager.io/key-size: "384"
+        csi.cert-manager.io/key-encoding: PKCS8
+        csi.cert-manager.io/key-usages: client auth
+        csi.cert-manager.io/common-name: forgejo
+        csi.cert-manager.io/dns-names: $${POD_NAME}.$${POD_NAMESPACE}.svc.cluster.local
+        csi.cert-manager.io/fs-group: "1000"
+
+  - name: root-ca
+    configMap:
+      defaultMode: 0o600
+      name: trusted-roots
+
+  - name: signing-key
+    secret:
+      secretName: forgejo-signing-key
+      defaultMode: 256
+
+  - name: forgejo-themes
+    configMap:
+      name: forgejo-themes
+
+httpRoute:
+  enabled: false
+
+image:
+  rootless: true
+  registry: code.forgejo.org
+  repository: forgejo/forgejo
+  tag: 17.0.1-rootless
+
+persistence:
+  create: false
+  claimName: forgejo
+
+service:
+  ssh:
+    port: *sshPort

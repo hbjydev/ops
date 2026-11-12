@@ -1,0 +1,33 @@
+---
+tcpRoute:
+  enabled: true
+  parentRefs:
+    - name: external
+      namespace: network
+      sectionName: ssh
+gitea:
+  config:
+    APP_NAME: "Hayden's Git"
+    APP_SLOGAN: "because sometimes it takes a man to be best girl"
+    ui:
+      THEMES: forgejo-auto,forgejo-light,forgejo-dark,gitdotgay,gitdotgay-light,gitdotgay-dark
+      DEFAULT_THEME: gitdotgay
+
+    database:
+      HOST: pooler-rw.database.svc:5432
+    repository.signing:
+      SIGNING_NAME: git.hayden.moe Instance
+      SIGNING_EMAIL: noreply@git.hayden.moe
+    security:
+      REVERSE_PROXY_TRUSTED_PROXIES: 172.18.0.0/16
+    server:
+      ROOT_URL: https://git.hayden.moe
+      SSH_DOMAIN: git.hayden.moe:2468
+  oauth:
+    - name: kanidm
+      adminGroup: forgejo_admins@sso.hayden.moe
+      autoDiscoverUrl: https://sso.hayden.moe/oauth2/openid/forgejo/.well-known/openid-configuration
+      existingSecret: forgejo-kanidm-oauth2-credentials
+      groupClaimName: groups
+      provider: openidConnect
+      scopes: profile email groups

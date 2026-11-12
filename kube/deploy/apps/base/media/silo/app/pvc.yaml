@@ -8,5 +8,5 @@ spec:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 30Gi
-  storageClassName: miroir-local
+      storage: ${CACHE_CAPACITY}
+  storageClassName: ${CACHE_STORAGE_CLASS}

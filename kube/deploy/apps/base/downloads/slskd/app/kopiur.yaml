@@ -11,14 +11,14 @@ spec:
     enabled: true
   repository:
     kind: ClusterRepository
-    name: hetzner
+    name: ${KOPIUR_REPOSITORY}
   retention:
     keepHourly: 8
     keepDaily: 7
   sources:
     - pvc:
         name: config-slskd-0
-  volumeSnapshotClassName: miroir-snap
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS}
   errorHandling:
     ignoreFileErrors: false
     ignoreDirErrors: false
@@ -35,7 +35,6 @@ spec:
       runAsGroup: 1000
       runAsNonRoot: true
       privileged: false
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/snapshotschedule_v1alpha1.json
 apiVersion: kopiur.home-operations.com/v1alpha1

@@ -1,0 +1,37 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+    parentRefs:
+      - name: internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: &port 80
+defaultPodOptions:
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |-
+      [{
+        "name": "vpn",
+        "namespace": "kube-system",
+        "ips": ["10.90.0.12/24"],
+        "mac": "d6:67:45:f6:29:e7"
+      }]
+controllers:
+  slskd:
+    statefulset:
+      volumeClaimTemplates:
+        - name: config
+          storageClass: miroir-local
+          accessMode: ReadWriteOnce
+          size: 5Gi
+persistence:
+  media:
+    type: nfs
+    server: ds.hayden.moe
+    path: /volume1/media
+    globalMounts:
+      - path: /media/downloads/soulseek
+        subPath: downloads/soulseek

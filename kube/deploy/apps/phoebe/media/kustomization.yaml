@@ -6,7 +6,7 @@ resources:
   - ./navidrome
   - ./picard
   - ./plex
-  - ../../../../../kubernetes/apps/media/silo/ks.yaml
+  - ./silo
   - ./seerr
 namespace: media
 components:
