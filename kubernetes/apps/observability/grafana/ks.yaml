@@ -22,7 +22,7 @@ metadata:
   name: grafana-instance
 spec:
   dependsOn:
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: grafana
     - name: miroir-config

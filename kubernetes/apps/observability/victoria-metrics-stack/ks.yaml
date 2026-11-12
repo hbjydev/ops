@@ -37,7 +37,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: victoria-metrics-operator
   healthChecks:
@@ -68,7 +68,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: victoria-metrics-operator
   healthChecks:
@@ -99,7 +99,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: victoria-metrics-operator
   healthChecks:

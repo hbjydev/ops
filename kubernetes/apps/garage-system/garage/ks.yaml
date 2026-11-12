@@ -11,7 +11,7 @@ spec:
   dependsOn:
     - name: garage-operator
       namespace: garage-system
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: miroir-config
       namespace: miroir-system

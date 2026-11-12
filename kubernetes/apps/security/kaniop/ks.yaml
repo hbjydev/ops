@@ -35,7 +35,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: kaniop
   interval: 1h

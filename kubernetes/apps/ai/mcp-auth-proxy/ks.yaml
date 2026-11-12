@@ -14,7 +14,7 @@ spec:
   dependsOn:
     - name: core-kyverno-config
       namespace: kyverno
-    - name: kopiur-repository
+    - name: core-kopiur-config
       namespace: kopiur-system
     - name: litellm
       namespace: ai

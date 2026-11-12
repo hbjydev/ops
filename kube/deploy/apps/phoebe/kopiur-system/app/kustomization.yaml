@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../core/kopiur-system/kopiur/app
+patches:
+  - target:
+      kind: HelmRelease
+      name: kopiur
+    patch: |
+      ---
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: kopiur
+      spec:
+        postRenderers:
+          - kustomize:
+              patches:
+                - patch: |
+                    ---
+                    apiVersion: grafana.integreatly.org/v1beta1
+                    kind: GrafanaDashboard
+                    metadata:
+                      name: _
+                    spec:
+                      datasources:
+                        - datasourceName: VictoriaMetrics
+                          inputName: datasource
+                  target:
+                    group: grafana.integreatly.org
+                    kind: GrafanaDashboard
+                    name: kopiur-dashboard
+                    version: v1beta1
