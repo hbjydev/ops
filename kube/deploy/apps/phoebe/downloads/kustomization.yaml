@@ -7,10 +7,10 @@ resources:
   - ./qui
   - ./sabnzbd
   - ../../../../../kubernetes/apps/downloads/slskd/ks.yaml
-  - ../../../../../kubernetes/apps/downloads/radarr/ks.yaml
-  - ../../../../../kubernetes/apps/downloads/sonarr/ks.yaml
-  - ../../../../../kubernetes/apps/downloads/lidarr/ks.yaml
-  - ../../../../../kubernetes/apps/downloads/prowlarr/ks.yaml
+  - ./radarr
+  - ./sonarr
+  - ./lidarr
+  - ./prowlarr
 namespace: downloads
 components:
   - ../../../../components/namespace

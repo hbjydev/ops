@@ -1,0 +1,31 @@
+---
+route:
+  app:
+    hostnames: ["{{ .Release.Name }}.hayden.moe"]
+    parentRefs:
+      - name: internal
+        namespace: network
+        sectionName: https
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: &port 80
+persistence:
+  media:
+    type: nfs
+    server: ds.hayden.moe
+    path: /volume1/media
+    globalMounts:
+      - path: /media
+controllers:
+  sonarr:
+    containers:
+      app:
+        env:
+          SONARR__POSTGRES__MAINDBCONNECTIONSTRING: >-
+            Host=pooler-rw.database.svc;
+            Database=sonarr;
+            Username=sonarr;
+            SSL Mode=VerifyFull;
+            SSL Certificate=/var/run/secrets/postgresql/tls.crt;
+            SSL Key=/var/run/secrets/postgresql/tls.key;
