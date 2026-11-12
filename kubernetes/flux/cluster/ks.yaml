@@ -16,6 +16,7 @@ spec:
     substitute:
       CLUSTER: phoebe
       CLUSTER_DNS_IP: 172.19.0.53
+      CLUSTER_DNS_COREDNS_RESOLVERS: /etc/resolv.conf
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -53,6 +54,7 @@ spec:
             substitute:
               CLUSTER: ${CLUSTER}
               CLUSTER_DNS_IP: ${CLUSTER_DNS_IP}
+              CLUSTER_DNS_COREDNS_RESOLVERS: ${CLUSTER_DNS_COREDNS_RESOLVERS}
           interval: 5m
           prune: true
           sourceRef:
