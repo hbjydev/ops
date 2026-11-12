@@ -11,3 +11,4 @@ resources:
   - ./kube-system/cilium
   - ./external-secrets
   - ./cert-manager/cert-manager
+  - ./trust-manager

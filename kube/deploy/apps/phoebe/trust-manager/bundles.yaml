@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: database-client-trust
+  namespace: trust-manager
+spec:
+  path: ./kube/deploy/apps/phoebe/trust-manager/bundles
+  targetNamespace: trust-manager
+  dependsOn:
+    - name: core-trust-manager
+    - name: cert-manager-config
+      namespace: cert-manager
+  healthChecks:
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: postgres-client-ca
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: dragonfly-client-ca
+    - apiVersion: trust.cert-manager.io/v1alpha1
+      kind: Bundle
+      name: dfguard-client-ca
