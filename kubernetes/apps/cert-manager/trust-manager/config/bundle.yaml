@@ -27,6 +27,12 @@ spec:
     - secret:
         name: postgres-client-ca
         key: tls.crt
+    - secret:
+        name: postgres-client-ca-v2
+        key: tls.crt
+    - configMap:
+        name: pki-root
+        key: root.pem
   target:
     secret:
       key: ca.crt
@@ -45,6 +51,12 @@ spec:
     - secret:
         name: dragonfly-client-ca
         key: tls.crt
+    - secret:
+        name: dragonfly-client-ca-v2
+        key: tls.crt
+    - configMap:
+        name: pki-root
+        key: root.pem
   target:
     secret:
       key: ca.crt
@@ -63,6 +75,12 @@ spec:
     - secret:
         name: dfguard-client-ca
         key: tls.crt
+    - secret:
+        name: dfguard-client-ca-v2
+        key: tls.crt
+    - configMap:
+        name: pki-root
+        key: root.pem
   target:
     secret:
       key: ca.crt
