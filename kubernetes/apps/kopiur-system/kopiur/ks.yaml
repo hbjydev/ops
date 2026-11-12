@@ -5,7 +5,11 @@ kind: Kustomization
 metadata:
   name: &app kopiur
   namespace: &namespace kopiur-system
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  suspend: true
+  deletionPolicy: Orphan
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -33,7 +37,7 @@ spec:
       OIDC_GROUP_PREFIX: kopiur
       OIDC_USERS_GROUP_MEMBERS: '[hayden]'
       OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
@@ -49,7 +53,11 @@ kind: Kustomization
 metadata:
   name: &app kopiur-repository
   namespace: &namespace kopiur-system
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  suspend: true
+  deletionPolicy: Orphan
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -57,7 +65,7 @@ spec:
     - name: kopiur
   interval: 1h
   path: ./kubernetes/apps/kopiur-system/kopiur/repository
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
