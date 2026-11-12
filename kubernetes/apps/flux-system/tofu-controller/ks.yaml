@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app tofu-controller
   namespace: &namespace flux-system
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
   commonMetadata:
     labels:
@@ -22,4 +24,6 @@ spec:
   targetNamespace: *namespace
   wait: false
   interval: 1h
-  prune: true
+  prune: false
+  suspend: true
+  deletionPolicy: Orphan

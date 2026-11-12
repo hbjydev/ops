@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app opentelemetry-operator
   namespace: &namespace observability
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
   commonMetadata:
     labels:
@@ -16,7 +18,7 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/observability/opentelemetry/operator
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
@@ -24,7 +26,8 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
-
+  suspend: true
+  deletionPolicy: Orphan
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
