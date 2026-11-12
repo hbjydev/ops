@@ -4,6 +4,8 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-ap-insights
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -13,13 +15,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11314/revisions/10/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-client-insights
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -29,13 +32,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11315/revisions/9/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-usw-insights
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -45,13 +49,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11312/revisions/9/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-client-dpi
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -61,13 +66,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11310/revisions/5/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-usg-insights
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -77,13 +83,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11313/revisions/9/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-network-sites
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -93,13 +100,14 @@ spec:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
   url: https://grafana.com/api/dashboards/11311/revisions/5/download
-
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: unpoller-pdu-insights
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
