@@ -136,6 +136,13 @@ supplied through Phoebe's `KGUARDIAN_DATABASE_URL` substitution. Tranquil's
 credentials, ServiceProject and StorageBucket are selected by Phoebe, preserving
 the existing cloud resource identities.
 
+Sonarr, Radarr, Lidarr and Prowlarr also select base definitions with the
+PostgreSQL and Kopiur components. Phoebe supplies routes, NFS mounts, database
+connection strings and backup storage settings. Database roles, certificate
+mounts and backup resources retain their existing owners. Sonarr and Radarr's
+cache PVCs use cluster-supplied `CACHE_STORAGE_CLASS` and `CACHE_CAPACITY` inputs
+without changing their resource identities.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:

@@ -80,6 +80,10 @@ MCP auth proxy, kguardian and Tranquil now use base definitions as well. Their
 database and identity integration owners are retained; cloud claims and other
 cluster-specific inputs are selected from Phoebe.
 
+Sonarr, Radarr, Lidarr and Prowlarr now use the layered application layout with
+their PostgreSQL and Kopiur integrations. Storage and database identities remain
+unchanged.
+
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Keep each legacy workload path until its application definition has moved to base
