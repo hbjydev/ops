@@ -20,6 +20,8 @@ spec:
     manager:
       collectorImage:
         repository: otel/opentelemetry-collector-contrib
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
       resources:
         requests:
           cpu: 50m
