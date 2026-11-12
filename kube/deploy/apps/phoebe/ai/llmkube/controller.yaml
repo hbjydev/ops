@@ -71,5 +71,6 @@ spec:
             modelCache:
               enabled: true
               mode: shared
-              size: 20Gi
+              # Keep the existing PVC size; Kubernetes cannot shrink an expanded claim.
+              size: 100Gi
               storageClass: miroir-local

@@ -29,6 +29,21 @@ parent can remove an optional cluster override before the child updates its
 HelmRelease, briefly exposing shared defaults. The Cilium override is particularly
 important to retain through this transition.
 
+## Active entry points
+
+Phoebe currently loads `kubernetes/flux/cluster/ks.yaml`, not
+`kube/clusters/phoebe/flux/apps.yaml`. Check the live `cluster-apps.spec` against
+that active definition before rollout. Its Helm defaults selector must exclude
+`kustomization.flux.home.arpa/helm-defaults: disabled`; otherwise it replaces
+child overrides even if the newer cluster-root definition is correct. Preserve
+the active root’s Helm recovery policy when moving it into local declarations.
+
+The initial rollout missed this legacy selector and briefly applied shared
+defaults on Phoebe. The selector was corrected, Cilium’s previous netkit runtime
+configuration was restored, and cluster overrides were reapplied. llmkube’s cache
+PVC expanded from 20Gi to 100Gi during that interval; its declaration retains
+100Gi because Kubernetes cannot shrink the existing claim.
+
 ## Reconcile and inspect
 
 Publish the migration and reconcile the Git source and `cluster-apps`. Reconcile
