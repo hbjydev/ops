@@ -15,6 +15,7 @@ spec:
   postBuild:
     substitute:
       CLUSTER: phoebe
+      CLUSTER_DNS_IP: 172.19.0.53
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -51,6 +52,7 @@ spec:
           postBuild:
             substitute:
               CLUSTER: ${CLUSTER}
+              CLUSTER_DNS_IP: ${CLUSTER_DNS_IP}
           interval: 5m
           prune: true
           sourceRef:
