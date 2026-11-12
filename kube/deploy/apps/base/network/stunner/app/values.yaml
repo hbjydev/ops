@@ -1,0 +1,7 @@
+---
+standardCrds:
+  enabled: false
+stunnerGatewayOperator:
+  dataplane:
+    spec:
+      enableMetricsEndpoint: true

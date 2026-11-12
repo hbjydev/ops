@@ -5,8 +5,8 @@ kind: Kustomization
 resources:
   - ../../../../../kubernetes/apps/network/certificates/ks.yaml
   - ./cloudflare-dns
-  - ../../../../../kubernetes/apps/network/stunner/ks.yaml
-  - ../../../../../kubernetes/apps/network/tailscale/ks.yaml
+  - ./stunner
+  - ./tailscale
   - ./towonel-agent
   - ./unifi-cert-upload
   - ./unifi-dns

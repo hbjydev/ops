@@ -1,0 +1,7 @@
+---
+multus:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      memory: 512Mi

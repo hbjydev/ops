@@ -1,0 +1,11 @@
+---
+grafana:
+  operator:
+    dashboardsConfigMapRefEnabled: true
+    folder: observability
+    matchLabels:
+      grafana.internal/instance: grafana
+kubeEtcd:
+  service:
+    selector:
+      component: kube-apiserver     # etcd runs on control plane nodes

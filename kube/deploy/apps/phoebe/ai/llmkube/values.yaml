@@ -1,0 +1,6 @@
+---
+modelCache:
+  enabled: true
+  mode: shared
+  size: 20Gi
+  storageClass: miroir-local

@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ../../../../../kubernetes/apps/kube-system/runtimeclass.yaml
   - ../../../../../kubernetes/apps/kube-system/cilium/ks.yaml
-  - ../../../../../kubernetes/apps/kube-system/multus/ks.yaml
+  - ./multus
   - ./cilium
 namespace: kube-system
 components:

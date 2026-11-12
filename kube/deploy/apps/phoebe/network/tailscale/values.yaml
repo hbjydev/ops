@@ -1,0 +1,5 @@
+---
+operatorConfig:
+  hostname: phoebe-operator
+  defaultTags:
+    - "tag:k8s-operator"
