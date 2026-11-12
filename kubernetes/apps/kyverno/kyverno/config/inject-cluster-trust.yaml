@@ -104,6 +104,8 @@ spec:
             op: "add", path: c.path + "/volumeMounts",
             value: (has(c.container.volumeMounts) ? c.container.volumeMounts : []) + [{
               "name": dyn("phoebe-cluster-roots"), "mountPath": dyn("/var/run/cluster-trust"), "readOnly": dyn(true)
+            }, {
+              "name": dyn("phoebe-cluster-roots"), "mountPath": dyn("/var/run/trusted-roots"), "readOnly": dyn(true)
             }]
           }) +
           variables.containers.map(c, JSONPatch{
