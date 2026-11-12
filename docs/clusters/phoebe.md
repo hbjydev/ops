@@ -68,3 +68,8 @@ Dragonfly does not reload renewed TLS certificates in place. Its StatefulSet use
 `OnDelete`: replace the replica, wait for stable replication, then replace the
 primary when rotating its server chain. Verify the served certificate, not just
 the Kubernetes Secret. CNPG reloads its certificate material through the operator.
+
+The cutover was verified with a PostgreSQL mTLS login as `streaming_replica` and
+an application-side Redis `PING` through dfguard to Dragonfly. Both passed after
+removing the old client CAs from the distributed bundles and reloading database
+trust. Active pods no longer reference the old client issuers or trust mounts.
