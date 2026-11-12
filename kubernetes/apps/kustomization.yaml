@@ -16,7 +16,6 @@ resources:
   - ./gameservers
   - ./garage-system
   - ./kguardian
-  - ./kopiur-system
   - ./kro-system
   - ./kube-system
   - ./matrix

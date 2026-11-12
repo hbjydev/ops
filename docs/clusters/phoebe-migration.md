@@ -24,14 +24,14 @@ Sharing a definition does not require deploying it to every cluster.
 
 ## Current state
 
-Updated November 12, 2026 after the Kyverno cutover.
+Updated November 12, 2026 after the Kyverno and Kopiur cutovers.
 
 Phoebe reconciles from `ops`, with `kube/deploy/apps/phoebe` as its application
 composition layer. It still includes `kubernetes/apps` for unmigrated workloads.
 The Flux entry point remains `kubernetes/flux/cluster`.
 
 - Flux operator, Cilium, CoreDNS, metrics-server, External Secrets,
-  cert-manager, trust-manager and Kyverno use shared core definitions.
+  cert-manager, trust-manager, Kyverno and Kopiur use shared core definitions.
 - Phoebe retains 1Password Connect indefinitely and does not select the SDK store.
 - The CA and Let's Encrypt cutovers are complete. Database client authorities
   remain service-specific, with shared-root trust and application permissions.
@@ -48,7 +48,11 @@ The Flux entry point remains `kubernetes/flux/cluster`.
 - Kyverno's namespace support resources remain unchanged and are selected from
   Phoebe's composition through the existing common component.
 
-Kopiur remains to adopt shared core. Remaining Phoebe-specific infrastructure,
+Kopiur uses `core-kopiur` and `core-kopiur-config`. Phoebe retains its existing
+repository, UI/SSO integration and monitoring overrides under its application
+directory. The HelmRelease and ClusterRepository identities were retained.
+
+Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
 Do not remove that tree's root include until its retained resources have moved.
 
