@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ../../../../core/kube-system/cilium/ks.yaml
+  - ./app/httproute.yaml
 configMapGenerator:
   - name: cilium-values
     files:
@@ -13,7 +14,7 @@ generatorOptions:
   disableNameSuffixHash: true
   labels:
     reconcile.fluxcd.io/watch: Enabled
-# Stage the new owner before the legacy Cilium ownership handover.
+# Activate only after the legacy owner is suspended and set to Orphan.
 patches:
   - target:
       kind: Kustomization
@@ -21,4 +22,4 @@ patches:
     patch: |-
       - op: add
         path: /spec/suspend
-        value: true
+        value: false
