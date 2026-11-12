@@ -20,7 +20,7 @@ patches:
       spec:
         path: ./kube/deploy/apps/phoebe/kopiur-system/app
         dependsOn:
-          - name: snapshot-controller
+          - name: core-snapshot-controller
             namespace: kube-system
           - name: core-prometheus-crds
             namespace: observability

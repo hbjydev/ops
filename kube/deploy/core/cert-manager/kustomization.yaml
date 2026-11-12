@@ -9,3 +9,4 @@ replacements:
   - path: ../../../components/replacements/ks.yaml
 resources:
   - ./cert-manager/ks.yaml
+  - ./cert-manager-csi-driver/ks.yaml

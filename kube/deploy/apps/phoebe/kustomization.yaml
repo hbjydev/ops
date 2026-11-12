@@ -16,3 +16,8 @@ resources:
   - ../../core/kyverno
   - ./kopiur-system
   - ../../core/observability/prometheus-operator-crds/ks.yaml
+  - ../../core/kube-system/reloader
+  - ../../core/kube-system/reflector
+  - ../../core/kube-system/snapshot-controller
+  - ../../core/kube-system/ksgate
+  - ../../core/cert-manager/cert-manager-csi-driver
