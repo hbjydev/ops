@@ -64,7 +64,7 @@ spec:
 
     global:
       labels:
-        egress.policy.home.arpa/litellm: allow
+        egress.netpol.home.arpa/litellm: allow
         egress.netpol.home.arpa/cluster: allow
         db.policy.home.arpa/postgres: allow
 

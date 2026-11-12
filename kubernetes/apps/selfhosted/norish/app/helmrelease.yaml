@@ -35,7 +35,7 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           labels:
-            ingress.policy.home.arpa/external: allow
+            ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
             db.policy.home.arpa/postgres: allow
             db.policy.home.arpa/dragonfly: allow

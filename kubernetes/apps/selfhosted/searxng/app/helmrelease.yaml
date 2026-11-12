@@ -17,7 +17,7 @@ spec:
         strategy: RollingUpdate
         pod:
           labels:
-            ingress.policy.home.arpa/external: allow
+            ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
             ingress.netpol.home.arpa/o11y: allow
             db.policy.home.arpa/dragonfly: allow

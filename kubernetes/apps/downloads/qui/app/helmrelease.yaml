@@ -20,8 +20,8 @@ spec:
             # Go HTTP clients use system roots (SSL_CERT_FILE).
             # https://github.com/autobrr/qui/blob/v1.35.0/internal/services/arr/client.go
             trust.home.arpa/inject: "true"
-            ingress.policy.home.arpa/internal: allow
-            egress.policy.home.arpa/qbittorrent: allow
+            ingress.netpol.home.arpa/internal: allow
+            egress.netpol.home.arpa/qbittorrent: allow
         containers:
           app:
             image:

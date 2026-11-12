@@ -29,9 +29,9 @@ spec:
             trust.home.arpa/profile: node
           labels:
             trust.home.arpa/inject: "true"
-            egress.policy.home.arpa/sonarr: allow
-            egress.policy.home.arpa/radarr: allow
-            ingress.policy.home.arpa/external: allow
+            egress.netpol.home.arpa/sonarr: allow
+            egress.netpol.home.arpa/radarr: allow
+            ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
         containers:
           app:

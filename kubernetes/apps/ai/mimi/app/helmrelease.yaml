@@ -21,9 +21,9 @@ spec:
 
         pod:
           labels:
-            egress.policy.home.arpa/litellm: allow
-            egress.policy.home.arpa/memini: allow
-            egress.policy.home.arpa/searxng: allow
+            egress.netpol.home.arpa/litellm: allow
+            egress.netpol.home.arpa/memini: allow
+            egress.netpol.home.arpa/searxng: allow
         containers:
           mimi:
             image:

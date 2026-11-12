@@ -20,7 +20,7 @@ spec:
             # Go HTTP clients use system roots (SSL_CERT_FILE).
             # https://github.com/navidrome/navidrome/blob/v0.64.2/utils/httpclient/httpclient.go
             trust.home.arpa/inject: "true"
-            ingress.policy.home.arpa/external: allow
+            ingress.netpol.home.arpa/external: allow
             ingress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/internet: allow
         containers:

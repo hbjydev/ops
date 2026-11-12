@@ -74,11 +74,11 @@ spec:
         pod:
           labels:
             trust.home.arpa/inject: "true"
-            egress.policy.home.arpa/litellm: allow
-            egress.policy.home.arpa/honcho: allow
-            egress.policy.home.arpa/seerr: allow
-            egress.policy.home.arpa/searxng: allow
-            ingress.policy.home.arpa/external: allow
+            egress.netpol.home.arpa/litellm: allow
+            egress.netpol.home.arpa/honcho: allow
+            egress.netpol.home.arpa/seerr: allow
+            egress.netpol.home.arpa/searxng: allow
+            ingress.netpol.home.arpa/external: allow
         containers:
           app:
             image: *image

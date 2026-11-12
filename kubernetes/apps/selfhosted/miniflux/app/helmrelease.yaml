@@ -20,7 +20,7 @@ spec:
             # 2.3.5's feed transport uses Go's system roots; keep ignore_tls_errors=false.
             # https://github.com/miniflux/v2/blob/2.3.5/internal/reader/fetcher/request_builder.go
             trust.home.arpa/inject: "true"
-            ingress.policy.home.arpa/external: allow
+            ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
             db.policy.home.arpa/postgres: allow
             ingress.netpol.home.arpa/o11y: allow

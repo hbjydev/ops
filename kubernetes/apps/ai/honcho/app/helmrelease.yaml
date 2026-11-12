@@ -18,10 +18,10 @@ spec:
         pod:
           labels:
             trust.home.arpa/inject: "true"
-            ingress.policy.home.arpa/internal: allow
+            ingress.netpol.home.arpa/internal: allow
             db.policy.home.arpa/postgres: allow
             db.policy.home.arpa/dragonfly: allow
-            egress.policy.home.arpa/litellm: allow
+            egress.netpol.home.arpa/litellm: allow
             egress.netpol.home.arpa/internet: allow
         containers:
           app:

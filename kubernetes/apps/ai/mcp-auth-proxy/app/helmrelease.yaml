@@ -93,8 +93,8 @@ spec:
             # Go HTTP clients use system roots (SSL_CERT_FILE).
             # https://github.com/sigbit/mcp-auth-proxy/blob/v2.10.2/pkg/backend/transparent.go
             trust.home.arpa/inject: "true"
-            egress.policy.home.arpa/litellm: allow
-            ingress.policy.home.arpa/external: allow
+            egress.netpol.home.arpa/litellm: allow
+            ingress.netpol.home.arpa/external: allow
           securityContext:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch

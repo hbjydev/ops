@@ -18,8 +18,8 @@ spec:
         pod:
           labels:
             egress.netpol.home.arpa/internet: allow
-            egress.policy.home.arpa/lan: allow
-            egress.policy.home.arpa/iot: allow
+            egress.netpol.home.arpa/lan: allow
+            egress.netpol.home.arpa/iot: allow
 
         initContainers:
           init-config:
