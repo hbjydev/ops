@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./ca.yaml
   - ./certificate.yaml
-  - ./ciliumnetworkpolicy.yaml
   - ./dfguard.yaml
   - ./dragonfly.yaml
   - ./issuer.yaml

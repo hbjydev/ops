@@ -7,7 +7,6 @@ resources:
   - ./certificate.yaml
   - ./cluster.yaml
   - ./externalsecret.yaml
-  - ./networkpolicy.yaml
   - ./objectstore.yaml
   - ./pooler.yaml
   - ./podmonitor.yaml
