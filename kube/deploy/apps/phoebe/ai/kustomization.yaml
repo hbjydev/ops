@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../../kubernetes/apps/ai/hermes/ks.yaml
+  - ../../../../../kubernetes/apps/ai/honcho/ks.yaml
+  - ../../../../../kubernetes/apps/ai/memini/ks.yaml
+  - ../../../../../kubernetes/apps/ai/mimi/ks.yaml
+  - ../../../../../kubernetes/apps/ai/litellm/ks.yaml
+  - ../../../../../kubernetes/apps/ai/mcp-auth-proxy/ks.yaml
+  - ../../../../../kubernetes/apps/ai/llmkube/ks.yaml
+namespace: ai
+components:
+  - ../../../../components/namespace
+  - ../../../../components/namespace-backups
+  - ../../../../components/app-template
+  - ../../../../components/grafana-folder
+  - ../../../../clusters/phoebe/components/registry-credentials
+  - ../../../../clusters/phoebe/components/github-status
+  - ../../../../clusters/phoebe/components/sops

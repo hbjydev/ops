@@ -3,18 +3,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # Keep unmigrated workloads and namespace resources under their current owners.
-  - ../../../../kubernetes/apps
+  # Select shared controllers and cluster namespace compositions.
   - ../../core/flux-system/flux-operator
   - ../../core/flux-system/flux-operator/netpols.yaml
   - ../../core/kube-system/coredns
   - ../../core/kube-system/metrics-server
-  - ./kube-system/cilium
-  - ./external-secrets
-  - ./cert-manager/cert-manager
   - ./trust-manager/trust-manager
   - ../../core/kyverno
-  - ./kopiur-system/kopiur
   - ../../core/observability/prometheus-operator-crds/ks.yaml
   - ../../core/kube-system/reloader
   - ../../core/kube-system/reflector
@@ -22,18 +17,35 @@ resources:
   - ../../core/kube-system/ksgate
   - ../../core/cert-manager/cert-manager-csi-driver
   - ../../core/cnpg-system/cloudnative-pg
-  - ./cnpg-system/cloudnative-pg/ks.yaml
   - ../../core/cnpg-system/cloudnative-pg-barman-cloud-plugin
   - ../../core/dragonfly-system/dragonfly-operator
-  - ./dragonfly-system/dragonfly-operator/ks.yaml
   - ../../core/garage-system/garage-operator
   - ../../core/observability/opentelemetry-operator
   - ../../core/network/envoy-gateway
   - ../../core/crossplane-system/crossplane
-  - ./crossplane-system/crossplane/ks.yaml
   - ../../core/kro-system/kro
-  - ./flux-system/tofu-controller
-  - ./system-upgrade/tuppr
-  - ./miroir-system/miroir
-  - ./network/envoy-gateway/ks.yaml
-  - ./observability/opentelemetry/ks.yaml
+  - ./ai
+  - ./cert-manager
+  - ./cnpg-system
+  - ./crossplane-system
+  - ./database
+  - ./default
+  - ./dev
+  - ./downloads
+  - ./dragonfly-system
+  - ./flux-system
+  - ./gameservers
+  - ./garage-system
+  - ./kguardian
+  - ./kro-system
+  - ./kube-system
+  - ./matrix
+  - ./media
+  - ./miroir-system
+  - ./network
+  - ./observability
+  - ./security
+  - ./selfhosted
+  - ./system-upgrade
+  - ./external-secrets
+  - ./kopiur-system

@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../../kubernetes/apps/flux-system/flux-instance/ks.yaml
+  - ./tofu-controller
+namespace: flux-system
+components:
+  - ../../../../components/namespace
+  - ../../../../components/namespace-backups
+  - ../../../../components/app-template
+  - ../../../../components/grafana-folder
+  - ../../../../clusters/phoebe/components/registry-credentials
+  - ../../../../clusters/phoebe/components/github-status
+  - ../../../../clusters/phoebe/components/sops

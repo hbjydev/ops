@@ -27,7 +27,9 @@ Sharing a definition does not require deploying it to every cluster.
 Updated November 12, 2026 after the optional shared operator cutovers.
 
 Phoebe reconciles from `ops`, with `kube/deploy/apps/phoebe` as its application
-composition layer. It still includes `kubernetes/apps` for unmigrated workloads.
+composition layer. Its namespace compositions directly select unmigrated workload
+Kustomizations from `kubernetes/apps`. Namespace support resources now come from
+explicit shared and Phoebe-specific components.
 The Flux entry point remains `kubernetes/flux/cluster`.
 
 - Flux operator, Cilium, CoreDNS, metrics-server, External Secrets,
@@ -67,7 +69,8 @@ directory. The HelmRelease and ClusterRepository identities were retained.
 
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
-Do not remove that tree's root include until its retained resources have moved.
+Keep each legacy workload path until its application definition has moved to base
+and its cluster selection has been updated.
 
 ## Compatibility requirements
 

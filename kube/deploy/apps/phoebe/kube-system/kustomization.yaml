@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../../kubernetes/apps/kube-system/runtimeclass.yaml
+  - ../../../../../kubernetes/apps/kube-system/cilium/ks.yaml
+  - ../../../../../kubernetes/apps/kube-system/multus/ks.yaml
+  - ./cilium
+namespace: kube-system
+components:
+  - ../../../../components/namespace
+  - ../../../../components/namespace-backups
+  - ../../../../components/app-template
+  - ../../../../components/grafana-folder
+  - ../../../../clusters/phoebe/components/registry-credentials
+  - ../../../../clusters/phoebe/components/github-status
+  - ../../../../clusters/phoebe/components/sops

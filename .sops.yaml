@@ -16,6 +16,11 @@ creation_rules:
         age1jcw72528ypksvce8nc87kc00ujswpt6w4ah8sx238f0rc4cgl9lsux5s7a
       - # rhea cluster key
         age1xdaz2grs72putwrkltm9unfml32pn6ttnuaulajj9qmdtlsvfcash77rgd
+  - path_regex: kube/clusters/phoebe/components/sops/.+\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    age:
+      - age16c45zxayen5nnfzd020wqz75wrca5mhkgdk95d5pwaazwzqed5asc8z4xw
   - path_regex: kubernetes/.+\.sops\.yaml  # TEMP: Phoebe migration keys
     encrypted_regex: ^(data|stringData)$
     mac_only_encrypted: true

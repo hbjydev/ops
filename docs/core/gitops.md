@@ -10,6 +10,51 @@ Keep the application layout consistent: `apps/<cluster>/<namespace>/<application
 Core owns controller releases and their defaults. Cluster configuration owns
 credentials, provider packages, dashboards, routes and workload instances.
 
+### Application selection and namespace composition
+
+`kube/deploy/apps/base/<namespace>/<application>` holds reusable application
+manifests and their Flux Kustomizations. It is a catalogue: clusters select
+individual applications, not the entire base directory. Shared controller
+releases remain in `kube/deploy/core`.
+
+`kube/deploy/apps/<cluster>/<namespace>/kustomization.yaml` owns namespace
+composition. It selects namespace integrations, imports the chosen application
+Kustomizations from base, and includes cluster-local configuration or overrides.
+Keep application network policies with their application definitions. A cluster
+using application defaults needs only a reference to the base definition; it
+does not need an empty local application wrapper.
+
+For example, once Navidrome is migrated to base, Phoebe's media composition can
+select it with `../../base/media/navidrome/ks.yaml`. A values-only override can
+use the same optional `<release>-values` convention as core controllers. Keep
+cluster-specific hostnames, credentials and workload instances in the cluster
+layer rather than baking Phoebe assumptions into base.
+
+Namespace composition uses these independently selectable components:
+
+- `kube/components/namespace`: namespace creation and pruning protection.
+- `kube/components/namespace-backups`: backup mover annotations.
+- `kube/components/app-template`: the namespace-local chart source.
+- `kube/components/grafana-folder`: the NamespaceFolder integration, where its
+  controller is installed.
+- `kube/clusters/phoebe/components/registry-credentials`: Phoebe registry secrets.
+- `kube/clusters/phoebe/components/github-status`: Phoebe GitHub credentials and
+  Flux status reporting.
+- `kube/clusters/phoebe/components/sops`: Phoebe's existing namespace-local
+  decryption key, with its encryption recipient preserved.
+
+The initial namespace migration preserves all previously selected integrations.
+Selection can be narrowed separately after checking their consumers.
+`cluster-apps` still owns these resources; no extra Flux owner is introduced.
+Phoebe namespace compositions temporarily reference unmigrated application
+`ks.yaml` files under `kubernetes/apps` directly. Replace those references with
+base selections as each workload is migrated. The legacy aggregate and common
+namespace component have been removed.
+
+Kaniop also selects these components in its child Flux Kustomization, retaining
+its pre-existing overlap with namespace composition. Removing that overlap needs
+an explicit ownership handover and is separate from this layout change.
+
 ### Helm values
 
 A values-only override does not change the shared Flux Kustomization's path.

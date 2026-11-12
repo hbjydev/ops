@@ -9,7 +9,13 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/common
+    - ../../../../../kube/components/namespace
+    - ../../../../../kube/components/namespace-backups
+    - ../../../../../kube/components/app-template
+    - ../../../../../kube/components/grafana-folder
+    - ../../../../../kube/clusters/phoebe/components/registry-credentials
+    - ../../../../../kube/clusters/phoebe/components/github-status
+    - ../../../../../kube/clusters/phoebe/components/sops
   interval: 1h
   path: ./kubernetes/apps/security/kaniop/app
   prune: true
