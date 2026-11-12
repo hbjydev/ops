@@ -32,10 +32,7 @@ spec:
     timeout: 600
 
   litellmSettings:
-    public_mcp_servers:
-      - context7
-      - kguardian
-      - hass
+    public_mcp_servers: ${LITELLM_PUBLIC_MCP_SERVERS}
     callbacks:
       - /opt/litellm-compat/chatgpt_stream_recovery.proxy_handler_instance
     success_callback: ["prometheus"]
@@ -104,25 +101,25 @@ spec:
 
     # Prisma uses a PKCS#12 client identity and strict server verification.
     - name: DATABASE_URL
-      value: "postgresql://litellm@pooler-rw.database.svc:5432/litellm?sslmode=require&sslaccept=strict&sslcert=/var/run/trusted-roots/ca.crt&sslidentity=/var/run/secrets/postgresql/keystore.p12&sslpassword=changeit"
+      value: "${LITELLM_DATABASE_URL}"
 
     - name: LITELLM_LOG
       value: INFO
 
     - name: REDIS_HOST
-      value: dragonfly.database.svc
+      value: ${LITELLM_REDIS_HOST}
 
     - name: REDIS_PORT
       value: "6379"
 
     - name: PROXY_BASE_URL
-      value: https://llm.hayden.moe
+      value: ${LITELLM_PROXY_BASE_URL}
     - name: GENERIC_AUTHORIZATION_ENDPOINT
-      value: https://sso.hayden.moe/ui/oauth2
+      value: ${LITELLM_GENERIC_AUTHORIZATION_ENDPOINT}
     - name: GENERIC_TOKEN_ENDPOINT
-      value: https://sso.hayden.moe/oauth2/token
+      value: ${LITELLM_GENERIC_TOKEN_ENDPOINT}
     - name: GENERIC_USERINFO_ENDPOINT
-      value: https://sso.hayden.moe/oauth2/openid/litellm/userinfo
+      value: ${LITELLM_GENERIC_USERINFO_ENDPOINT}
     - name: GENERIC_SCOPE
       value: openid profile email
     - name: GENERIC_CLIENT_ID
@@ -148,11 +145,8 @@ spec:
     port: 4000
 
   route:
-    hostnames:
-      - llm.hayden.moe
-    parentRefs:
-      - name: external
-        namespace: network
+    hostnames: ${LITELLM_ROUTE_HOSTNAMES}
+    parentRefs: ${LITELLM_ROUTE_PARENT_REFS}
     filters:
       - type: RequestHeaderModifier
         requestHeaderModifier:

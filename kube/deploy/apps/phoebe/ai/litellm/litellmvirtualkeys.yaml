@@ -7,6 +7,8 @@ metadata:
   namespace: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app litellm
 spec:
   proxyRef: litellm
   secretName: kguardian-litellm
@@ -28,6 +30,8 @@ metadata:
   namespace: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app litellm
 spec:
   proxyRef: litellm
   secretName: hermes-litellm
@@ -52,6 +56,8 @@ metadata:
   namespace: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app litellm
 spec:
   proxyRef: litellm
   secretName: openclaw-litellm
@@ -77,6 +83,8 @@ metadata:
   namespace: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app litellm
 spec:
   proxyRef: litellm
   secretName: honcho-litellm
@@ -95,6 +103,8 @@ metadata:
   namespace: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    app.kubernetes.io/name: &app litellm
 spec:
   proxyRef: litellm
   secretName: silo-litellm

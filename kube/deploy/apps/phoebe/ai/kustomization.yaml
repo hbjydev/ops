@@ -7,7 +7,7 @@ resources:
   - ./honcho
   - ./memini
   - ./mimi
-  - ../../../../../kubernetes/apps/ai/litellm/ks.yaml
+  - ./litellm
   - ./mcp-auth-proxy
   - ./llmkube
 namespace: ai

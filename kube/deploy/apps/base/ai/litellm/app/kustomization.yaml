@@ -5,14 +5,7 @@ kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
   - ./postgres-certificate.yaml
-  - ./externalsecret.yaml
-  - ./grafanadashboard.yaml
   - ./litellmproxy.yaml
-  - ./litellmmodels.yaml
-  - ./litellmvirtualkeys.yaml
-  - ./mcp-secrets.yaml
-  - ./litellmmcpservers.yaml
-  - ./servicemonitor.yaml
 configMapGenerator:
   - name: litellm-chatgpt-compat
     files:

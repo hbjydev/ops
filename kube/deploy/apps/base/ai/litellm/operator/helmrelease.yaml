@@ -15,17 +15,9 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
-  values:
-    controller:
-      leaderElection:
-        enabled: true
-    webhook:
-      enabled: true
-    llmkube:
-      autoRegister: true
-    resources:
-      requests:
-        cpu: 10m
-        memory: 128Mi
-      limits:
-        memory: 512Mi
+  valuesFrom:
+    - kind: ConfigMap
+      name: litellm-operator-defaults
+    - kind: ConfigMap
+      name: litellm-operator-values
+      optional: true
