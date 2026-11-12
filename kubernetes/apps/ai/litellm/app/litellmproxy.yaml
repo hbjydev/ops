@@ -95,7 +95,7 @@ spec:
     - name: PGSSLKEY
       value: /var/run/secrets/postgresql/tls.key
     - name: PGSSLROOTCERT
-      value: /var/run/cluster-trust/ca.crt
+      value: /var/run/trusted-roots/ca.crt
     - name: PGSSLMODE
       value: verify-full
 
@@ -104,7 +104,7 @@ spec:
 
     # Prisma uses a PKCS#12 client identity and strict server verification.
     - name: DATABASE_URL
-      value: "postgresql://litellm@pooler-rw.database.svc:5432/litellm?sslmode=require&sslaccept=strict&sslcert=/var/run/cluster-trust/ca.crt&sslidentity=/var/run/secrets/postgresql/keystore.p12&sslpassword=changeit"
+      value: "postgresql://litellm@pooler-rw.database.svc:5432/litellm?sslmode=require&sslaccept=strict&sslcert=/var/run/trusted-roots/ca.crt&sslidentity=/var/run/secrets/postgresql/keystore.p12&sslpassword=changeit"
 
     - name: LITELLM_LOG
       value: INFO

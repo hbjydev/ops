@@ -64,7 +64,7 @@ spec:
               TELEMETRY_ENABLED: "false"
 
               # Database
-              DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/cluster-trust/ca.crt"
+              DB_CONNECTION_URI: "postgresql+psycopg://honcho@pooler-rw.database.svc:5432/honcho?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
             probes:
               liveness:
                 enabled: true

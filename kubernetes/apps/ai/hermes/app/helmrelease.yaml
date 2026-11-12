@@ -64,8 +64,8 @@ spec:
                 fi
             env: &baseEnv
               # Tools also use Node and curl alongside Python.
-              NODE_EXTRA_CA_CERTS: /var/run/cluster-trust/ca.crt
-              CURL_CA_BUNDLE: /var/run/cluster-trust/ca.crt
+              NODE_EXTRA_CA_CERTS: /var/run/trusted-roots/ca.crt
+              CURL_CA_BUNDLE: /var/run/trusted-roots/ca.crt
               TZ: Europe/London
               HOME: /data
               HOMEBREW_PREFIX: $(HOME)/.local/share/brew

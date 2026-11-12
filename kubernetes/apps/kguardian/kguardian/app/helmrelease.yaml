@@ -37,7 +37,7 @@ spec:
                           - name: DB_PASSWORD
                             $patch: delete
                           - name: DATABASE_URL
-                            value: "postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/cluster-trust/ca.crt"
+                            value: "postgresql://kguardian@pooler-rw.database.svc.cluster.local:5432/kguardian?sslmode=verify-full&sslcert=/var/run/secrets/postgresql/tls.crt&sslkey=/var/run/secrets/postgresql/tls.key&sslrootcert=/var/run/trusted-roots/ca.crt"
                         volumeMounts:
                           - name: postgres-certs
                             mountPath: /var/run/secrets/postgresql
