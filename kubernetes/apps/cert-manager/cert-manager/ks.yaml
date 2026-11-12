@@ -5,34 +5,59 @@ kind: Kustomization
 metadata:
   name: &app cert-manager
   namespace: &namespace cert-manager
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: cert-manager
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  deletionPolicy: Orphan
+  force: false
+  healthCheckExprs:
+    - apiVersion: cert-manager.io/v1
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      kind: ClusterIssuer
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
-      name: *app
-      namespace: *namespace
+      name: cert-manager
+      namespace: cert-manager
     - apiVersion: cert-manager.io/v1
       kind: ClusterIssuer
       name: letsencrypt-production
-  healthCheckExprs:
-    - apiVersion: cert-manager.io/v1
-      kind: ClusterIssuer
-      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
-      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
-  interval: 1h
+  interval: 5m
+  patches:
+    - patch: "apiVersion: helm.toolkit.fluxcd.io/v2\nkind: HelmRelease\nmetadata:\n  name: _\nspec:\n  install:\n    crds:
+        CreateReplace\n    strategy:\n      name: RetryOnFailure\n  rollback:\n    cleanupOnFail: true\n  timeout: 10m\n \
+        \ upgrade:\n    cleanupOnFail: true\n    crds: CreateReplace\n    strategy:\n      name: RemediateOnFailure\n    remediation:\n\
+        \      # Never auto-rollback a failed upgrade. A Helm rollback\n      # restores the previous chart *and* its values,
+        so for\n      # rook-ceph-cluster it silently downgraded Ceph and left\n      # the mon crashlooping against a newer
+        on-disk layout.\n      # A failed upgrade should stay failed and visible.\n      #\n      # This must be set explicitly:
+        Flux defaults it to true\n      # whenever retries > 0, so removing the line would not\n      # change the behaviour.\n\
+        \      remediateLastFailure: false\n      retries: 2"
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
   path: ./kubernetes/apps/cert-manager/cert-manager/app
-  prune: true
+  postBuild:
+    substitute:
+      CLUSTER: phoebe
+      CLUSTER_DNS_COREDNS_RESOLVERS: /etc/resolv.conf
+      CLUSTER_DNS_IP: 172.19.0.53
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: cert-manager
   timeout: 5m
-
+  suspend: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.m00nlit.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
