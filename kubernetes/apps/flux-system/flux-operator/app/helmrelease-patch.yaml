@@ -4,11 +4,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: flux-operator
+  namespace: flux-system
 spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: flux-operator
   install:
     remediation:
       retries: -1
@@ -17,5 +14,7 @@ spec:
     remediation:
       retries: 3
   values:
+    # Keep network policy adoption separate from sharing the operator manifests.
+    commonLabels: null
     serviceMonitor:
       create: true
