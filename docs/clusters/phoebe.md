@@ -36,3 +36,21 @@ The External Secrets namespace composition, Connect server and GitHub generator
 live under `kube/deploy/apps/phoebe/external-secrets`. Their Flux owner names and
 resource identities are retained. Namespace support still imports the legacy
 common component until its secrets, alerts and repository resources are migrated.
+
+## Certificate management
+
+Phoebe selects all three shared cert-manager owners: `core-cert-manager`,
+`core-cert-manager-ca` and `core-cert-manager-letsencrypt`. Its controller values
+preserve monitoring and current behaviour. The production ACME override retains
+the existing account key and DNS-zone restrictions; the core Cloudflare Secret
+uses the existing Connect item's `password` field.
+
+`cluster-ca` signs with `ca-phoebe-v1`, the ops-root-signed intermediate. Existing
+certificates are not forcibly renewed by the signer change. Both the ops root
+and the previous root remain in `root-ca` and `cluster-roots` trust bundles until
+old chains have been retired. The previous root is stored as public material in
+`cert-manager/legacy-root.pem`; it is not the active signing authority.
+
+`cert-manager-config` retains the selfsigned issuer, separate database client
+CAs, monitoring resources and existing namespace policies. The certificate CSI
+driver remains deployed, and its dependency points to the shared controller.

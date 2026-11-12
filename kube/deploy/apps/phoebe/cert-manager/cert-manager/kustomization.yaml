@@ -24,7 +24,7 @@ patches:
     patch: |-
       - op: add
         path: /spec/suspend
-        value: true
+        value: false
   - target:
       kind: Kustomization
       name: core-cert-manager

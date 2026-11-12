@@ -26,7 +26,6 @@ patches:
       spec:
         suspend: false
         path: ./kube/deploy/apps/phoebe/external-secrets/external-secrets/app
-        dependsOn: []
         commonMetadata:
           labels:
             app.kubernetes.io/name: external-secrets

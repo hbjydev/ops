@@ -7,7 +7,7 @@ metadata:
   namespace: cert-manager
 spec:
   path: ./kube/deploy/apps/phoebe/cert-manager/cert-manager/config
-  suspend: true
+  suspend: false
   dependsOn:
     - name: core-cert-manager
   targetNamespace: cert-manager

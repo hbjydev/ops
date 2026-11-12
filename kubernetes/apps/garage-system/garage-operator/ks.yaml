@@ -6,7 +6,7 @@ metadata:
   name: garage-operator
 spec:
   dependsOn:
-    - name: cert-manager
+    - name: core-cert-manager
       namespace: cert-manager
   interval: 1h
   path: ./kubernetes/apps/garage-system/garage-operator/app
