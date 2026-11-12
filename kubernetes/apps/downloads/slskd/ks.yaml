@@ -6,7 +6,7 @@ metadata:
   name: slskd
 spec:
   dependsOn:
-    - name: kyverno-config
+    - name: core-kyverno-config
       namespace: kyverno
     - name: kopiur-repository
       namespace: kopiur-system

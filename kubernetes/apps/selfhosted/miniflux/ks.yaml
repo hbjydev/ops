@@ -13,7 +13,7 @@ spec:
     - ../../../../components/postgres/cert
     - ../../../../components/kanidm/private
   dependsOn:
-    - name: kyverno-config
+    - name: core-kyverno-config
       namespace: kyverno
     - name: miroir-config
       namespace: miroir-system

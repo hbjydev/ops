@@ -12,7 +12,7 @@ spec:
   components:
     - ../../../../components/kopiur
   dependsOn:
-    - name: kyverno-config
+    - name: core-kyverno-config
       namespace: kyverno
     - name: miroir-config
       namespace: miroir-system

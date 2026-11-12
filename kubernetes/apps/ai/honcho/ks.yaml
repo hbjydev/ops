@@ -13,7 +13,7 @@ spec:
     - ../../../../components/postgres/base
     - ../../../../components/redis
   dependsOn:
-    - name: kyverno-config
+    - name: core-kyverno-config
       namespace: kyverno
   interval: 1h
   path: ./kubernetes/apps/ai/honcho/app

@@ -13,7 +13,7 @@ spec:
   components:
     - ../../../../components/postgres/base
   dependsOn:
-    - name: kyverno-config
+    - name: core-kyverno-config
       namespace: kyverno
   path: "./kubernetes/apps/kguardian/kguardian/app"
   prune: true
