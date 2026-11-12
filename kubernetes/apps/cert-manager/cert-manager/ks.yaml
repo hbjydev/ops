@@ -5,7 +5,11 @@ kind: Kustomization
 metadata:
   name: &app cert-manager-csi-driver
   namespace: &namespace cert-manager
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  suspend: true
+  deletionPolicy: Orphan
   commonMetadata:
     labels:
       app.kubernetes.io/name: cert-manager
@@ -20,7 +24,7 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/cert-manager/cert-manager/csi-driver
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

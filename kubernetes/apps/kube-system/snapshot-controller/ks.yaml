@@ -5,7 +5,11 @@ kind: Kustomization
 metadata:
   name: &app snapshot-controller
   namespace: &namespace kube-system
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  suspend: true
+  deletionPolicy: Orphan
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -16,7 +20,7 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/kube-system/snapshot-controller/app
-  prune: true
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
