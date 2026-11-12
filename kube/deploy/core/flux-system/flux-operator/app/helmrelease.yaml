@@ -10,6 +10,24 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-operator
+  install:
+    crds: CreateReplace
+    strategy:
+      name: RetryOnFailure
+    remediation:
+      retries: -1
+  rollback:
+    cleanupOnFail: true
+  timeout: 10m
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    strategy:
+      name: RemediateOnFailure
+    remediation:
+      # Keep a failed upgrade visible rather than rolling back automatically.
+      remediateLastFailure: false
+      retries: 2
   values:
     commonLabels:
       egress.netpol.home.arpa/apiserver: allow

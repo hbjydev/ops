@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -6,20 +7,23 @@ metadata:
   namespace: &ns flux-system
   labels:
     kustomization.flux.home.arpa/name: "flux-operator"
-    kustomization.flux.home.arpa/helmpatches: "false"
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: flux-operator
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: flux-operator
+      namespace: *ns
+  interval: 1h
   path: ./kube/deploy/core/flux-system/flux-operator/app
-  dependsOn: []
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: *ns
   targetNamespace: *ns
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: core-flux-netpols
-  namespace: flux-system
-spec:
-  dependsOn:
-    - name: core-cilium
-      namespace: kube-system
-  path: ./kube/deploy/core/flux-system/flux-operator/netpols
-  targetNamespace: flux-system
+  timeout: 5m

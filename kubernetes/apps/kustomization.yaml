@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./ai
+  - ./cert-manager
+  - ./cnpg-system
+  - ./crossplane-system
+  - ./database
+  - ./default
+  - ./dev
+  - ./downloads
+  - ./dragonfly-system
+  - ./external-secrets
+  - ./flux-system
+  - ./gameservers
+  - ./garage-system
+  - ./kguardian
+  - ./kopiur-system
+  - ./kro-system
+  - ./kube-system
+  - ./kyverno
+  - ./matrix
+  - ./media
+  - ./miroir-system
+  - ./network
+  - ./observability
+  - ./security
+  - ./selfhosted
+  - ./system-upgrade

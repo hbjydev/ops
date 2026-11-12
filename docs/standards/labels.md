@@ -32,6 +32,7 @@ should be documented below.
 
 | Label | Description | Relevant To | Allowed values |
 | ----- | ----------- | ----------- | -------------- |
+| `kustomization.flux.home.arpa/defaults` | Skip parent defaults for a Kustomization that defines its own behavior. | Flux Kustomizations | `disabled` |
 | `trust.home.arpa/inject` | Whether or not to inject the trusted root bundle into this pod. | Pods | `true` (default), `false` |
 | `trust.home.arpa/profile` | Defines that the pod should use a well-known 'profile' for injecting trust roots | Pods | `default` (default), `node`, `python`, `curl` |
 | `egress.netpol.home.arpa/apiserver` | Allow outgoing Kubernetes API traffic, including local-host TCP 6443. | Pods | `allow` |
