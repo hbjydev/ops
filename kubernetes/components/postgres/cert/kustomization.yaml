@@ -104,8 +104,8 @@ patches:
                     csi.cert-manager.io/common-name: ${DATABASE_OWNER:=${APP}}
                     csi.cert-manager.io/dns-names: $${POD_NAME}.$${POD_NAMESPACE}.svc.cluster.local
             root-ca:
-              type: secret
-              name: root-ca
+              type: configMap
+              name: trusted-roots
               defaultMode: 0440
               globalMounts:
                 - path: /var/run/secrets/root-ca
