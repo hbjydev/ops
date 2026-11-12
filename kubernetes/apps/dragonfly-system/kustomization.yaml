@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: dragonfly-system
 components:
   - ../../components/common
-resources:
-  - ./dragonfly-operator/ks.yaml
+resources: []

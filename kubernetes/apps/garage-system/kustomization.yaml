@@ -6,6 +6,5 @@ namespace: garage-system
 components:
   - ../../components/common
 resources:
-  - ./garage-operator/ks.yaml
   - ./garage/ks.yaml
   - ./webui/ks.yaml

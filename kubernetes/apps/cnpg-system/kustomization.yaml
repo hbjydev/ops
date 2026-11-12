@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: cnpg-system
 components:
   - ../../components/common
-resources:
-  - ./cloudnative-pg/ks.yaml
+resources: []

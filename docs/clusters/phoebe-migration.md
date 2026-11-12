@@ -24,7 +24,7 @@ Sharing a definition does not require deploying it to every cluster.
 
 ## Current state
 
-Updated November 12, 2026 after the utility controller and cert-manager CSI cutovers.
+Updated November 12, 2026 after the optional shared operator cutovers.
 
 Phoebe reconciles from `ops`, with `kube/deploy/apps/phoebe` as its application
 composition layer. It still includes `kubernetes/apps` for unmigrated workloads.
@@ -37,6 +37,10 @@ The Flux entry point remains `kubernetes/flux/cluster`.
   are unchanged. Kopiur depends on `core-snapshot-controller`.
 - Core owns the Prometheus CRDs and password ClusterGenerator (`pw`). Controller
   monitoring resources are enabled in core, independently of a monitoring stack.
+- CloudNativePG and Barman, Dragonfly, Garage, OpenTelemetry, Envoy Gateway,
+  Crossplane, kro, tofu-controller, tuppr and miroir now use optional core
+  definitions. Phoebe selects the whole batch; Rhea selects only OpenTelemetry,
+  Envoy Gateway and tuppr. Cluster configuration stays separate.
 - Phoebe retains 1Password Connect indefinitely and does not select the SDK store.
 - The CA and Let's Encrypt cutovers are complete. Database client authorities
   remain service-specific, with shared-root trust and application permissions.

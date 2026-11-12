@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: kro-system
 components:
   - ../../components/common
-resources:
-  - ./kro/ks.yaml
+resources: []
