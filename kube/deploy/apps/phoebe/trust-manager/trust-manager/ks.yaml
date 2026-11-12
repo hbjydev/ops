@@ -7,7 +7,7 @@ metadata:
   labels:
     kustomization.flux.home.arpa/decryption: disabled
 spec:
-  path: ./kube/deploy/apps/phoebe/trust-manager/bundles
+  path: ./kube/deploy/apps/phoebe/trust-manager/trust-manager/bundles
   targetNamespace: trust-manager
   dependsOn:
     - name: core-trust-manager

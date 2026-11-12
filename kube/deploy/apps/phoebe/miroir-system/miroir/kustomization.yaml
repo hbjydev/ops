@@ -4,11 +4,14 @@ kind: Kustomization
 resources:
   - ./ks.yaml
   - ../../../../core/miroir-system/miroir/ks.yaml
-patches:
-  - target:
-      kind: Kustomization
-      name: core-miroir
-    patch: |
-      - op: replace
-        path: /spec/path
-        value: ./kube/deploy/apps/phoebe/miroir-system/miroir/app
+namespace: miroir-system
+configMapGenerator:
+  - name: miroir-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled

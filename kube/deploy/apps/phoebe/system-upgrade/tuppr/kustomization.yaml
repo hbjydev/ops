@@ -4,11 +4,15 @@ kind: Kustomization
 resources:
   - ./ks.yaml
   - ../../../../core/system-upgrade/tuppr/ks.yaml
-patches:
-  - target:
-      kind: Kustomization
-      name: core-tuppr
-    patch: |
-      - op: replace
-        path: /spec/path
-        value: ./kube/deploy/apps/phoebe/system-upgrade/tuppr/app
+namespace: system-upgrade
+configMapGenerator:
+  - name: tuppr-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+    app.kubernetes.io/name: &app tuppr
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled

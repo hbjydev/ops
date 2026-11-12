@@ -10,7 +10,7 @@ resources:
 configMapGenerator:
   - name: cilium-values
     files:
-      - values.yaml=app/values.yaml
+      - values.yaml=values.yaml
 generatorOptions:
   disableNameSuffixHash: true
   labels:

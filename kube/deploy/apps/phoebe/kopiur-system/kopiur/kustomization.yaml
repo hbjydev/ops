@@ -3,9 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 components:
-  - ../../../../../kubernetes/components/common
+  - ../../../../../../kubernetes/components/common
 resources:
-  - ../../../core/kopiur-system/kopiur/ks.yaml
+  - ../../../../core/kopiur-system/kopiur/ks.yaml
 namespace: kopiur-system
 patches:
   - target:
@@ -18,7 +18,7 @@ patches:
       metadata:
         name: core-kopiur
       spec:
-        path: ./kube/deploy/apps/phoebe/kopiur-system/app
+        path: ./kube/deploy/apps/phoebe/kopiur-system/kopiur/app
         dependsOn:
           - name: core-snapshot-controller
             namespace: kube-system
@@ -34,7 +34,7 @@ patches:
       metadata:
         name: core-kopiur-config
       spec:
-        path: ./kube/deploy/apps/phoebe/kopiur-system/config
+        path: ./kube/deploy/apps/phoebe/kopiur-system/kopiur/config
         postBuild:
           substitute:
             APP: &app kopiur

@@ -1,4 +1,25 @@
 ---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: crossplane-config
+  namespace: crossplane-system
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+spec:
+  path: ./kube/deploy/apps/phoebe/crossplane-system/crossplane/config
+  targetNamespace: crossplane-system
+  dependsOn:
+    - name: core-crossplane
+      namespace: crossplane-system
+    - name: core-external-secrets
+      namespace: external-secrets
+  prune: true
+  wait: false
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: crossplane
+---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -19,3 +40,6 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
+  dependsOn:
+    - name: crossplane-config
+      namespace: crossplane-system

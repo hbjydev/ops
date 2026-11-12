@@ -12,25 +12,28 @@ resources:
   - ./kube-system/cilium
   - ./external-secrets
   - ./cert-manager/cert-manager
-  - ./trust-manager
+  - ./trust-manager/trust-manager
   - ../../core/kyverno
-  - ./kopiur-system
+  - ./kopiur-system/kopiur
   - ../../core/observability/prometheus-operator-crds/ks.yaml
   - ../../core/kube-system/reloader
   - ../../core/kube-system/reflector
   - ../../core/kube-system/snapshot-controller
   - ../../core/kube-system/ksgate
   - ../../core/cert-manager/cert-manager-csi-driver
-  - ./cnpg-system/cloudnative-pg
+  - ../../core/cnpg-system/cloudnative-pg
+  - ./cnpg-system/cloudnative-pg/ks.yaml
   - ../../core/cnpg-system/cloudnative-pg-barman-cloud-plugin
-  - ./dragonfly-system/dragonfly-operator
+  - ../../core/dragonfly-system/dragonfly-operator
+  - ./dragonfly-system/dragonfly-operator/ks.yaml
   - ../../core/garage-system/garage-operator
   - ../../core/observability/opentelemetry-operator
   - ../../core/network/envoy-gateway
-  - ./crossplane-system/crossplane
+  - ../../core/crossplane-system/crossplane
+  - ./crossplane-system/crossplane/ks.yaml
   - ../../core/kro-system/kro
   - ./flux-system/tofu-controller
   - ./system-upgrade/tuppr
   - ./miroir-system/miroir
-  - ./network/envoy-gateway
-  - ./observability/opentelemetry
+  - ./network/envoy-gateway/ks.yaml
+  - ./observability/opentelemetry/ks.yaml

@@ -3,59 +3,85 @@
 Flux deploys the configuration stored in this repository.
 [Flux Operator](https://fluxoperator.dev/) manages Flux on each cluster.
 
-## Cluster overrides for shared core
+## Deployment layers
 
-A Kustomize component groups reusable patches and resources.
-Shared Flux Kustomizations can select a component from a standard directory for each cluster:
-`kube/deploy/apps/<cluster>/<namespace>/<workload>/overrides`.
-The first workload that uses this convention is `core-flux-operator`.
+Cluster roots explicitly select shared controllers and local Flux Kustomizations.
+Keep the application layout consistent: `apps/<cluster>/<namespace>/<application>`.
+Core owns controller releases and their defaults. Cluster configuration owns
+credentials, provider packages, dashboards, routes and workload instances.
 
-The shared Flux Kustomization keeps its workload path and selects the component relative to that path:
+### Helm values
 
-```yaml
-spec:
-  path: ./kube/deploy/core/flux-system/flux-operator/app
-  components:
-    - ../../../../apps/${CLUSTER}/flux-system/flux-operator/overrides
-  ignoreMissingComponents: true
-```
-
-The parent `cluster-apps` substitutes `${CLUSTER}` before it applies the shared Flux Kustomization.
-The child then builds the shared manifests with the selected component.
-Substitution on the child itself occurs too late to select its component path.
-Phoebe's active parent in `kubernetes/flux/cluster/ks.yaml` supplies `CLUSTER: phoebe` directly.
-The parents under `kube/clusters/<cluster>/flux/apps.yaml` read `CLUSTER` from the `cluster-info` ConfigMap.
-
-Each override directory contains a `kustomization.yaml` with `kind: Component`:
+A values-only override does not change the shared Flux Kustomization's path.
+The application composition imports the core definition and generates its optional
+`<release>-values` ConfigMap from a sibling `values.yaml`:
 
 ```yaml
-apiVersion: kustomize.config.k8s.io/v1alpha1
-kind: Component
-patches:
-  - path: ./helmrelease-patch.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: system-upgrade
+resources:
+  - ../../../../core/system-upgrade/tuppr/ks.yaml
+  - ./ks.yaml
+configMapGenerator:
+  - name: tuppr-values
+    files:
+      - values.yaml=values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
 ```
 
-The patch targets the HelmRelease directly.
-The cluster's top-level `kustomization.yaml` imports the shared workload directory directly.
-Phoebe selects `../../core/flux-system/flux-operator` without a namespace wrapper or a patch that injects another patch.
-For a cluster that uses shared defaults, the override directory is absent.
+Core HelmReleases load `<release>-defaults`, followed by the optional
+`<release>-values`. A cluster using only defaults needs no values wrapper.
+Keep override ConfigMaps in the HelmRelease's namespace. Preserve any existing
+resource labels when moving generators between reconciliation owners.
 
-With `ignoreMissingComponents: true`, Flux uses shared defaults when the override directory is absent.
-Phoebe and Rhea use this behaviour for the Flux operator.
-A misspelled path or accidental deletion also selects shared defaults, so render comparisons must protect required cluster behavior.
+### Local resources and exceptional patches
 
-To adopt the convention for another shared workload:
+Put local resources in a separate `config/` directory, or a descriptive directory
+such as `gateways/`, `collector/` or `gcp/`. Declare their Flux owner in `ks.yaml`
+and depend on the appropriate controller. Adding a dashboard or provider package
+must not require redirecting the controller's core path through a local overlay.
 
-1. Add a component directory for each cluster that needs workload overrides.
-2. Move the workload overrides into direct resource patches within those components.
-3. Add the relative component path to the shared Flux Kustomization.
-4. Remove the old patches that inject workload overrides into the Flux Kustomization.
-5. Render each parent with its cluster variables, then render the child with the resulting Flux Kustomization.
-6. Make sure that resource identities, values, and unrelated resources match the previous output.
+Keep actual resource patches explicit. Phoebe's External Secrets chart-version
+patch and Kopiur's Helm post-renderer still require overlays. These are exceptions
+to the values-only pattern, not reasons to wrap every shared controller.
 
-Keep Flux Kustomization names unchanged during this refactor to preserve resource ownership.
-The parent substitution also processes its other rendered resources, so compare the complete parent output when enabling it.
-See the [Flux component documentation](https://fluxcd.io/flux/components/kustomize/kustomizations/#components) for component path rules.
+Flux Operator also retains its optional cluster component convention:
+`apps/${CLUSTER}/flux-system/flux-operator/overrides`, selected with
+`ignoreMissingComponents: true`. Neither Phoebe nor Rhea currently supplies one.
+The parent must substitute the cluster name before the child selects a component.
+
+### Kustomization files and local rendering
+
+Keep `kustomization.yaml` where it performs selection, generates ConfigMaps,
+imports shared resources, or applies patches, components or transformations.
+Do not keep it merely to enumerate all manifests under a Flux build root.
+Flux generates that inventory recursively when `spec.path` has no kustomization.
+All YAML files beneath such a root must be Kubernetes manifests; raw Helm values
+belong beside a real generator and must not be included in automatic discovery.
+
+A directory referenced by Kustomize `resources` still needs its own kustomization.
+When a wrapper only imports `ks.yaml`, reference that file directly from the
+cluster root instead. Keep core selection explicit rather than recursively
+scanning all available controllers.
+
+Use the offline render helper for either kind of build root:
+
+```sh
+scripts/render-manifests kube/deploy/apps/phoebe
+scripts/render-manifests kube/deploy/apps/phoebe/crossplane-system/crossplane/gcp
+```
+
+The helper uses Flux's in-memory build and does not write generated files to the
+checkout. It validates manifest composition, not live dependencies or cluster
+substitutions. For the full reconciliation transformations, use `flux build
+kustomization` with the real Flux definition and the required substitution inputs.
+
+Keep Flux owner names unchanged during layout-only moves. Moving a resource to a
+different owner requires staged pruning protection and verification of adoption.
 
 ## Prometheus CRDs
 

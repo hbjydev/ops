@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: cert-manager
 resources:
   - ../../../../core/cert-manager/cert-manager/ks.yaml
-  - ./config.yaml
+  - ./ks.yaml
 configMapGenerator:
   - name: cert-manager-values
     files:
