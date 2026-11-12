@@ -3,7 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./default-deny.yaml
+  # Default-deny is opt-in; these allowances do not enable isolation.
   - ./default-dns.yaml
   - ./hubble.yaml
   - ./labelled-egress.yaml

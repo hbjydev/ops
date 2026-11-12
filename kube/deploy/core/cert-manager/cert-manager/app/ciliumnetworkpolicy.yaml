@@ -6,6 +6,8 @@ metadata:
   name: np-e-a-cm-to-letsencrypt
   namespace: cert-manager
 spec:
+  enableDefaultDeny:
+    egress: false
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cert-manager
@@ -13,7 +15,7 @@ spec:
     - toFQDNs:
         - matchPattern: 'acme-v02.api.letsencrypt.org'
         - matchPattern: 'acme-staging-v02.api.letsencrypt.org'
-    - toPorts:
+      toPorts:
         - ports:
             - port: "443"
               protocol: TCP
@@ -25,13 +27,15 @@ metadata:
   name: np-e-a-cm-to-cloudflare
   namespace: cert-manager
 spec:
+  enableDefaultDeny:
+    egress: false
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cert-manager
   egress:
     - toFQDNs:
         - matchPattern: '*.cloudflare.com'
-    - toPorts:
+      toPorts:
         - ports:
             - port: "443"
               protocol: TCP
