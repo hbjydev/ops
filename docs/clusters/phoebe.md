@@ -47,12 +47,24 @@ account-key Secret names. The core Cloudflare Secret uses the existing Connect
 item's `password` field. The previous production account Secret is retained for
 rollback; existing certificates are not forcibly renewed.
 
-`cluster-ca` signs with `ca-phoebe-v1`, the ops-root-signed intermediate. Existing
-certificates are not forcibly renewed by the signer change. Both the ops root
-and the previous root remain in `root-ca` and `cluster-roots` trust bundles until
-old chains have been retired. The previous root is stored as public material in
-`cert-manager/legacy-root.pem`; it is not the active signing authority.
+`cluster-ca` signs with `ca-phoebe-v1`, the ops-root-signed intermediate. Database
+server chains have been renewed under that intermediate. Postgres, dfguard and
+Dragonfly each have a `*-client-ca-v2` issuer signed by `cluster-ca`; application,
+pooler and replication client certificates use those service issuers. Issuance
+permissions and application identities enforce service boundaries because their
+chains share the ops root.
 
-`cert-manager-config` retains the selfsigned issuer, separate database client
-CAs, monitoring resources and existing namespace policies. The certificate CSI
-driver remains deployed, and its dependency points to the shared controller.
+Phoebe selects core trust-manager in the `trust-manager` namespace. Core's
+`trusted-roots` ConfigMap supplies server trust. The `database-client-trust` owner
+supplies three private client-auth Secret bundles to the `database` namespace,
+using each service CA chain and the ops root, without public internet roots.
+
+`cert-manager-config` retains the service client authorities, monitoring resources
+and namespace policies. The certificate CSI driver remains deployed with its
+shared-controller dependency. Old client signing Secrets are retained only for
+rollback; old issuers and trust bundles are retired.
+
+Dragonfly does not reload renewed TLS certificates in place. Its StatefulSet uses
+`OnDelete`: replace the replica, wait for stable replication, then replace the
+primary when rotating its server chain. Verify the served certificate, not just
+the Kubernetes Secret. CNPG reloads its certificate material through the operator.

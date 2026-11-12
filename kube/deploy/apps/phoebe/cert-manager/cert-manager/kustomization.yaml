@@ -10,9 +10,6 @@ configMapGenerator:
   - name: cert-manager-values
     files:
       - values.yaml=app/values.yaml
-  - name: phoebe-legacy-root
-    files:
-      - root.pem=legacy-root.pem
 generatorOptions:
   disableNameSuffixHash: true
   labels:

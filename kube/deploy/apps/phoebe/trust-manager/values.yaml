@@ -2,7 +2,6 @@
 secretTargets:
   enabled: true
   authorizedSecrets:
-    - root-ca # Transitional: retired after server-trust consumers move.
     - postgres-client-ca
     - dfguard-client-ca
     - dragonfly-client-ca
