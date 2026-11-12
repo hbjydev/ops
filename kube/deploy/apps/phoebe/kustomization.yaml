@@ -8,3 +8,4 @@ resources:
   - ../../core/flux-system/flux-operator
   - ../../core/kube-system/coredns
   - ../../core/kube-system/metrics-server
+  - ./kube-system/cilium

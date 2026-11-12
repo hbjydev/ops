@@ -13,3 +13,12 @@ generatorOptions:
   disableNameSuffixHash: true
   labels:
     reconcile.fluxcd.io/watch: Enabled
+# Stage the new owner before the legacy Cilium ownership handover.
+patches:
+  - target:
+      kind: Kustomization
+      name: core-cilium
+    patch: |-
+      - op: add
+        path: /spec/suspend
+        value: true
