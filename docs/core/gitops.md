@@ -180,6 +180,28 @@ inline annotations map can suppress annotations supplied through `valuesFrom`;
 workloads without those patches should omit the inline map. Check the live pod
 template and network attachment when moving Multus settings into cluster values.
 
+### Observability workloads
+
+Gatus and the Grafana/VictoriaMetrics instance definitions live in `apps/base`.
+Grafana Operator and VictoriaMetrics Operator are optional entries under
+`core/observability`. Phoebe selects them explicitly alongside its instances;
+Rhea does not select them. Their existing Flux owner names (`grafana` and
+`victoria-metrics-operator`) are retained so dependent workloads keep the same
+ownership and dependency references.
+
+Helm releases use required defaults and optional cluster values ConfigMaps.
+Native instance resources use namespace-scoped Flux substitutions for storage,
+retention, Grafana authentication, plugins and routes. VictoriaMetrics' agent
+uses the forwarded `CLUSTER` metadata for its external label. Numeric-looking
+retention strings include JSON quotes in the substitution value to preserve the
+CRD's string type after Kustomize and Flux processing.
+
+Phoebe owns Gatus's generated configuration, Grafana's identity resources and
+credentials, dashboard/datasource bindings, Tailscale ingresses and Alertmanager
+routing. Existing PVCs and Kopiur policies retain their application owners. The
+unselected `logs/vlagent.yaml` configuration stays unselected in Phoebe; the
+migration does not enable another log collector.
+
 ### Reusable workload integrations
 
 Workloads select integrations from `kube/components`:

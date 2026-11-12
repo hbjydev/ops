@@ -4,8 +4,6 @@ apiVersion: kaniop.rs/v1beta1
 kind: KanidmOAuth2Client
 metadata:
   name: grafana
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   displayname: Grafana
   image:
@@ -30,8 +28,6 @@ apiVersion: kaniop.rs/v1beta1
 kind: KanidmGroup
 metadata:
   name: grafana-users
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   kanidmRef:
     name: kanidm
@@ -47,8 +43,6 @@ apiVersion: kaniop.rs/v1beta1
 kind: KanidmGroup
 metadata:
   name: grafana-editors
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   kanidmRef:
     name: kanidm
@@ -64,8 +58,6 @@ apiVersion: kaniop.rs/v1beta1
 kind: KanidmGroup
 metadata:
   name: grafana-admins
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   kanidmRef:
     name: kanidm

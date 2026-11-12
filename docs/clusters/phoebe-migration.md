@@ -92,10 +92,14 @@ and monitoring bindings. Application, integration and storage owners are retaine
 Forgejo, Silo, slskd, Continuwuity, LiveKit and Home Assistant now use base
 as well, including LiveKit's JWT service and Home Assistant's Matter Server and
 OpenThread releases. Their credentials, generated configuration and cluster
-network/device settings live under Phoebe. Observability workloads and the
-remaining infrastructure/config selections still use the compatibility tree.
+network/device settings live under Phoebe. The remaining infrastructure/config selections still use the compatibility tree.
 Both LiveKit HelmReleases were already failing upgrades/rollbacks before this
 batch; that operational issue remains separate from the layout migration.
+
+Gatus, Grafana and VictoriaMetrics now use the layered layout too. Their
+operators are optional core selections; reusable instance definitions live in
+base, with cluster settings and bindings in Phoebe. Only infrastructure/config
+selections still reference `kubernetes/apps`.
 
 Remaining Phoebe-specific infrastructure,
 workloads and operations still need migration out of the compatibility tree.
