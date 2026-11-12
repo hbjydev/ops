@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./navidrome
   - ./picard
-  - ../../../../../kubernetes/apps/media/plex/ks.yaml
+  - ./plex
   - ../../../../../kubernetes/apps/media/silo/ks.yaml
   - ./seerr
 namespace: media

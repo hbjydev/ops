@@ -1,0 +1,9 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.hayden.moe"
+    parentRefs:
+      - name: internal
+        namespace: network
+        sectionName: https

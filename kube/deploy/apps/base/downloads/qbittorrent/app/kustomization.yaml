@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./ciliumnetworkpolicy.yaml
+  - ./helmrelease.yaml
+configMapGenerator:
+  - name: qbittorrent-defaults
+    files:
+      - values.yaml=values.yaml
+    options:
+      labels:
+        reconcile.fluxcd.io/watch: Enabled
+generatorOptions:
+  disableNameSuffixHash: true
