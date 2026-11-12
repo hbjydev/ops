@@ -74,6 +74,8 @@ should be documented below.
 | `egress.netpol.home.arpa/litellm` | Allow outgoing traffic to `litellm` on its configured service ports. | Pods on Phoebe | `allow` |
 | `egress.netpol.home.arpa/honcho` | Allow outgoing traffic to `honcho` on its configured service ports. | Pods on Phoebe | `allow` |
 | `egress.netpol.home.arpa/memini` | Allow outgoing traffic to `memini` on its configured service ports. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/postgres` | Allow PostgreSQL client traffic on port 5432 and ICMP to the postgres cluster and its poolers. | Pods on Phoebe | `allow` |
+| `egress.netpol.home.arpa/dragonfly` | Allow Redis client traffic on port 6379 and ICMP to Dragonfly and dfguard. | Pods on Phoebe | `allow` |
 
 Apply network labels to pod templates. Labels on a HelmRelease or Deployment alone do not select its pods.
 

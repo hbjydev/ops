@@ -19,3 +19,5 @@ resources:
   - ./local-ingress.yaml
   - ./local-egress.yaml
   - ./gateways.yaml
+  - ./postgres.yaml
+  - ./dragonfly.yaml
