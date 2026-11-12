@@ -1,26 +1,53 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# Temporary handover owner: protection is committed and excluded from parent defaults.
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app external-secrets
-  namespace: &namespace external-secrets
+  name: external-secrets
+  namespace: external-secrets
+  labels:
+    kustomization.flux.home.arpa/defaults: disabled
 spec:
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: external-secrets
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  deletionPolicy: Orphan
+  force: false
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
-      name: *app
-      namespace: *namespace
-  interval: 1h
+      name: external-secrets
+      namespace: external-secrets
+  interval: 5m
+  patches:
+    - patch: "apiVersion: helm.toolkit.fluxcd.io/v2\nkind: HelmRelease\nmetadata:\n  name: _\nspec:\n  install:\n    crds:
+        CreateReplace\n    strategy:\n      name: RetryOnFailure\n  rollback:\n    cleanupOnFail: true\n  timeout: 10m\n \
+        \ upgrade:\n    cleanupOnFail: true\n    crds: CreateReplace\n    strategy:\n      name: RemediateOnFailure\n    remediation:\n\
+        \      # Never auto-rollback a failed upgrade. A Helm rollback\n      # restores the previous chart *and* its values,
+        so for\n      # rook-ceph-cluster it silently downgraded Ceph and left\n      # the mon crashlooping against a newer
+        on-disk layout.\n      # A failed upgrade should stay failed and visible.\n      #\n      # This must be set explicitly:
+        Flux defaults it to true\n      # whenever retries > 0, so removing the line would not\n      # change the behaviour.\n\
+        \      remediateLastFailure: false\n      retries: 2"
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
   path: ./kube/deploy/apps/phoebe/external-secrets/external-secrets/app
-  prune: true
+  postBuild:
+    substitute:
+      CLUSTER: phoebe
+      CLUSTER_DNS_COREDNS_RESOLVERS: /etc/resolv.conf
+      CLUSTER_DNS_IP: 172.19.0.53
+  prune: false
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: external-secrets
   timeout: 15m
+  suspend: true
