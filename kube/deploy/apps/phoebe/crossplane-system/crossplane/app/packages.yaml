@@ -4,6 +4,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-gcp-cloudplatform
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.upbound.io/upbound/provider-gcp-cloudplatform:v3.0.1
   runtimeConfigRef:
@@ -14,6 +16,8 @@ apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: provider-gcp-cloudplatform
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   serviceAccountTemplate:
     metadata:
@@ -46,6 +50,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-gcp-iam
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.upbound.io/upbound/provider-gcp-iam:v3.0.1
   runtimeConfigRef:
@@ -56,6 +62,8 @@ apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: provider-gcp-iam
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   serviceAccountTemplate:
     metadata:
@@ -87,6 +95,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-gcp-storage
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.upbound.io/upbound/provider-gcp-storage:v3.0.1
   runtimeConfigRef:
@@ -97,6 +107,8 @@ apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
   name: provider-gcp-storage
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   serviceAccountTemplate:
     metadata:
@@ -128,6 +140,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
   name: function-patch-and-transform
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.crossplane.io/crossplane-contrib/function-patch-and-transform:v0.10.3
 ---
@@ -136,6 +150,8 @@ apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
   name: function-go-templating
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.crossplane.io/crossplane-contrib/function-go-templating:v0.12.3
 ---
@@ -144,5 +160,7 @@ apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
   name: function-auto-ready
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   package: xpkg.crossplane.io/crossplane-contrib/function-auto-ready:v0.6.3
