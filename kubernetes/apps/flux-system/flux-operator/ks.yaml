@@ -16,7 +16,8 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/flux-system/flux-operator/app
-  prune: true
+  prune: false
+  deletionPolicy: Orphan
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
