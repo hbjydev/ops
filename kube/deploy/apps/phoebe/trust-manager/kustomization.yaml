@@ -13,11 +13,3 @@ generatorOptions:
   disableNameSuffixHash: true
   labels:
     reconcile.fluxcd.io/watch: Enabled
-# Removed after the old release is fully uninstalled.
-patches:
-  - target:
-      kind: Kustomization
-    patch: |-
-      - op: add
-        path: /spec/suspend
-        value: true
