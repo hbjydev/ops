@@ -43,8 +43,6 @@ spec:
 
               TOWONEL_HUB_ALLOW_PRIVILEGED_PORTS: "true"
               TOWONEL_HUB_RELAY_URL: https://relay.towonel.${DOMAIN}
-              TOWONEL_INVITE_HASH_KEY: ${TOWONEL_INVITE_HASH_KEY}
-              TOWONEL_OPERATOR_KEY: ${TOWONEL_OPERATOR_KEY}
               TOWONEL_HUB_PUBLIC_URL: https://towonel.${DOMAIN}
 
               # Edge DNS differs from hub DNS, so override the derived default:
