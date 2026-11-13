@@ -49,6 +49,8 @@ spec:
     - ../../../../../../components/certificate
   postBuild:
     substitute:
+      APP: envoy-gateways
+      NAMESPACE: network
       SUBDOMAIN: rhea
   interval: 1h
   path: ./kube/deploy/apps/rhea/network/envoy-gateway/gateways
