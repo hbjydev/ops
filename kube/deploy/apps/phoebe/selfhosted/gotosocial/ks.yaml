@@ -35,6 +35,7 @@ spec:
       OIDC_REDIRECT_URLS: '["https://gts.hayden.moe/auth/callback"]'
       OIDC_USERS_GROUP_MEMBERS: '[hayden]'
       OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+      OIDC_ALLOW_INSECURE_CLIENT_DISABLE_PKCE: "true"
   prune: true
   retryInterval: 2m
   sourceRef:
