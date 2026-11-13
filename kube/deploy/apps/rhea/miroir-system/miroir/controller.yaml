@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomization.flux.home.arpa/decryption: disabled
+    kustomization.flux.home.arpa/helm-defaults: disabled
+  name: core-miroir
+  namespace: miroir-system
+spec:
+  dependsOn:
+    - name: core-prometheus-crds
+      namespace: observability
+    - name: core-snapshot-controller
+      namespace: kube-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: miroir
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/core/miroir-system/miroir/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: miroir-system
+  wait: false
+  patches:
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: miroir
+      patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: miroir
+        spec:
+          install:
+            strategy:
+              name: RetryOnFailure
+          timeout: 10m
+          upgrade:
+            cleanupOnFail: true
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: false
+              retries: 2
+          values:
+            agent:
+              loopfileBaseDirs:
+                - /var/lib/miroir
+            # The chart schema only accepts integer overcommitRatio values.
+            # The later CLI flag overrides it with 39% of /var, about 24 GiB.
+            # This bounds requested volume sizes, not snapshot disk usage.
+            extraArgs:
+              - --overcommit-ratio=0.39
+            freeSpaceRatio: 1
+            storageCapacity:
+              enabled: true
