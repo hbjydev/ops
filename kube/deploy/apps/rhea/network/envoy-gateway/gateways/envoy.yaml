@@ -26,6 +26,11 @@ spec:
               memory: 512Mi
       envoyService:
         externalTrafficPolicy: Local
+        patch:
+          type: StrategicMerge
+          value:
+            spec:
+              internalTrafficPolicy: Local
   shutdown:
     drainTimeout: 180s
   telemetry:

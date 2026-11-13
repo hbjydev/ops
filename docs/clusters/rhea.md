@@ -61,6 +61,8 @@ The exact hostname `towonel.thighhighs.moe` uses a separate HTTPS listener and t
 Envoy terminates TLS with a cert-manager certificate and forwards HTTP to the hub API on port `8443`.
 The existing `https` listener handles only `rhea.hayden.moe`.
 The PROXY v2 policy applies only to the edge TLSRoute.
+Both traffic policies on the Envoy Service use `Local`.
+Matching policies allow pods on Rhea to reach the gateway through its public IP with Cilium.
 
 Towonel runs with pod networking, and its internal listeners bind to the pod interfaces.
 The Helm post-renderer overrides the chart's forced host networking.
