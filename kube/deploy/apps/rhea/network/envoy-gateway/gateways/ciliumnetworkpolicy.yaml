@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: envoy-external
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/managed-by: envoy-gateway
+      gateway.networking.k8s.io/gateway-name: external
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  ingress:
+    - fromEntities:
+        - all
+      toPorts:
+        - ports:
+            - port: "10080"
+              protocol: TCP
+            - port: "10443"
+              protocol: TCP
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "19002"
+              protocol: TCP
+            - port: "19003"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            netpol.home.arpa/o11y: "true"
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "19001"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/instance: envoy-gateway
+            control-plane: envoy-gateway
+      toPorts:
+        - ports:
+            - port: "18000"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/instance: towonel-hub
+            app.kubernetes.io/controller: main
+      toPorts:
+        - ports:
+            - port: "4443"
+              protocol: TCP
+            - port: "8443"
+              protocol: TCP

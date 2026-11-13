@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: iroh-relay
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: iroh-relay
+  enableDefaultDeny:
+    ingress: true
+    egress: true
+  ingress:
+    - fromEntities:
+        - all
+      toPorts:
+        - ports:
+            - port: "8443"
+              protocol: TCP
+            - port: "7842"
+              protocol: UDP
+  egress: []

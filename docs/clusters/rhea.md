@@ -72,3 +72,16 @@ The hub API uses a separate pod address, so its internal TCP `8443` does not con
 Point application DNS records at Rhea to use these passthrough routes.
 ExternalDNS manages the hub API hostname through its HTTPRoute, but this change does not create wildcard DNS records.
 Flux waits for the hub and gateway deployments before it applies `towonel-hub-routes`.
+
+## Network policies
+
+Cilium policies restrict ingress and egress for the hub, relay, and external Envoy proxy pods.
+Envoy accepts public HTTP and HTTPS traffic and reaches the Towonel backends and its controller.
+Only Envoy reaches the hub API and edge TCP listener through the pod network.
+The edge accepts UDP `51820`, and the relay accepts TCP `8443` and UDP `7842`.
+
+Towonel reaches the local relay and external HTTPS services.
+Its UDP egress permits arbitrary external peer ports because NAT can change the ports that agents advertise.
+The relay needs no new outbound connections; Cilium permits replies to accepted connections.
+The existing cluster policy permits DNS queries to CoreDNS for all three workloads.
+Health probes and labeled monitoring pods can reach the relevant health and metrics ports.
