@@ -1,0 +1,164 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    // Datasource-specific types and scopes
+    { matchFileNames:   [".mise/config.toml", ".mise/mise.lock"], semanticCommitType: "build", semanticCommitScope: "tools" },
+    { matchDatasources: ["docker"],                 semanticCommitScope: "image" },
+
+    // Update type-specific types
+    { matchDatasources: ["docker"], matchUpdateTypes: ["major", "minor"], semanticCommitType: "feat" },
+    { matchDatasources: ["docker"], matchUpdateTypes: ["patch"],          semanticCommitType: "fix" },
+    { matchDatasources: ["docker"], matchUpdateTypes: ["digest"],         semanticCommitType: "chore" },
+
+    {
+      description: "*Arr Services Group",
+      groupName: "*arr services",
+      groupSlug: "arr-services",
+      matchDatasources: ["docker"],
+      matchDepNames: ["/.+arr/", "/seerr/"],
+    },
+    {
+      description: "Smart Home Services Group",
+      groupName: "Smart home",
+      groupSlug: "smart-home",
+      matchDatasources: ["docker"],
+      matchDepNames: ["/ha-mcp/", "/home-assistant/", "/matterjs-server/", "/homeassistant-otbr/"],
+    },
+    {
+      description: "Download Services Group",
+      groupName: "Downloads",
+      groupSlug: "downloads",
+      matchDatasources: ["docker"],
+      matchDepNames: ["/sabnzbd/", "/qbittorrent/", "/slskd/", "/qui/"],
+    },
+
+    {
+      description: "External DNS Group",
+      groupName: "External DNS",
+      groupSlug: "external-dns",
+      matchDatasources: ["docker"],
+      matchDepNames: ["/external-dns/"],
+    },
+
+    {
+      description: "Terraform Group",
+      groupName: "Terraform",
+      groupSlug: "terraform",
+      matchManagers: ["terraform"],
+    },
+
+    {
+      description: "Mise Tools Group",
+      groupName: "Mise Tools",
+      groupSlug: "mise-tools",
+      matchManagers: ["mise"],
+    },
+
+    {
+      description: "1Password Connect group",
+      groupName: "1Password Connect",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/1password/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      description: "Cert-Manager Group",
+      groupName: "Cert-Manager",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cert-manager/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Cilium Group",
+      groupName: "Cilium",
+      matchDatasources: ["docker", "mise"],
+      matchPackageNames: ["/cilium/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      semanticCommitType: "feat",
+      semanticCommitScope: "cilium",
+    },
+    {
+      description: "CoreDNS Group",
+      groupName: "CoreDNS",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/coredns/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "External Secrets Operator Group",
+      groupName: "External Secrets Operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/external-secrets/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Flux Operator Group",
+      groupName: "Flux Operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/", "/flux-operator-manifests/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 3,
+    },
+    {
+      description: "Towonel Group",
+      groupName: "Towonel",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/towonel\/towonel-node/", "/towonel\/charts\/towonel-agent/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "eleboucher Runner Group",
+      groupName: "Eleboucher-Runner",
+      matchDatasources: ["git-tags"],
+      matchPackageNames: ["/eleboucher\/runner\.git/", "/eleboucher\/runner-k8s-plugin\.git/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Kubernetes Group",
+      groupName: "Kubernetes",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "/kube-apiserver/",
+        "/kube-controller-manager/",
+        "/kube-proxy/",
+        "/kube-scheduler/",
+        "/kubelet/",
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      semanticCommitType: "feat",
+      semanticCommitScope: "kubernetes",
+      minimumGroupSize: 5,
+    },
+    {
+      description: "Talos Group",
+      groupName: "Talos",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/installer/", "/talosctl/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      semanticCommitType: "feat",
+      semanticCommitScope: "talos",
+      minimumGroupSize: 2,
+    },
+  ],
+}

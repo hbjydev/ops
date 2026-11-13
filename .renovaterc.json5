@@ -1,0 +1,24 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "local>hbjydev/renovate-config",
+    "local>hbjydev/ops//.renovate/groups.json5",
+    "local>hbjydev/ops//.renovate/autoMerge.json5",
+  ],
+  ignorePaths: [
+    "**/*.sops.*",
+    "**/resources/**",
+  ],
+  flux: {
+    managerFilePatterns: ["/(^|/)kube/.+\\.ya?ml$/"],
+  },
+  argocd: {
+    managerFilePatterns: ["/(^|/)kube/.+\\.ya?ml$/"],
+  },
+  "helm-values": {
+    managerFilePatterns: ["/(^|/)kube/.+\\.ya?ml$/"],
+  },
+  kubernetes: {
+    managerFilePatterns: ["/(^|/)kube/.+\\.ya?ml$/"],
+  },
+}
