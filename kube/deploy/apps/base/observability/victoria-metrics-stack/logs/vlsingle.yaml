@@ -7,7 +7,7 @@ metadata:
 spec:
   image:
     repository: victoriametrics/victoria-logs
-    tag: v1.53.0
+    tag: v1.54.0
     pullPolicy: Always
 
   resources:
