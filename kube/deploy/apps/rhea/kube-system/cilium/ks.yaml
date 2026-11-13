@@ -47,7 +47,7 @@ spec:
           values:
             rollOutCiliumPods: true
             nodePort:
-              range: "7842,51820"
+              range: "2468,51820"
               autoProtectPortRanges: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json

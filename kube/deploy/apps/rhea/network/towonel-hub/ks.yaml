@@ -86,6 +86,41 @@ spec:
             service:
               main:
                 forceRename: towonel-hub
+              claimed:
+                controller: main
+                type: NodePort
+                externalTrafficPolicy: Local
+                ports:
+                  tcp-5349:
+                    port: 5349
+                    targetPort: 5349
+                    nodePort: 5349
+                    protocol: TCP
+                  tcp-6969:
+                    port: 6969
+                    targetPort: 6969
+                    nodePort: 6969
+                    protocol: TCP
+                  tcp-25565:
+                    port: 25565
+                    targetPort: 25565
+                    nodePort: 25565
+                    protocol: TCP
+                  tcp-2468:
+                    port: 2468
+                    targetPort: 2468
+                    nodePort: 2468
+                    protocol: TCP
+                  udp-3478:
+                    port: 3478
+                    targetPort: 3478
+                    nodePort: 3478
+                    protocol: UDP
+                  udp-25565:
+                    port: 25565
+                    targetPort: 25565
+                    nodePort: 25565
+                    protocol: UDP
               iroh:
                 controller: main
                 type: NodePort

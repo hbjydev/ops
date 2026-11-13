@@ -40,7 +40,7 @@ Allow inbound TCP `8443` and UDP `7842` through any firewall in front of Rhea.
 ExternalDNS creates an unproxied A record for `relay.towonel.thighhighs.moe` pointing to `193.160.32.161`.
 Flux waits for `core-cilium`, `cloudflare-dns`, and `core-cert-manager-letsencrypt` before it deploys the relay.
 
-Talos and Cilium use the NodePort range `7842-51820` on Rhea.
+Talos and Cilium use the NodePort range `2468-51820` on Rhea.
 Apply `kube/clusters/rhea/talos/control-plane/01-api-server.yaml` before deploying these Services.
 Cilium reserves this range against temporary outbound ports because it overlaps the default ephemeral range.
 The range permits port allocation; only configured Services expose ports.
@@ -70,6 +70,11 @@ The edge listens on TCP `4443` and `8081`, and the API and hub link use TCP `844
 The hub and edge trust proxy headers from the cluster pod range.
 A fixed NodePort exposes edge UDP `51820` directly with `externalTrafficPolicy: Local`.
 The hub API uses a separate pod address, so its internal TCP `8443` does not conflict with the relay.
+
+Service `towonel-hub-claimed` exposes TCP `2468`, `5349`, `6969`, and `25565`, plus UDP `3478` and `25565`.
+These fixed NodePorts forward directly to the edge with `externalTrafficPolicy: Local`.
+The `towonel-claimed-ports` policy permits these six protocol and port pairs.
+An agent must register the corresponding services before the edge opens their listeners.
 
 Point application DNS records at Rhea to use these passthrough routes.
 ExternalDNS manages the hub API hostname through its HTTPRoute, but this change does not create wildcard DNS records.

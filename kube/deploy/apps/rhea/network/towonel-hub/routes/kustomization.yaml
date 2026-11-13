@@ -6,3 +6,4 @@ resources:
   - ./httproute.yaml
   - ./tlsroute.yaml
   - ./backendtrafficpolicy.yaml
+  - ./port-networkpolicy.yaml

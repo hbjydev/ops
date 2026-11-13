@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: towonel-claimed-ports
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: towonel-hub
+      app.kubernetes.io/controller: main
+  enableDefaultDeny:
+    ingress: false
+  ingress:
+    - fromEntities:
+        - all
+      toPorts:
+        - ports:
+            - port: "5349"
+              protocol: TCP
+            - port: "6969"
+              protocol: TCP
+            - port: "25565"
+              protocol: TCP
+            - port: "2468"
+              protocol: TCP
+            - port: "3478"
+              protocol: UDP
+            - port: "25565"
+              protocol: UDP

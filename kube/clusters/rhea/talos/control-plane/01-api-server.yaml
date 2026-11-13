@@ -2,4 +2,4 @@
 apiVersion: v1alpha1
 kind: KubeAPIServerConfig
 extraArgs:
-  service-node-port-range: 7842-51820
+  service-node-port-range: 2468-51820
