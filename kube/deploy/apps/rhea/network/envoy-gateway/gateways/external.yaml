@@ -5,12 +5,12 @@ kind: Gateway
 metadata:
   name: external
   annotations:
-    external-dns.kubernetes.io/target: &hostname rhea.hayden.moe
+    external-dns.kubernetes.io/target: 193.160.32.161
 spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *hostname
+      external-dns.alpha.kubernetes.io/hostname: rhea.hayden.moe
   addresses:
     - type: IPAddress
       value: 193.160.32.161
