@@ -76,23 +76,42 @@ spec:
               repository: forgejo.ellis.link/continuwuation/continuwuity
               tag: v26.9.1-maxperf
             env:
-              CONTINUWUITY_DATABASE_PATH: /data
-              CONTINUWUITY_NEW_USER_DISPLAYNAME_SUFFIX: ""
+              CONTINUWUITY_LOG: info
               CONTINUWUITY_ADDRESS: 0.0.0.0
               CONTINUWUITY_PORT: &port 8008
-              CONTINUWUITY_ALLOW_REGISTRATION: true
-              CONTINUWUITY_ALLOW_ENCRYPTION: true
-              CONTINUWUITY_ENCRYPTION_ENABLED_BY_DEFAULT_FOR_ROOM_TYPE: invite
+
+              CONTINUWUITY_DATABASE_PATH: /data
+              CONTINUWUITY_DATABASE_BACKUP_PATH: /backups
+              CONTINUWUITY_DATABASE_BACKUPS_TO_KEEP: "3"
+
+              CONTINUWUITY_ROCKSDB_COMPRESSION_ALGO: zstd
+              CONTINUWUITY_ROCKSDB_COMPRESSION_LEVEL: "32767"
+              CONTINUWUITY_ROCKSDB_BOTTOMMOST_COMPRESSION_LEVEL: "32767"
+              CONTINUWUITY_ROCKSDB_BOTTOMMOST_COMPRESSION: "true"
+
+              # Security
               CONTINUWUITY_ALLOW_FEDERATION: true
-              CONTINUWUITY_ALLOW_PUBLIC_ROOM_DIRECTORY_OVER_FEDERATION: true
-              CONTINUWUITY_CACHE_CAPACITY_MODIFIER: 2.0
-              CONTINUWUITY_MAX_REQUEST_SIZE: "524288000"
-              CONTINUWUITY_DNS_CACHE_ENTRIES: 0
-              CONTINUWUITY_DNS_TIMEOUT: 60
+              CONTINUWUITY_ALLOW_ENCRYPTION: true
+              CONTINUWUITY_FORGET_FORCED_UPON_LEAVE: true
+              CONTINUWUITY_REQUIRE_AUTH_FOR_PROFILE_REQUESTS: true
+              CONTINUWUITY_ALLOW_PUBLIC_ROOM_DIRECTORY_WITHOUT_AUTH: false
+              CONTINUWUITY_ALLOW_PUBLIC_ROOM_DIRECTORY_OVER_FEDERATION: false
+              CONTINUWUITY_LOCKDOWN_PUBLIC_ROOM_DIRECTORY: "true"
+              CONTINUWUITY_ALLOW_LEGACY_MEDIA: "false"
+              CONTINUWUITY_MAX_REQUEST_SIZE: "20971520"
+
+              # DNS
               CONTINUWUITY_QUERY_OVER_TCP_ONLY: false
-              CONTINUWUITY_IP_LOOKUP_STRATEGY: 1
+              CONTINUWUITY_IP_LOOKUP_STRATEGY: "1"
+              CONTINUWUITY_DNS_TIMEOUT: 60
+              CONTINUWUITY_DNS_CACHE_ENTRIES: 0
+
               CONTINUWUITY_ADMIN_EXECUTE: '["media delete-past-remote-media -b 30d"]'
               CONTINUWUITY_ADMIN_EXECUTE_ERRORS_IGNORE: true
+
+              CONTINUWUITY_NEW_USER_DISPLAYNAME_SUFFIX: ""
+
+              # OIDC
               CONTINUWUITY_OAUTH__OIDC__CLIENT_ID:
                 secretKeyRef:
                   name: continuwuity-kanidm-oauth2-credentials
@@ -166,6 +185,7 @@ spec:
         ports:
           http:
             port: *port
+
     persistence:
       data:
         enabled: true
