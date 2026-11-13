@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: mirror.gcr.io/superseriousbusiness/gotosocial
-              digest: 0.22.3@sha256:3f36dcf14a4f2e5562122e4783117c48a219d67988f841181b5c2ecaa65d5581
+              tag: 0.22.3@sha256:3f36dcf14a4f2e5562122e4783117c48a219d67988f841181b5c2ecaa65d5581
             env:
               TZ: Europe/London
 
