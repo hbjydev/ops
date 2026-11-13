@@ -47,11 +47,8 @@ spec:
               GTS_SMTP_FROM_DISPLAY_NAME: hayden.moe gotosocial
 
               GTS_OIDC_ENABLED: true
-              GTS_OIDC_IDP_NAME: Hayden.moe SSO
-              GTS_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/gotosocial
               GTS_OIDC_SCOPES: openid,email,profile,groups
               GTS_OIDC_LINK_EXISTING: true
-              GTS_OIDC_ADMIN_GROUP: gotosocial_admins@sso.hayden.moe
               GTS_OIDC_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
@@ -80,8 +77,8 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /xrpc/_health
-                    port: *port
+                    path: /readyz
+                    port: 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
