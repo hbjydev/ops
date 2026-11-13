@@ -9,6 +9,7 @@
     "**/*.sops.*",
     "**/resources/**",
   ],
+  lockFileMaintenance: true,
   flux: {
     managerFilePatterns: ["/(^|/)kube/.+\\.ya?ml$/"],
   },
