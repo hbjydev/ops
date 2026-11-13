@@ -103,7 +103,7 @@ spec:
                       - identifier: app
                         port: 8080
             controllers:
-              main:
+              gotosocial:
                 containers:
                   app:
                     env:
