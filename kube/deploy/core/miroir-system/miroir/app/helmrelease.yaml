@@ -14,7 +14,11 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
     agent:
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
       resources:
         limits:
           memory: 192Mi
