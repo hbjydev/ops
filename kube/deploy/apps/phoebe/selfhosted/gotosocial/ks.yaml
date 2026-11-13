@@ -93,7 +93,7 @@ spec:
             route:
               app:
                 hostnames:
-                  - "{{ .Release.Name }}.hayden.moe"
+                  - "gts.hayden.moe"
                 parentRefs:
                   - name: external
                     namespace: network
