@@ -22,6 +22,7 @@ spec:
         namespaces:
           from: Same
     - name: https
+      hostname: rhea.hayden.moe
       protocol: HTTPS
       port: 443
       allowedRoutes:
@@ -32,3 +33,39 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rhea-hayden-moe-tls
+    - name: towonel-api
+      hostname: towonel.thighhighs.moe
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+        namespaces:
+          from: Same
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: towonel-thighhighs-moe-tls
+    - name: towonel-hayden
+      hostname: "*.hayden.moe"
+      protocol: TLS
+      port: 443
+      allowedRoutes:
+        kinds:
+          - kind: TLSRoute
+        namespaces:
+          from: Same
+      tls:
+        mode: Passthrough
+    - name: towonel-thighhighs
+      hostname: "*.thighhighs.moe"
+      protocol: TLS
+      port: 443
+      allowedRoutes:
+        kinds:
+          - kind: TLSRoute
+        namespaces:
+          from: Same
+      tls:
+        mode: Passthrough

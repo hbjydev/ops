@@ -7,6 +7,5 @@ hostname = "${RELAY_HOSTNAME}"
 cert_mode = "Reloading"
 manual_cert_path = "/tls/tls.crt"
 manual_key_path = "/tls/tls.key"
-# The hub already uses 8443 on this node.
-https_bind_addr = "0.0.0.0:8444"
+https_bind_addr = "0.0.0.0:8443"
 quic_bind_addr = "0.0.0.0:7842"

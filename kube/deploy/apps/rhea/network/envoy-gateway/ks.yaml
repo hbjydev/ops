@@ -45,6 +45,8 @@ spec:
       app.kubernetes.io/name: envoy-gateway
   dependsOn:
     - name: core-envoy-gateway
+    - name: core-cert-manager-letsencrypt
+      namespace: cert-manager
   components:
     - ../../../../../../components/certificate
   postBuild:

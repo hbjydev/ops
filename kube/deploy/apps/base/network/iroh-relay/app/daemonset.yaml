@@ -14,8 +14,7 @@ spec:
         app.kubernetes.io/name: iroh-relay
     spec:
       automountServiceAccountToken: false
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: false
       nodeSelector:
         kubernetes.io/hostname: ${RELAY_NODE}
       securityContext:
@@ -32,7 +31,7 @@ spec:
             - /etc/iroh-relay/relay.toml
           ports:
             - name: https
-              containerPort: 8444
+              containerPort: 8443
               protocol: TCP
             - name: quic
               containerPort: 7842

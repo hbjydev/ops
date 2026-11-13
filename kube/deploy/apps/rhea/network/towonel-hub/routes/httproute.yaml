@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: towonel-hub
+  annotations:
+    external-dns.kubernetes.io/cloudflare-proxied: "false"
+spec:
+  parentRefs:
+    - name: external
+      sectionName: towonel-api
+  hostnames:
+    - towonel.thighhighs.moe
+  rules:
+    - backendRefs:
+        - name: towonel-hub
+          port: 8443

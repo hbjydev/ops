@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/service_v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: iroh-relay
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  selector:
+    app.kubernetes.io/name: iroh-relay
+  ports:
+    - name: https
+      port: 8443
+      targetPort: https
+      nodePort: 8443
+      protocol: TCP
+    - name: quic
+      port: 7842
+      targetPort: quic
+      nodePort: 7842
+      protocol: UDP

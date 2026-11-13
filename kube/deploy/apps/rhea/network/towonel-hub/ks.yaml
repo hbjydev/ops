@@ -67,13 +67,75 @@ spec:
               remediateLastFailure: false
               retries: 2
           values:
+            edge:
+              httpsPort: 4443
+              httpPort: 8081
+            defaultPodOptions:
+              nodeSelector:
+                kubernetes.io/hostname: rhea-controlplane-01
             controllers:
               main:
                 containers:
                   main:
                     env:
-                      TOWONEL_HUB_RELAY_URL: https://relay.towonel.thighhighs.moe:8444
-                      TOWONEL_EDGE_RELAY_URL: https://relay.towonel.thighhighs.moe:8444
+                      TOWONEL_HUB_RELAY_URL: https://relay.towonel.thighhighs.moe:8443
+                      TOWONEL_HUB_TRUSTED_PROXIES: ${CLUSTER_POD_CIDR}
+                      TOWONEL_EDGE_RELAY_URL: https://relay.towonel.thighhighs.moe:8443
+                      TOWONEL_EDGE_HUB_LINK_ADDR: 127.0.0.1:51444
+                      TOWONEL_EDGE_PROXY_PROTOCOL_TRUSTED: ${CLUSTER_POD_CIDR}
+            service:
+              main:
+                forceRename: towonel-hub
+              iroh:
+                controller: main
+                type: NodePort
+                externalTrafficPolicy: Local
+                ports:
+                  iroh:
+                    port: 51820
+                    targetPort: 51820
+                    nodePort: 51820
+                    protocol: UDP
             persistence:
               data:
                 storageClass: miroir-local
+          postRenderers:
+            - kustomize:
+                patches:
+                  - target:
+                      kind: DaemonSet
+                      name: towonel-hub
+                    patch: |-
+                      apiVersion: apps/v1
+                      kind: DaemonSet
+                      metadata:
+                        name: towonel-hub
+                      spec:
+                        template:
+                          spec:
+                            hostNetwork: false
+                            dnsPolicy: ClusterFirst
+                            containers:
+                              - name: main
+                                securityContext:
+                                  allowPrivilegeEscalation: false
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: towonel-hub-routes
+  namespace: network
+spec:
+  dependsOn:
+    - name: towonel-hub
+    - name: envoy-gateway-gateways
+  interval: 1h
+  path: ./kube/deploy/apps/rhea/network/towonel-hub/routes
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: network

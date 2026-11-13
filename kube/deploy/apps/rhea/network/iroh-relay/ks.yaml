@@ -10,6 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: iroh-relay
   dependsOn:
+    - name: core-cilium
+      namespace: kube-system
     - name: core-cert-manager-letsencrypt
       namespace: cert-manager
     - name: cloudflare-dns

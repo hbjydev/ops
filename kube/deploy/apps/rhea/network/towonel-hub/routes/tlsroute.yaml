@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/tlsroute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: TLSRoute
+metadata:
+  name: towonel-edge
+spec:
+  parentRefs:
+    - name: external
+      sectionName: towonel-hayden
+    - name: external
+      sectionName: towonel-thighhighs
+  hostnames:
+    - "*.hayden.moe"
+    - "*.thighhighs.moe"
+  rules:
+    - backendRefs:
+        - name: towonel-hub
+          port: 4443

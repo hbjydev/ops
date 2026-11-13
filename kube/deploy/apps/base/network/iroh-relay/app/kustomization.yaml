@@ -6,6 +6,7 @@ resources:
   - ./certificate.yaml
   - ./daemonset.yaml
   - ./dnsendpoint.yaml
+  - ./service.yaml
 configMapGenerator:
   - name: iroh-relay-config
     files:

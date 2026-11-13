@@ -6,6 +6,7 @@ metadata:
   labels:
     kustomization.flux.home.arpa/helmpatches: 'false'
     kustomization.flux.home.arpa/name: cilium
+    kustomization.flux.home.arpa/helm-defaults: disabled
   name: core-cilium
   namespace: kube-system
 spec:
@@ -14,6 +15,40 @@ spec:
       namespace: observability
   path: ./kube/deploy/core/kube-system/cilium/app
   targetNamespace: kube-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: cilium
+      namespace: kube-system
+  patches:
+    - target:
+        kind: HelmRelease
+        name: cilium
+      patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: cilium
+        spec:
+          install:
+            crds: CreateReplace
+          rollback:
+            cleanupOnFail: true
+            recreate: true
+          timeout: 15m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: true
+              retries: 2
+          values:
+            rollOutCiliumPods: true
+            nodePort:
+              range: "7842,51820"
+              autoProtectPortRanges: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1

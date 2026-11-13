@@ -47,7 +47,6 @@ spec:
 
               # Edge DNS differs from hub DNS, so override the derived default:
               TOWONEL_EDGE_IROH_PORT: "51820"
-              TOWONEL_EDGE_LISTEN_ADDR: 0.0.0.0:4443
               TOWONEL_EDGE_PROXY_PROTOCOL: "true"
               TOWONEL_EDGE_RELAY_URL: https://relay.towonel.${DOMAIN}
             envFrom:
