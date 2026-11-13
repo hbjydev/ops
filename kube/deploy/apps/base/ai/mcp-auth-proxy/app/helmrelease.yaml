@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sigbit/mcp-auth-proxy
-              tag: v2.10.2@sha256:f92e0ccd22b2a7585bccedc366a3c872bbfa3500c7fa5e7443b40962bf248e8d
+              tag: v2.10.6@sha256:7ac262c534e1a85638446703795a600a60914f7310f027e945a60a30a21f3764
             env:
               NO_AUTO_TLS: "true"
               LISTEN: :8080
