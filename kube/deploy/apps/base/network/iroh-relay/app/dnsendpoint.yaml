@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: iroh-relay
+spec:
+  endpoints:
+    - dnsName: ${RELAY_HOSTNAME}
+      recordType: A
+      recordTTL: 300
+      targets:
+        - ${RELAY_PUBLIC_IP}
+      providerSpecific:
+        - name: cloudflare/proxied
+          value: "false"

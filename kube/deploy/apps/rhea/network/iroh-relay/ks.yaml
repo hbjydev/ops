@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: iroh-relay
+  namespace: network
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: iroh-relay
+  dependsOn:
+    - name: core-cert-manager-letsencrypt
+      namespace: cert-manager
+    - name: cloudflare-dns
+      namespace: network
+  healthChecks:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: iroh-relay
+      namespace: network
+    - apiVersion: apps/v1
+      kind: DaemonSet
+      name: iroh-relay
+      namespace: network
+  interval: 1h
+  path: ./kube/deploy/apps/base/network/iroh-relay/app
+  postBuild:
+    substitute:
+      RELAY_HOSTNAME: relay.towonel.thighhighs.moe
+      RELAY_PUBLIC_IP: 193.160.32.161
+      RELAY_NODE: rhea-controlplane-01
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: network
+  timeout: 10m

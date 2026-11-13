@@ -1,0 +1,12 @@
+enable_quic_addr_discovery = true
+enable_metrics = false
+http_bind_addr = "127.0.0.1:18080"
+
+[tls]
+hostname = "${RELAY_HOSTNAME}"
+cert_mode = "Reloading"
+manual_cert_path = "/tls/tls.crt"
+manual_key_path = "/tls/tls.key"
+# The hub already uses 8443 on this node.
+https_bind_addr = "0.0.0.0:8444"
+quic_bind_addr = "0.0.0.0:7842"

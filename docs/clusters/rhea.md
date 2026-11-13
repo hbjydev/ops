@@ -27,3 +27,20 @@ Flux deploys the controller before the node, storage class, and snapshot class r
 
 The upstream [single-node example](https://miroir.home-operations.com/quickstart/#1-describe-your-storage)
 and [Talos requirements](https://miroir.home-operations.com/requirements/#node-setup-by-os) describe the backend requirements.
+
+## Towonel relay
+
+The Iroh relay runs on Rhea with host networking, which shares the node network with the pod.
+Its public URL is `https://relay.towonel.thighhighs.moe:8444`.
+The hub already uses port `8443`, so the relay uses `8444`.
+The hub and edge both use this relay URL.
+
+Allow inbound TCP `8444` and UDP `7842` through any firewall in front of Rhea.
+ExternalDNS creates an unproxied A record for `relay.towonel.thighhighs.moe` pointing to `193.160.32.161`.
+Flux waits for `cloudflare-dns` and `core-cert-manager-letsencrypt` before it deploys the relay.
+The `network` namespace permits host networking for the hub and relay through its privileged Pod Security label.
+
+Cert-manager supplies the TLS certificate through the `iroh-relay-tls` Secret.
+The relay reloads renewed certificates from the mounted Secret directory.
+It needs no persistent storage volume.
+The configuration follows the [Towonel relay guide](https://towonel.dev/docs/self-hosted/relay/).

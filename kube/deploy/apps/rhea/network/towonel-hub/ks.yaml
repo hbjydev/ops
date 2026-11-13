@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: towonel-hub
+  namespace: network
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: towonel-hub
+  dependsOn:
+    - name: iroh-relay
+      namespace: network
+    - name: miroir-config
+      namespace: miroir-system
+    - name: core-external-secrets-1password
+      namespace: external-secrets
+  healthChecks:
+    - apiVersion: external-secrets.io/v1
+      kind: ExternalSecret
+      name: towonel-hub
+      namespace: network
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: towonel-hub
+      namespace: network
+  interval: 1h
+  path: ./kube/deploy/apps/base/network/towonel-hub/app
+  postBuild:
+    substitute:
+      DOMAIN: thighhighs.moe
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: network
+  timeout: 10m
+  patches:
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: towonel-hub
+      patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: towonel-hub
+        spec:
+          install:
+            crds: CreateReplace
+            strategy:
+              name: RetryOnFailure
+          rollback:
+            cleanupOnFail: true
+          timeout: 10m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              remediateLastFailure: false
+              retries: 2
+          values:
+            controllers:
+              main:
+                containers:
+                  main:
+                    env:
+                      TOWONEL_HUB_RELAY_URL: https://relay.towonel.thighhighs.moe:8444
+                      TOWONEL_EDGE_RELAY_URL: https://relay.towonel.thighhighs.moe:8444
+            persistence:
+              data:
+                storageClass: miroir-local
