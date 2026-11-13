@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: gotosocial
+  namespace: selfhosted
+  labels:
+    kustomization.flux.home.arpa/helm-defaults: disabled
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: gotosocial
+  components:
+    - ../../../../../../components/kopiur
+    - ../../../../../../components/postgres/cert
+    - ../../../../../../components/kanidm/private
+  dependsOn:
+    - name: miroir-config
+      namespace: miroir-system
+  interval: 1h
+  path: ./kube/deploy/apps/base/selfhosted/gotosocial/app
+  postBuild:
+    substitute:
+      APP: gotosocial
+      KOPIUR_CAPACITY: 5Gi
+      KOPIUR_REPOSITORY: hetzner
+      KOPIUR_SNAPSHOTCLASS: miroir-snap
+      KOPIUR_STORAGECLASS: miroir-local
+      NAMESPACE: selfhosted
+      OIDC_DISPLAY_NAME: GoToSocial
+      OIDC_GROUP_PREFIX: gotosocial
+      OIDC_IMAGE_URL: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gotosocial.svg
+      OIDC_ORIGIN: https://gts.hayden.moe/
+      OIDC_REDIRECT_URLS: '["https://gts.hayden.moe/auth/callback"]'
+      OIDC_USERS_GROUP_MEMBERS: '[hayden]'
+      OIDC_ADMIN_GROUP_MEMBERS: '[hayden]'
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: selfhosted
+  timeout: 5m
+  wait: false
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: _
+        spec:
+          install:
+            crds: CreateReplace
+            strategy:
+              name: RetryOnFailure
+          rollback:
+            cleanupOnFail: true
+          timeout: 10m
+          upgrade:
+            cleanupOnFail: true
+            crds: CreateReplace
+            strategy:
+              name: RemediateOnFailure
+            remediation:
+              # Never auto-rollback a failed upgrade. A Helm rollback
+              # restores the previous chart *and* its values, so for
+              # rook-ceph-cluster it silently downgraded Ceph and left
+              # the mon crashlooping against a newer on-disk layout.
+              # A failed upgrade should stay failed and visible.
+              #
+              # This must be set explicitly: Flux defaults it to true
+              # whenever retries > 0, so removing the line would not
+              # change the behaviour.
+              remediateLastFailure: false
+              retries: 2
+      target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: gotosocial
+      patch: |
+        ---
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: gotosocial
+        spec:
+          values:
+            route:
+              app:
+                hostnames:
+                  - "{{ .Release.Name }}.hayden.moe"
+                parentRefs:
+                  - name: external
+                    namespace: network
+                    sectionName: https
+                rules:
+                  - backendRefs:
+                      - identifier: app
+                        port: 8080
+            controllers:
+              main:
+                containers:
+                  app:
+                    env:
+                      GTS_OIDC_IDP_NAME: Hayden.moe SSO
+                      GTS_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/gotosocial
+                      GTS_OIDC_ADMIN_GROUP: gotosocial_admins@sso.hayden.moe

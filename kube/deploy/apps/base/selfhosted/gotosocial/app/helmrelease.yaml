@@ -1,0 +1,128 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gotosocial
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      gotosocial:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.netpol.home.arpa/external: allow
+            ingress.netpol.home.arpa/o11y: allow
+            egress.netpol.home.arpa/internet: allow
+            egress.netpol.home.arpa/smtp-relay: allow
+            egress.netpol.home.arpa/postgres: allow
+        strategy: RollingUpdate
+        type: statefulset
+        containers:
+          app:
+            image:
+              repository: mirror.gcr.io/superseriousbusiness/gotosocial
+              digest: 0.22.3@sha256:3f36dcf14a4f2e5562122e4783117c48a219d67988f841181b5c2ecaa65d5581
+            env:
+              TZ: Europe/London
+
+              GTS_HOST: &host gts.hayden.moe
+              GTS_ACCOUNT_DOMAIN: &account_domain hayden.moe
+              GTS_STORAGE_LOCAL_BASE_PATH: /storage
+              GTS_LANDING_PAGE_USER: "hayden"
+              GTS_METRICS_ENABLED: true
+              GTS_TRUSTED_PROXIES: "${CLUSTER_POD_CIDR},${CLUSTER_SVC_CIDR}"
+              GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS: "192.168.0.0/16"
+
+              GTS_ACCOUNTS_REGISTRATION_OPEN: true
+
+              GTS_SMTP_HOST: smtp-relay.selfhosted.svc.cluster.local
+              GTS_SMTP_PORT: 25
+              GTS_SMTP_FROM: gts@hayden.moe
+              GTS_SMTP_FROM_DISPLAY_NAME: hayden.moe gotosocial
+
+              GTS_OIDC_ENABLED: true
+              GTS_OIDC_IDP_NAME: Hayden.moe SSO
+              GTS_OIDC_ISSUER: https://sso.hayden.moe/oauth2/openid/gotosocial
+              GTS_OIDC_SCOPES: openid,email,profile,groups
+              GTS_OIDC_LINK_EXISTING: true
+              GTS_OIDC_ADMIN_GROUP: gotosocial_admins@sso.hayden.moe
+              GTS_OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: gotosocial-kanidm-oauth2-credentials
+                    key: CLIENT_ID
+              GTS_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: gotosocial-kanidm-oauth2-credentials
+                    key: CLIENT_SECRET
+
+              GTS_DB_TYPE: postgres
+              GTS_DB_POSTGRES_CONNECTION_STRING:
+                secretKeyRef:
+                  name: gotosocial-postgres
+                  key: url
+            envFrom:
+              - secretRef:
+                  name: tranquil-secret
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /xrpc/_health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      annotations: {}
+      labels: {}
+      schedulingGates: []
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      automountServiceAccountToken: true
+
+    serviceMonitor:
+      app:
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+
+    service:
+      app:
+        ports:
+          http:
+            port: 8080
+
+    persistence:
+      tmpfs:
+        type: emptyDir
+        sizeLimit: 1Gi
+        globalMounts:
+          - path: /tmp
