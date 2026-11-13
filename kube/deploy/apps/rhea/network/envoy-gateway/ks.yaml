@@ -45,6 +45,11 @@ spec:
       app.kubernetes.io/name: envoy-gateway
   dependsOn:
     - name: core-envoy-gateway
+  components:
+    - ../../../../../../components/certificate
+  postBuild:
+    substitute:
+      SUBDOMAIN: rhea
   interval: 1h
   path: ./kube/deploy/apps/rhea/network/envoy-gateway/gateways
   prune: true

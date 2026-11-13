@@ -29,4 +29,6 @@ spec:
           from: All
       tls:
         mode: Terminate
-        certificateRefs: []
+        certificateRefs:
+          - kind: Secret
+            name: rhea-hayden-moe-tls
