@@ -74,7 +74,7 @@ spec:
           app:
             image:
               repository: forgejo.ellis.link/continuwuation/continuwuity
-              tag: main-maxperf@sha256:396effcd16279b8c06a095f36bdc53c020826e0512ff58105bcfc603c17f11df
+              tag: v26.11.0-alpha.1-maxperf
             env:
               CONTINUWUITY_LOG: info
               CONTINUWUITY_ADDRESS: 0.0.0.0
@@ -90,6 +90,12 @@ spec:
               CONTINUWUITY_ROCKSDB_BOTTOMMOST_COMPRESSION: "true"
 
               CONTINUWUITY_ENABLE_MSC4495_SELECTIVE_PRESENCE: true
+
+              # o11y
+              # OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-daemonset-collector.observability.svc.cluster.local:4318
+              # OTEL_METRIC_EXPORT_INTERVAL: 30000  # in milliseconds, set to 30s
+              CONTINUWUITY_ALLOW_OTLP: true
+              CONTINUWUITY_ALLOW_OTLP_METRICS: true
 
               # Security
               CONTINUWUITY_ALLOW_FEDERATION: true
@@ -169,7 +175,8 @@ spec:
                 memory: 2Gi
 
     defaultPodOptions:
-      annotations: {}
+      annotations:
+        instrumentation.opentelemetry.io/inject-sdk: "true"
       schedulingGates: []
       dnsConfig:
         nameservers:
