@@ -58,3 +58,9 @@ spec:
               protocol: TCP
             - port: "8443"
               protocol: TCP
+    - toFQDNs:
+        - matchName: hayden.moe.s3-website.uk.io.cloud.ovh.net
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
