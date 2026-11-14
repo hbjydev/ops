@@ -49,3 +49,4 @@ resources:
   - ./system-upgrade
   - ./external-secrets
   - ./kopiur-system
+  - ./website

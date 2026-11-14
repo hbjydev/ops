@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backend_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: s3-website
+spec:
+  endpoints:
+    - fqdn:
+        hostname: hayden.moe.s3-website.uk.io.cloud.ovh.net
+        port: 80
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backend_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: matrix
+spec:
+  endpoints:
+    - fqdn:
+        hostname: matrix.hayden.moe
+        port: 443
+  tls:
+    sni: gts.hayden.moe
+    wellKnownCACertificates: System
+
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backend_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: gts
+spec:
+  endpoints:
+    - fqdn:
+        hostname: gts.hayden.moe
+        port: 443
+  tls:
+    sni: gts.hayden.moe
+    wellKnownCACertificates: System
