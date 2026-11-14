@@ -16,7 +16,7 @@ spec:
   path: ./kube/deploy/apps/base/observability/grafana/instance
   postBuild:
     substitute:
-      GRAFANA_ANONYMOUS_AUTH: '{"enabled": "true"}'
+      GRAFANA_ANONYMOUS_AUTH: '{"enabled": "false"}'
       GRAFANA_AUTH: '{"disable_login_form": "false"}'
       GRAFANA_OIDC_AUTH_URL: https://sso.hayden.moe/ui/oauth2
       GRAFANA_OIDC_NAME: hayden.moe ID
@@ -25,7 +25,7 @@ spec:
       GRAFANA_OIDC_USERINFO_URL: https://sso.hayden.moe/oauth2/openid/grafana/userinfo
       GRAFANA_PLUGINS: victoriametrics-logs-datasource,vonage-status-panel,grafana-piechart-panel
       GRAFANA_ROUTE_HOSTNAMES: '["grafana.hayden.moe"]'
-      GRAFANA_ROUTE_PARENT_REFS: '[{"name": "internal", "namespace": "network"}]'
+      GRAFANA_ROUTE_PARENT_REFS: '[{"name": "external", "namespace": "network"}]'
       GRAFANA_URL: https://grafana.hayden.moe
       KOPIUR_REPOSITORY: hetzner
       KOPIUR_SNAPSHOTCLASS: miroir-snap
