@@ -110,9 +110,9 @@ spec:
               CONTINUWUITY_DNS_TIMEOUT: 10
               CONTINUWUITY_DNS_ATTEMPTS: 3
               CONTINUWUITY_DNS_CACHE_ENTRIES: 0
-              CONTINUWUITY_GLOBAL__WELL_KNOWN__CLIENT: https://matrix.hayden.moe
-              CONTINUWUITY_GLOBAL__WELL_KNOWN__SERVER: matrix.hayden.moe:443
-              CONTINUWUITY_GLOBAL__WELL_KNOWN__SUPPORT_MXID: "@hayden:hayden.moe"
+              CONTINUWUITY_WELL_KNOWN__CLIENT: https://matrix.hayden.moe
+              CONTINUWUITY_WELL_KNOWN__SERVER: matrix.hayden.moe:443
+              CONTINUWUITY_WELL_KNOWN__SUPPORT_MXID: "@hayden:hayden.moe"
 
               CONTINUWUITY_ADMIN_EXECUTE: '["media delete-past-remote-media -b 30d"]'
               CONTINUWUITY_ADMIN_EXECUTE_ERRORS_IGNORE: true
