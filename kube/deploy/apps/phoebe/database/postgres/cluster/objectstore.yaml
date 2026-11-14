@@ -18,7 +18,7 @@ spec:
     wal:
       compression: zstd
     data:
-      compression: gzip
+      compression: zstd
 
   instanceSidecarConfiguration:
     env:
