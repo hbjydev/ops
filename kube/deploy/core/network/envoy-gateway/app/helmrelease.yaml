@@ -27,6 +27,8 @@ spec:
             memory: 512Mi
     config:
       envoyGateway:
+        extensionApis:
+          enableBackend: true
         provider:
           type: Kubernetes
           kubernetes:
