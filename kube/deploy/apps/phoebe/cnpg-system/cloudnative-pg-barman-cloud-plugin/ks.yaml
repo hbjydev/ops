@@ -16,11 +16,6 @@ spec:
       namespace: cnpg-system
     - name: core-cert-manager
       namespace: cert-manager
-  healthChecks:
-    - apiVersion: apps/v1
-      kind: Deployment
-      name: barman-cloud
-      namespace: cnpg-system
   interval: 1h
   path: ./kube/deploy/core/cnpg-system/cloudnative-pg-barman-cloud-plugin/app
   prune: true
