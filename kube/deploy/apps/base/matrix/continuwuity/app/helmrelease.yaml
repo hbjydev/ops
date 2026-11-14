@@ -74,7 +74,7 @@ spec:
           app:
             image:
               repository: forgejo.ellis.link/continuwuation/continuwuity
-              tag: v26.9.3-maxperf
+              tag: main-maxperf@sha256:396effcd16279b8c06a095f36bdc53c020826e0512ff58105bcfc603c17f11df
             env:
               CONTINUWUITY_LOG: info
               CONTINUWUITY_ADDRESS: 0.0.0.0
@@ -89,6 +89,8 @@ spec:
               CONTINUWUITY_ROCKSDB_BOTTOMMOST_COMPRESSION_LEVEL: "32767"
               CONTINUWUITY_ROCKSDB_BOTTOMMOST_COMPRESSION: "true"
 
+              CONTINUWUITY_ENABLE_MSC4495_SELECTIVE_PRESENCE: true
+
               # Security
               CONTINUWUITY_ALLOW_FEDERATION: true
               CONTINUWUITY_ALLOW_ENCRYPTION: true
@@ -98,13 +100,19 @@ spec:
               CONTINUWUITY_ALLOW_PUBLIC_ROOM_DIRECTORY_OVER_FEDERATION: false
               CONTINUWUITY_LOCKDOWN_PUBLIC_ROOM_DIRECTORY: "true"
               CONTINUWUITY_ALLOW_LEGACY_MEDIA: "false"
+              CONTINUWUITY_CACHE_CAPACITY_MODIFIER: "1.0"
               CONTINUWUITY_MAX_REQUEST_SIZE: "20971520"
 
               # DNS
-              CONTINUWUITY_QUERY_OVER_TCP_ONLY: false
+              CONTINUWUITY_QUERY_OVER_TCP_ONLY: true
               CONTINUWUITY_IP_LOOKUP_STRATEGY: "1"
-              CONTINUWUITY_DNS_TIMEOUT: 60
+              CONTINUWUITY_DNS_SERVERS: '["127.0.0.1", "::1"]'
+              CONTINUWUITY_DNS_TIMEOUT: 10
+              CONTINUWUITY_DNS_ATTEMPTS: 3
               CONTINUWUITY_DNS_CACHE_ENTRIES: 0
+              CONTINUWUITY_GLOBAL__WELL_KNOWN__CLIENT: https://matrix.hayden.moe
+              CONTINUWUITY_GLOBAL__WELL_KNOWN__SERVER: matrix.hayden.moe:443
+              CONTINUWUITY_GLOBAL__WELL_KNOWN__SUPPORT_MXID: "@hayden:hayden.moe"
 
               CONTINUWUITY_ADMIN_EXECUTE: '["media delete-past-remote-media -b 30d"]'
               CONTINUWUITY_ADMIN_EXECUTE_ERRORS_IGNORE: true
