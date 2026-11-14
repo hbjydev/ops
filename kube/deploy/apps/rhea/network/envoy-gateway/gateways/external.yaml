@@ -15,6 +15,18 @@ spec:
     - type: IPAddress
       value: 193.160.32.161
   listeners:
+    - name: hayden-apex
+      hostname: hayden.moe
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: hayden-moe-tls
     - name: http
       protocol: HTTP
       port: 80
