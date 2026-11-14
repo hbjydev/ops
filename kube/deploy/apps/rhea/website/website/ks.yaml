@@ -9,7 +9,7 @@ spec:
     - name: envoy-gateway-gateways
       namespace: network
   interval: 1h
-  path: ./kube/deploy/apps/phoebe/website/website/app
+  path: ./kube/deploy/apps/rhea/website/website/app
   prune: true
   sourceRef:
     kind: GitRepository

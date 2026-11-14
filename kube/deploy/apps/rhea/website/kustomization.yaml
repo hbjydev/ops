@@ -7,5 +7,3 @@ resources:
 namespace: website
 components:
   - ../../../../components/namespace
-  - ../../../../clusters/phoebe/components/github-status
-  - ../../../../clusters/phoebe/components/sops
