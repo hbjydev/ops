@@ -17,6 +17,10 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    upgrade:
+      legacyPolicyCheck:
+        podLabels:
+          egress.netpol.home.arpa/apiserver: allow
     crds:
       migration:
         podLabels:
@@ -29,6 +33,8 @@ spec:
       podLabels:
         ingress.netpol.home.arpa/apiserver: allow
         egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/host: allow
+        ingress.netpol.home.arpa/o11y: allow
       serviceMonitor:
         enabled: true
     backgroundController:

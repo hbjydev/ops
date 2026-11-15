@@ -20,6 +20,8 @@ spec:
     app:
       podLabels:
         ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/host: allow
+        ingress.netpol.home.arpa/o11y: allow
       trust:
         namespace: cert-manager
       metrics:

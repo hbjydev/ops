@@ -9,3 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: *app
+  values:
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/host: allow

@@ -10,6 +10,11 @@ spec:
     name: kro
   interval: 1h
   values:
+    deployment:
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/host: allow
+        ingress.netpol.home.arpa/o11y: allow
     config:
       featureGates:
         CELOmitFunction: true

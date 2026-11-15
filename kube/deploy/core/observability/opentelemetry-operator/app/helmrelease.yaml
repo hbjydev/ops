@@ -23,6 +23,8 @@ spec:
       podLabels:
         egress.netpol.home.arpa/apiserver: allow
         ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/host: allow
+        ingress.netpol.home.arpa/o11y: allow
       resources:
         requests:
           cpu: 50m
