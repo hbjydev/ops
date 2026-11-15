@@ -14,6 +14,7 @@ resources:
 namespace: selfhosted
 components:
   - ../../../../components/namespace
+  - ../../../../components/otel-instrumentation
   - ../../../../components/namespace-backups
   - ../../../../components/app-template
   - ../../../../components/infra-folder
