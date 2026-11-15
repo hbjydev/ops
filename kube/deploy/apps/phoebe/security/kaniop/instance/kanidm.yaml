@@ -21,7 +21,6 @@ spec:
       primaryNode: true
       statefulSetAnnotations:
         reloader.stakater.com/auto: "true"
-        instrumentation.opentelemetry.io/inject-sdk: "true"
       resources:
         requests:
           cpu: 100m

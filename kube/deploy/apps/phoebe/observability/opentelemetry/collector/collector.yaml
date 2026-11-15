@@ -83,7 +83,6 @@ spec:
           - /var/log/pods/*/*/*.log
         exclude:
           - /var/log/pods/*/otc-container/*.log
-          - /var/log/pods/*/kanidm/*.log  # kanidm sends via otel
         start_at: end
         include_file_path: true
         include_file_name: false

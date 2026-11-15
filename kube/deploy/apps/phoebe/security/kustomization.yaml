@@ -8,7 +8,6 @@ resources:
 namespace: security
 components:
   - ../../../../components/namespace
-  - ../../../../components/otel-instrumentation
   - ../../../../components/namespace-backups
   - ../../../../components/app-template
   - ../../../../components/infra-folder
