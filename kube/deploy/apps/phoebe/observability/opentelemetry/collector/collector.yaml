@@ -25,12 +25,14 @@ spec:
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
+      memory: 512Mi
     limits:
       cpu: 1000m
-      memory: 512Mi
+      memory: 1Gi
 
   env:
+    - name: GOMEMLIMIT
+      value: 640MiB
     - name: K8S_NODE_NAME
       valueFrom:
         fieldRef:
@@ -203,9 +205,9 @@ spec:
 
     processors:
       memory_limiter:
-        check_interval: 5s
-        limit_percentage: 70
-        spike_limit_percentage: 25
+        check_interval: 1s
+        limit_percentage: 80
+        spike_limit_percentage: 15
 
       k8s_attributes:
         auth_type: serviceAccount
