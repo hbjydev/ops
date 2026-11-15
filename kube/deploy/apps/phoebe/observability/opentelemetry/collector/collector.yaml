@@ -82,6 +82,21 @@ spec:
 
   config:
     receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'otel-collector'
+              scrape_interval: 10s
+              static_configs:
+                - targets: [ '0.0.0.0:8888' ]
+              metric_relabel_configs:
+                - action: labeldrop
+                  regex: (id|name)
+                  replacement: $$1
+                - action: labelmap
+                  regex: label_(.+)
+                  replacement: $$1
+
       file_log/pods:
         include:
           - /var/log/pods/*/*/*.log
