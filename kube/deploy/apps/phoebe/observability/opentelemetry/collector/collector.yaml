@@ -268,6 +268,10 @@ spec:
           # Preserve target labels as fallbacks, but prefer each metric's own labels.
           - context: datapoint
             statements:
+              # The Prometheus receiver moves job and instance into resource attributes.
+              - set(attributes["job"], Concat([resource.attributes["service.namespace"], resource.attributes["service.name"]], "/")) where attributes["job"] == nil and resource.attributes["service.name"] != nil and resource.attributes["service.namespace"] != nil and resource.attributes["service.namespace"] != ""
+              - set(attributes["job"], resource.attributes["service.name"]) where attributes["job"] == nil and resource.attributes["service.name"] != nil
+              - set(attributes["instance"], resource.attributes["service.instance.id"]) where attributes["instance"] == nil and resource.attributes["service.instance.id"] != nil
               - merge_maps(cache, resource.attributes, "upsert")
               - keep_keys(cache, ["namespace", "pod", "container", "endpoint", "service"])
               - merge_maps(attributes, cache, "insert")
