@@ -15,9 +15,11 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          annotations:
+            instrumentation.opentelemetry.io/inject-sdk: "true"
           labels:
             ingress.netpol.home.arpa/external: allow
-            ingress.netpol.home.arpa/o11y: allow
+            egress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/internet: allow
             egress.netpol.home.arpa/smtp-relay: allow
             egress.netpol.home.arpa/postgres: allow
@@ -36,6 +38,9 @@ spec:
               GTS_STORAGE_LOCAL_BASE_PATH: /storage
               GTS_LANDING_PAGE_USER: "hayden"
               GTS_METRICS_ENABLED: true
+              GTS_TRACING_ENABLED: true
+              OTEL_TRACES_EXPORTER: otlp
+              OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
               GTS_TRUSTED_PROXIES: "${CLUSTER_POD_CIDR},${CLUSTER_SVC_CIDR}"
               GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS: "192.168.0.0/16"
 
@@ -101,15 +106,6 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
       automountServiceAccountToken: true
-
-    serviceMonitor:
-      app:
-        enabled: true
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
 
     service:
       app:
