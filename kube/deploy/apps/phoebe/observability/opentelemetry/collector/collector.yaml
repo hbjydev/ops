@@ -254,6 +254,31 @@ spec:
             statements:
               - set(attributes["cluster"], "${CLUSTER}") where attributes["cluster"] == nil
 
+      transform/scrape_labels:
+        metric_statements:
+          - context: resource
+            statements:
+              - delete_key(attributes, "container.id")
+              - delete_key(attributes, "container.image.tags")
+              - delete_key(attributes, "k8s.pod.uid")
+              - delete_key(attributes, "k8s.pod.start_time")
+              - delete_key(attributes, "cluster.name")
+              - delete_key(attributes, "k8s.cluster.name")
+          # Preserve target labels as fallbacks, but prefer each metric's own labels.
+          - context: datapoint
+            statements:
+              - merge_maps(cache, resource.attributes, "upsert")
+              - keep_keys(cache, ["namespace", "pod", "container", "endpoint", "service"])
+              - merge_maps(attributes, cache, "insert")
+          # Clear shared resource labels only after every datapoint has its fallback.
+          - context: resource
+            statements:
+              - delete_key(attributes, "namespace")
+              - delete_key(attributes, "pod")
+              - delete_key(attributes, "container")
+              - delete_key(attributes, "endpoint")
+              - delete_key(attributes, "service")
+
       transform/hostmetrics:
         metric_statements:
           - context: datapoint
@@ -364,7 +389,7 @@ spec:
 
         metrics/ta:
           receivers: [prometheus]
-          processors: [memory_limiter, k8s_attributes, resource, transform/cluster, batch]
+          processors: [memory_limiter, k8s_attributes, transform/cluster, transform/scrape_labels, batch]
           exporters: [otlp_http/vmetrics]
 
         metrics/host:
