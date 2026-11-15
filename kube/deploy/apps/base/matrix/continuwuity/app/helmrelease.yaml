@@ -92,8 +92,6 @@ spec:
               CONTINUWUITY_ENABLE_MSC4495_SELECTIVE_PRESENCE: true
 
               # o11y
-              # OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-daemonset-collector.observability.svc.cluster.local:4318
-              # OTEL_METRIC_EXPORT_INTERVAL: 30000  # in milliseconds, set to 30s
               CONTINUWUITY_ALLOW_OTLP: true
               CONTINUWUITY_ALLOW_OTLP_METRICS: true
 
