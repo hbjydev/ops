@@ -14,6 +14,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/component: opentelemetry-collector
+            app.kubernetes.io/instance: observability.otel-gateway
       toPorts:
         - ports:
             - # OTLP/gRPC
@@ -36,6 +37,7 @@ spec:
   endpointSelector:
     matchLabels:
       app.kubernetes.io/component: opentelemetry-collector
+      app.kubernetes.io/instance: observability.otel-gateway
   ingress:
     - fromEndpoints:
         - matchLabels:

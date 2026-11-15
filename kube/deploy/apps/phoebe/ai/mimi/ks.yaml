@@ -79,6 +79,9 @@ spec:
             controllers:
               mimi:
                 replicas: 0
+                pod:
+                  labels:
+                    egress.netpol.home.arpa/o11y: allow
                 containers:
                   mimi:
                     env:
@@ -88,5 +91,6 @@ spec:
                       LIVVI_OPENAI_MODEL_NAME: ms-kimi-k3
                       LIVVI_SEARXNG_URL: http://searxng.selfhosted.svc:8080
                       LIVVI_DISCORD_ALLOW_TOOL_USER_IDS: '508429235157729290'
-                      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: 'http://vmsingle-victoria-metrics.observability.svc:8428/opentelemetry/v1/metrics'
-                      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: 'http://vtsingle-victoria-traces.observability.svc:10428/insert/opentelemetry/v1/traces'
+                      OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: 'https://otel-gateway-collector.observability.svc.cluster.local:4318/v1/metrics'
+                      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: 'https://otel-gateway-collector.observability.svc.cluster.local:4318/v1/traces'
+                      OTEL_EXPORTER_OTLP_CERTIFICATE: /var/run/trusted-roots/ca.crt

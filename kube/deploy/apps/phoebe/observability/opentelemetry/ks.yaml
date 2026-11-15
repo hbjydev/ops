@@ -16,6 +16,10 @@ spec:
       kind: OpenTelemetryCollector
       name: otel-daemonset
       namespace: *namespace
+    - apiVersion: opentelemetry.io/v1beta1
+      kind: OpenTelemetryCollector
+      name: otel-gateway
+      namespace: *namespace
   interval: 1h
   path: ./kube/deploy/apps/phoebe/observability/opentelemetry/collector
   prune: true
