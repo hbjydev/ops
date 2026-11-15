@@ -11,7 +11,12 @@ spec:
 
   targetAllocator:
     enabled: true
+    serviceAccount: otel-collector-ta
     allocationStrategy: per-node
+    prometheusCR:
+      enabled: true
+      serviceMonitorSelector: {}
+      podMonitorSelector: {}
 
   resources:
     requests:
