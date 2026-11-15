@@ -55,6 +55,7 @@ spec:
         spec:
           containers:
             - name: grafana
+              image: mirror.gcr.io/grafana/grafana:13.2.6@sha256:b21409d7951ddcfd63a4b49083e4ef2cc35bc1437d071813bf82bfb238b00bca
               env:
                 - name: GF_INSTALL_PLUGINS
                   value: "${GRAFANA_PLUGINS}"
