@@ -141,3 +141,34 @@ spec:
     namespace: flux-system
   targetNamespace: observability
   timeout: 5m
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: victoria-metrics-vmalert
+  namespace: observability
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: victoria-metrics-vmalert
+  dependsOn:
+    - name: victoria-metrics-operator
+    - name: core-prometheus-crds
+    - name: victoria-metrics
+    - name: victoria-metrics-alertmanager
+  healthChecks:
+    - apiVersion: operator.victoriametrics.com/v1beta1
+      kind: VMAlert
+      name: victoria-metrics
+      namespace: observability
+  interval: 1h
+  path: ./kube/deploy/apps/base/observability/victoria-metrics-stack/vmalert
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  timeout: 5m

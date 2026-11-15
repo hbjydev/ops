@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vmalert_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlert
+metadata:
+  name: victoria-metrics
+spec:
+  image:
+    repository: victoriametrics/vmalert
+    tag: v1.156.0
+  replicaCount: 1
+  evaluationInterval: 30s
+  selectAllByDefault: true
+  externalLabels:
+    cluster: ${CLUSTER}
+
+  datasource:
+    url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428
+  remoteWrite:
+    url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428
+  remoteRead:
+    url: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428
+  notifiers:
+    - selector:
+        namespaceSelector:
+          matchNames: [observability]
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: victoria-metrics-alertmanager
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
