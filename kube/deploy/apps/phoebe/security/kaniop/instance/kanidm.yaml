@@ -19,18 +19,15 @@ spec:
     - name: default
       replicas: 1
       primaryNode: true
+      statefulSetAnnotations:
+        reloader.stakater.com/auto: "true"
+        instrumentation.opentelemetry.io/inject-sdk: "true"
       resources:
         requests:
           cpu: 100m
           memory: 140Mi
         limits:
           memory: 512Mi
-
-  env:
-    - name: KANIDM_OTEL_GRPC_ENDPOINT
-      value: https://otel-daemonset-collector.observability.svc.cluster.local:4317
-    - name: OTEL_EXPORTER_OTLP_CERTIFICATE
-      value: /var/run/trusted-roots/ca.crt
 
   storage:
     volumeClaimTemplate:
