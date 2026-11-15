@@ -6,7 +6,8 @@ namespace: default
 resources:
   - ./ks.yaml
   - ./externalsecret.yaml
-  - ./vmservicescrape.yaml
+  - ./servicemonitor.yaml
+  - ./targetallocator-rbac.yaml
 configMapGenerator:
   - name: home-assistant-configmap
     files:

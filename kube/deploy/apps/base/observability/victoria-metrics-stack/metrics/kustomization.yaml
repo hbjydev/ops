@@ -5,5 +5,5 @@ kind: Kustomization
 resources:
   - ./kopiur.yaml
   - ./vmsingle.yaml
+  - ./servicemonitor.yaml
   # - ./vmagent.yaml
-  - ./vmnodescrape.yaml

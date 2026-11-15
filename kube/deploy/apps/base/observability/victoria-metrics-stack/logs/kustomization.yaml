@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./kopiur.yaml
   - ./vlsingle.yaml
+  - ./servicemonitor.yaml

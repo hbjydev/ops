@@ -12,3 +12,4 @@ resources:
   - ./litellmvirtualkeys.yaml
   - ./litellmmcpservers.yaml
   - ./servicemonitor.yaml
+  - ./targetallocator-rbac.yaml

@@ -13,10 +13,14 @@ spec:
     enabled: true
     serviceAccount: otel-collector-ta
     allocationStrategy: per-node
+    mtls:
+      enabled: true
+      useCertManager: true
     prometheusCR:
       enabled: true
       serviceMonitorSelector: {}
       podMonitorSelector: {}
+      secretNamespaces: [observability, default, ai]
 
   resources:
     requests:
@@ -101,6 +105,48 @@ spec:
                 - action: labelmap
                   regex: label_(.+)
                   replacement: $$1
+
+            - job_name: kubelet-cadvisor
+              kubernetes_sd_configs:
+                - role: node
+              metrics_path: /metrics/cadvisor
+              scheme: https
+              scrape_interval: 30s
+              scrape_timeout: 10s
+              body_size_limit: 32MiB
+              tls_config:
+                insecure_skip_verify: true
+                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_node_name]
+                  target_label: node
+                - source_labels: [__metrics_path__]
+                  target_label: metrics_path
+                - target_label: job
+                  replacement: kubelet
+              metric_relabel_configs:
+                - action: labeldrop
+                  regex: "^(uid|id|name)$"
+
+            - job_name: kubelet-metrics
+              kubernetes_sd_configs:
+                - role: node
+              metrics_path: /metrics
+              scheme: https
+              scrape_interval: 30s
+              scrape_timeout: 10s
+              tls_config:
+                insecure_skip_verify: true
+                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_node_name]
+                  target_label: node
+                - source_labels: [__metrics_path__]
+                  target_label: metrics_path
+                - target_label: job
+                  replacement: kubelet
 
       file_log/pods:
         include:

@@ -1,7 +1,7 @@
 ---
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/operator.victoriametrics.com/vmservicescrape_v1beta1.json
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMServiceScrape
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
   name: home-assistant
 spec:
@@ -15,7 +15,7 @@ spec:
   endpoints:
     - port: http
       path: /api/prometheus
-      scrape_interval: 60s
+      interval: 60s
       honorLabels: true
       authorization:
         credentials:
