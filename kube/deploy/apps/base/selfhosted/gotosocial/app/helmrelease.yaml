@@ -19,6 +19,7 @@ spec:
             instrumentation.opentelemetry.io/inject-sdk: "true"
           labels:
             ingress.netpol.home.arpa/external: allow
+            ingress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/internet: allow
             egress.netpol.home.arpa/smtp-relay: allow
@@ -41,6 +42,8 @@ spec:
               GTS_TRACING_ENABLED: true
               OTEL_TRACES_EXPORTER: otlp
               OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+              OTEL_EXPORTER_PROMETHEUS_HOST: "0.0.0.0"
+              OTEL_EXPORTER_PROMETHEUS_PORT: "9464"
               GTS_TRUSTED_PROXIES: "${CLUSTER_POD_CIDR},${CLUSTER_SVC_CIDR}"
               GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS: "192.168.0.0/16"
 
@@ -107,11 +110,22 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       automountServiceAccountToken: true
 
+    serviceMonitor:
+      app:
+        enabled: true
+        endpoints:
+          - port: prometheus
+            scheme: http
+            path: /metrics
+            interval: 1m
+
     service:
       app:
         ports:
           http:
             port: 8080
+          prometheus:
+            port: 9464
 
     persistence:
       storage:
