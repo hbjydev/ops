@@ -38,6 +38,20 @@ spec:
     - name: varlogpods
       hostPath:
         path: /var/log/pods
+    - name: otlp-tls
+      csi:
+        driver: csi.cert-manager.io
+        readOnly: true
+        volumeAttributes:
+          csi.cert-manager.io/issuer-name: cluster-ca
+          csi.cert-manager.io/issuer-kind: ClusterIssuer
+          csi.cert-manager.io/key-algorithm: ECDSA
+          csi.cert-manager.io/key-size: "384"
+          csi.cert-manager.io/key-encoding: PKCS8
+          csi.cert-manager.io/key-usages: digital signature,server auth
+          csi.cert-manager.io/dns-names: otel-daemonset-collector.observability.svc.cluster.local,otel-daemonset-collector.observability.svc
+          csi.cert-manager.io/fs-group: "10001"
+
   volumeMounts:
     - name: proc
       mountPath: /host/proc
@@ -50,6 +64,9 @@ spec:
       readOnly: true
     - name: varlogpods
       mountPath: /var/log/pods
+      readOnly: true
+    - name: otlp-tls
+      mountPath: /var/run/otlp-tls
       readOnly: true
 
   config:
@@ -96,8 +113,16 @@ spec:
         protocols:
           grpc:
             endpoint: 0.0.0.0:4317
+            tls:
+              cert_file: /var/run/otlp-tls/tls.crt
+              key_file: /var/run/otlp-tls/tls.key
+              reload_interval: 1m
           http:
             endpoint: 0.0.0.0:4318
+            tls:
+              cert_file: /var/run/otlp-tls/tls.crt
+              key_file: /var/run/otlp-tls/tls.key
+              reload_interval: 1m
 
     processors:
       memory_limiter:
