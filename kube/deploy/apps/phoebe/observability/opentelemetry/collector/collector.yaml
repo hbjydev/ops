@@ -128,8 +128,9 @@ spec:
                 - target_label: job
                   replacement: kubelet
               metric_relabel_configs:
+                # Retain id to distinguish cgroups without pod or container labels.
                 - action: labeldrop
-                  regex: "^(uid|id|name)$"
+                  regex: "^(uid|name)$"
 
             - job_name: kubelet-metrics
               kubernetes_sd_configs:
