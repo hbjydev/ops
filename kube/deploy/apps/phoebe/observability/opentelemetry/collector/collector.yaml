@@ -303,6 +303,11 @@ spec:
           processors: [memory_limiter, k8s_attributes, resource, batch]
           exporters: [otlp_http/vmetrics]
 
+        metrics/ta:
+          receivers: [prometheus]
+          processors: [memory_limiter, k8s_attributes, resource, batch]
+          exporters: [otlp_http/vmetrics]
+
         metrics/host:
           receivers: [host_metrics]
           processors: [memory_limiter, resource_detection/env, transform/hostmetrics, batch]
