@@ -9,3 +9,7 @@ spec:
     kind: OCIRepository
     name: reflector
   interval: 1h
+  values:
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/host: allow

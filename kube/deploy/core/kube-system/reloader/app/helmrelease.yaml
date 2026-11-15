@@ -29,6 +29,10 @@ spec:
       enableHA: true
       deployment:
         replicas: 1
+        labels:
+          egress.netpol.home.arpa/apiserver: allow
+          ingress.netpol.home.arpa/host: allow
+          ingress.netpol.home.arpa/o11y: allow
       readOnlyRootFileSystem: true
       podMonitor:
         enabled: true

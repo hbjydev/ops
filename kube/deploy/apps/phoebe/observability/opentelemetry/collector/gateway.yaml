@@ -4,6 +4,8 @@ apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: otel-gateway
+  labels:
+    netpol.home.arpa/o11y: "true"
 spec:
   mode: statefulset
   replicas: 1
