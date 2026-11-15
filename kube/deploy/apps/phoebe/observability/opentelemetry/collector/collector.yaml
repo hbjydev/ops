@@ -50,7 +50,7 @@ spec:
           csi.cert-manager.io/key-encoding: PKCS8
           csi.cert-manager.io/key-usages: digital signature,server auth
           csi.cert-manager.io/dns-names: otel-daemonset-collector.observability.svc.cluster.local,otel-daemonset-collector.observability.svc
-          csi.cert-manager.io/fs-group: "10001"
+          csi.cert-manager.io/fs-group: "0"
 
   volumeMounts:
     - name: proc
