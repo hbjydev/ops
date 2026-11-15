@@ -70,14 +70,6 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-    serviceMonitor:
-      app:
-        enabled: true
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
     service:
       app:
         ports:
@@ -88,9 +80,6 @@ spec:
         data:
           settings.yml: |-
             use_default_settings: true
-
-            server:
-              enable_metrics: true
 
             redis:
               url: redis://localhost:6379/0
