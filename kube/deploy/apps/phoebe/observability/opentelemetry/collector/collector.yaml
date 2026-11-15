@@ -200,6 +200,12 @@ spec:
         detectors: [env]
         timeout: 2s
 
+      transform/cluster:
+        metric_statements:
+          - context: datapoint
+            statements:
+              - set(attributes["cluster"], "${CLUSTER}") where attributes["cluster"] == nil
+
       transform/hostmetrics:
         metric_statements:
           - context: datapoint
@@ -310,12 +316,12 @@ spec:
 
         metrics/ta:
           receivers: [prometheus]
-          processors: [memory_limiter, k8s_attributes, resource, batch]
+          processors: [memory_limiter, k8s_attributes, resource, transform/cluster, batch]
           exporters: [otlp_http/vmetrics]
 
         metrics/host:
           receivers: [host_metrics]
-          processors: [memory_limiter, resource_detection/env, transform/hostmetrics, batch]
+          processors: [memory_limiter, resource_detection/env, transform/hostmetrics, transform/cluster, batch]
           exporters: [otlp_http/vmetrics]
 
         logs/otel:
