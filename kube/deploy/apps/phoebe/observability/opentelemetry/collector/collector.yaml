@@ -9,6 +9,10 @@ spec:
   serviceAccount: otel-collector
   image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.165.0
 
+  targetAllocator:
+    enabled: true
+    allocationStrategy: per-node
+
   resources:
     requests:
       cpu: 50m
