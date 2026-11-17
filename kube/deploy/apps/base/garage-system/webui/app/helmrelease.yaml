@@ -31,6 +31,10 @@ spec:
                 memory: 50Mi
               limits:
                 memory: 128Mi
+        pod:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/internal: allow
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# The UI uses the configured internal Garage S3 and admin endpoints.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-garage-webui
+  namespace: garage-system
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: garage-webui
+      app.kubernetes.io/instance: garage-webui
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            garage.rajsingh.info/cluster: garage
+      toPorts:
+        - ports:
+            - port: '3900'
+              protocol: TCP
+            - port: '3903'
+              protocol: TCP
