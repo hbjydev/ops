@@ -18,6 +18,7 @@ spec:
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
       egress.netpol.home.arpa/cloudflare-dns: allow
+      ingress.netpol.home.arpa/o11y: allow
     serviceAccount:
       create: true
     service:

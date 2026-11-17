@@ -24,6 +24,7 @@ spec:
       - --metric-resolution=15s
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/o11y: allow
     metrics:
       enabled: true
     serviceMonitor:

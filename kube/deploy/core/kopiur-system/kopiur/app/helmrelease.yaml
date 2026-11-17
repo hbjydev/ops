@@ -21,10 +21,12 @@ spec:
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
 
+      ingress.netpol.home.arpa/o11y: allow
     webhook:
       podLabels:
         egress.netpol.home.arpa/apiserver: allow
         ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/o11y: allow
       tls:
         mode: cert-manager
       serviceMonitor:

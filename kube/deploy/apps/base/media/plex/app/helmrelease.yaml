@@ -24,6 +24,7 @@ spec:
         pod:
           labels:
             egress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/external: allow
         containers:
           app:
             image:

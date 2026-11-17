@@ -40,6 +40,7 @@ spec:
           egress.netpol.home.arpa/apiserver: allow
 
 # [perf] scale operator to 1 replica
+          ingress.netpol.home.arpa/internal: allow
     operator:
       replicas: 1
       dashboards:

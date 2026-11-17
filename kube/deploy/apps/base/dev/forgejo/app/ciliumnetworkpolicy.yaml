@@ -44,3 +44,26 @@ spec:
         - ports:
             - port: "3000"
               protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-forgejo-from-towonel
+  namespace: dev
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: forgejo
+      app.kubernetes.io/instance: forgejo
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: towonel-agent
+            app.kubernetes.io/instance: towonel-agent
+            k8s:io.kubernetes.pod.namespace: network
+      toPorts:
+        - ports:
+            - port: '2222'
+              protocol: TCP

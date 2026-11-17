@@ -64,6 +64,11 @@ spec:
       persistence:
         library:
           existingClaim: immich
-    server: {}
+    server:
+      controllers:
+        main:
+          pod:
+            labels:
+              ingress.netpol.home.arpa/external: allow
     machine-learning:
       enabled: true

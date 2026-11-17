@@ -21,3 +21,26 @@ spec:
       toPorts:
         - ports:
             - port: "80"
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-slskd-clients
+  namespace: downloads
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: slskd
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/slskd: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP

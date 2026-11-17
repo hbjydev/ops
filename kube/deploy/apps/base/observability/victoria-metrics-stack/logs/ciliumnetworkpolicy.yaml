@@ -20,6 +20,10 @@ spec:
             app.kubernetes.io/component: mcp-server
             app.kubernetes.io/managed-by: litellm-operator
             app.kubernetes.io/name: mcp-victorialogs
+        - matchLabels:
+            tailscale.com/parent-resource: ts-o11y-proxy
+            tailscale.com/parent-resource-type: proxygroup
+            k8s:io.kubernetes.pod.namespace: network
       toPorts:
         - ports:
             - port: '9428'

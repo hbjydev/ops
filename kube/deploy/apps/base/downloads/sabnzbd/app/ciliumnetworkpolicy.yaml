@@ -21,3 +21,26 @@ spec:
       toPorts:
         - ports:
             - port: "80"
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-sabnzbd-clients
+  namespace: downloads
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: sabnzbd
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/sabnzbd: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP

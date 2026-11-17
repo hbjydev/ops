@@ -20,6 +20,7 @@ spec:
           labels:
             trust.home.arpa/inject: "true"
             egress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/internal: allow
         containers:
           app:
             image:

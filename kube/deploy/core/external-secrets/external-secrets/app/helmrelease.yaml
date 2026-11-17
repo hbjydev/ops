@@ -22,6 +22,7 @@ spec:
     leaderElect: true
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/o11y: allow
     image:
       repository: ghcr.io/external-secrets/external-secrets
     webhook:
@@ -30,6 +31,7 @@ spec:
       podLabels:
         egress.netpol.home.arpa/apiserver: allow
         ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/o11y: allow
       serviceMonitor:
         enabled: true
         interval: 1m
@@ -39,6 +41,7 @@ spec:
       podLabels:
         egress.netpol.home.arpa/apiserver: allow
         ingress.netpol.home.arpa/apiserver: allow
+        ingress.netpol.home.arpa/o11y: allow
       serviceMonitor:
         enabled: true
         interval: 1m

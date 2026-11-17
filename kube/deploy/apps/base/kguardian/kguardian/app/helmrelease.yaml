@@ -56,6 +56,13 @@ spec:
                             csi.cert-manager.io/key-usages: client auth
                             csi.cert-manager.io/common-name: kguardian
                             csi.cert-manager.io/fs-group: "1000"
+          - target:
+              kind: Deployment
+              name: kguardian-frontend
+            patch: |
+              - op: add
+                path: /spec/template/metadata/labels/ingress.netpol.home.arpa~1internal
+                value: allow
   values:
     defaultPodOptions:
       annotations: {}

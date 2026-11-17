@@ -97,3 +97,44 @@ spec:
         - ports:
             - port: '10428'
               protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-otel-gateway-scrapes
+  namespace: observability
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: observability.otel-gateway
+      app.kubernetes.io/component: opentelemetry-collector
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            ingress.netpol.home.arpa/o11y: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+    - toEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: '10250'
+              protocol: TCP
+            - port: '9100'
+              protocol: TCP
+            - port: '9962'
+              protocol: TCP
+            - port: '9963'
+              protocol: TCP
+            - port: '9964'
+              protocol: TCP
+            - port: '10257'
+              protocol: TCP
+            - port: '10259'
+              protocol: TCP
+            - port: '2381'
+              protocol: TCP

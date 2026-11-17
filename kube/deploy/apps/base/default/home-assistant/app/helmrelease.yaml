@@ -21,6 +21,8 @@ spec:
             egress.netpol.home.arpa/lan: allow
             egress.netpol.home.arpa/iot: allow
 
+            ingress.netpol.home.arpa/external: allow
+            ingress.netpol.home.arpa/o11y: allow
         initContainers:
           init-config:
             image: &img

@@ -15,6 +15,10 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app: grafana
+        - matchLabels:
+            tailscale.com/parent-resource: ts-o11y-proxy
+            tailscale.com/parent-resource-type: proxygroup
+            k8s:io.kubernetes.pod.namespace: network
       toPorts:
         - ports:
             - port: '10428'

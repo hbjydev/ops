@@ -35,6 +35,9 @@ spec:
             instrumentation.opentelemetry.io/inject-sdk: "observability/instrumentation"
             logging.vlagent.io/exclude-main: "true"
 
+          labels:
+            egress.netpol.home.arpa/o11y: allow
+            ingress.netpol.home.arpa/o11y: allow
         containers:
           app:
             image:

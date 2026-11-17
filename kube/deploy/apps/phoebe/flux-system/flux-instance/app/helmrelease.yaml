@@ -118,3 +118,10 @@ spec:
             target:
               kind: Deployment
               name: helm-controller
+          - target:
+              kind: Deployment
+              name: notification-controller
+            patch: |
+              - op: add
+                path: /spec/template/metadata/labels/ingress.netpol.home.arpa~1external
+                value: allow

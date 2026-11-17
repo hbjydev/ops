@@ -15,23 +15,6 @@ spec:
   egress:
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: sonarr
-          matchExpressions:
-            - key: io.kubernetes.pod.namespace
-              operator: In
-              values: [default, downloads]
-      toPorts: &http [{ports: [{port: "80", protocol: TCP}]}]
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: radarr
-          matchExpressions:
-            - key: io.kubernetes.pod.namespace
-              operator: In
-              values: [default, downloads]
-      toPorts: *http
-
-    - toEndpoints:
-        - matchLabels:
             app.kubernetes.io/name: plex
           matchExpressions:
             - key: io.kubernetes.pod.namespace
@@ -52,7 +35,6 @@ spec:
         - ports:
             - port: '80'
               protocol: TCP
-
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
 apiVersion: cilium.io/v2

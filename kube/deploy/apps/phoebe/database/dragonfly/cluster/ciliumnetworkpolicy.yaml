@@ -127,14 +127,3 @@ spec:
         - ports:
             - port: "6379"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: observability
-            app.kubernetes.io/instance: observability.otel-gateway
-            app.kubernetes.io/part-of: opentelemetry
-      toPorts:
-        - ports:
-            - port: "4317"
-              protocol: TCP
-            - port: "4318"
-              protocol: TCP

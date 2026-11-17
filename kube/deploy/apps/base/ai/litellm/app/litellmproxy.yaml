@@ -58,6 +58,8 @@ spec:
     egress.netpol.home.arpa/cluster: allow
     egress.netpol.home.arpa/internet-https: allow
 
+    ingress.netpol.home.arpa/external: allow
+    ingress.netpol.home.arpa/o11y: allow
   volumes:
     - name: postgres-certs
       secret:
