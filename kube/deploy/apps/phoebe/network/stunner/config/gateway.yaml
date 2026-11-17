@@ -11,7 +11,7 @@ spec:
   gatewayClassName: stunner
   addresses:
     - type: IPAddress
-      value: 46.62.132.125
+      value: 54.36.18.175
   listeners:
     - name: udp
       port: 3478
