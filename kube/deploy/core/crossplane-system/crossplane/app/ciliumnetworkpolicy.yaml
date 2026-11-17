@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Public HTTPS is for OCI package registries/authentication/CDNs; functions use internal gRPC.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-crossplane
+  namespace: crossplane-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: crossplane
+      app.kubernetes.io/instance: crossplane
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            netpol.home.arpa/o11y: 'true'
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '8080'
+              protocol: TCP
+    - fromEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '6443'
+              protocol: TCP
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+      toPorts:
+        - ports:
+            - port: '443'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: crossplane-system
+          matchExpressions:
+            - key: pkg.crossplane.io/function
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-crossplane-rbac-manager
+  namespace: crossplane-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: crossplane-rbac-manager
+      app.kubernetes.io/instance: crossplane
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            netpol.home.arpa/o11y: 'true'
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '8080'
+              protocol: TCP
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '6443'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-crossplane-functions
+  namespace: crossplane-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchExpressions:
+      - key: pkg.crossplane.io/function
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: crossplane-system
+            app: crossplane
+            app.kubernetes.io/instance: crossplane
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP

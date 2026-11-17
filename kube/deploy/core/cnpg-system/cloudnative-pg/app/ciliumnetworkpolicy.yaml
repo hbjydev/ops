@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Instance status/PostgreSQL and CNPG-I plugin RPC; backups run in database pods.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-cloudnative-pg
+  namespace: cnpg-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: cloudnative-pg
+      app.kubernetes.io/instance: cloudnative-pg
+  ingress:
+    - fromEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            netpol.home.arpa/o11y: 'true'
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '8080'
+              protocol: TCP
+    - fromEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '6443'
+              protocol: TCP
+    - toEndpoints:
+        - matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+            - key: cnpg.io/cluster
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '8000'
+              protocol: TCP
+            - port: '5432'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cnpg-system
+            app.kubernetes.io/name: plugin-barman-cloud
+            app.kubernetes.io/instance: cloudnative-pg-barman-cloud-plugin
+      toPorts:
+        - ports:
+            - port: '9090'
+              protocol: TCP
