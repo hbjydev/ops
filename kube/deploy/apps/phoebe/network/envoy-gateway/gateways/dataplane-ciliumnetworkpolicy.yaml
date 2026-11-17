@@ -72,10 +72,6 @@ spec:
         - ports:
             - port: '18000'
               protocol: TCP
-            - port: '18001'
-              protocol: TCP
-            - port: '18002'
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             ingress.netpol.home.arpa/external: allow
@@ -125,10 +121,6 @@ spec:
       toPorts:
         - ports:
             - port: '18000'
-              protocol: TCP
-            - port: '18001'
-              protocol: TCP
-            - port: '18002'
               protocol: TCP
     - toEndpoints:
         - matchLabels:
