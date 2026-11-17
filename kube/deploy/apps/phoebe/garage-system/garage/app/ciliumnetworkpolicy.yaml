@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Storage-node RPC and local admin/S3 clients; gateway and metrics access use shared labels.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-garage
+  namespace: garage-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      garage.rajsingh.info/cluster: garage
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            garage.rajsingh.info/cluster: garage
+      toPorts:
+        - ports:
+            - port: '3901'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: garage-operator
+            app.kubernetes.io/instance: garage-operator
+      toPorts:
+        - ports:
+            - port: '3903'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: garage-webui
+            app.kubernetes.io/instance: garage-webui
+      toPorts:
+        - ports:
+            - port: '3900'
+              protocol: TCP
+            - port: '3903'
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            garage.rajsingh.info/cluster: garage
+      toPorts:
+        - ports:
+            - port: '3901'
+              protocol: TCP
