@@ -22,6 +22,7 @@ spec:
     leaderElect: true
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/internet-https: allow
       ingress.netpol.home.arpa/o11y: allow
     image:
       repository: ghcr.io/external-secrets/external-secrets

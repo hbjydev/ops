@@ -15,6 +15,7 @@ spec:
     crds: CreateReplace
   values:
     podLabels:
+      ingress.netpol.home.arpa/o11y: allow
       egress.netpol.home.arpa/apiserver: allow
     agent:
       podLabels:

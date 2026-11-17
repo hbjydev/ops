@@ -18,6 +18,10 @@ spec:
 
     installScope: cluster
 
+    ui:
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+
     podLabels:
       egress.netpol.home.arpa/apiserver: allow
 

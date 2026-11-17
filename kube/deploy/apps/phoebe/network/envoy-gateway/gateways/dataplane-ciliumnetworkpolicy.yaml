@@ -13,6 +13,19 @@ spec:
     ingress: false
     egress: false
   ingress:
+    # OIDC discovery and JWKS/token requests through the public issuer URL.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: gateway-helm
+            app.kubernetes.io/instance: envoy-gateway
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.networking.k8s.io/gateway-name: external
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
@@ -64,6 +77,14 @@ spec:
             - port: '10443'
               protocol: TCP
   egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.networking.k8s.io/gateway-name: external
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network

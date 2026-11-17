@@ -19,3 +19,4 @@ spec:
     labels:
       ingress.netpol.home.arpa/host: allow
       ingress.netpol.home.arpa/o11y: allow
+      egress.netpol.home.arpa/apiserver: allow

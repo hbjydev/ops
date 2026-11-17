@@ -30,6 +30,7 @@ spec:
       retries: 2
   values:
     commonLabels:
+      ingress.netpol.home.arpa/o11y: allow
       egress.netpol.home.arpa/apiserver: allow
       egress.netpol.home.arpa/internet-https: allow
     serviceMonitor:

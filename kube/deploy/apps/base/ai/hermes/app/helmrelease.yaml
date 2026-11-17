@@ -72,6 +72,7 @@ spec:
           labels:
             trust.home.arpa/inject: "true"
             egress.netpol.home.arpa/litellm: allow
+            egress.netpol.home.arpa/internet-https: allow
             egress.netpol.home.arpa/honcho: allow
             egress.netpol.home.arpa/seerr: allow
             egress.netpol.home.arpa/searxng: allow

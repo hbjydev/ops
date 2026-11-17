@@ -9,6 +9,7 @@ metadata:
 spec:
   enableDefaultDeny:
     ingress: false
+    egress: false
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: gateway-helm
@@ -24,4 +25,14 @@ spec:
       toPorts:
         - ports:
             - port: '18000'
+              protocol: TCP
+  # OIDC discovery resolves the public issuer through the local external gateway.
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.networking.k8s.io/gateway-name: external
+      toPorts:
+        - ports:
+            - port: '10443'
               protocol: TCP

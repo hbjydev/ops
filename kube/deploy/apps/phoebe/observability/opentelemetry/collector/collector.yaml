@@ -6,6 +6,8 @@ metadata:
   name: otel-daemonset
   labels:
     egress.netpol.home.arpa/o11y: allow
+    egress.netpol.home.arpa/apiserver: allow
+    ingress.netpol.home.arpa/o11y: allow
 spec:
   mode: daemonset
   serviceAccount: otel-collector
