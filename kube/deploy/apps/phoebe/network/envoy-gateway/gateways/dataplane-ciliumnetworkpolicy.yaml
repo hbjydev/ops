@@ -16,6 +16,15 @@ spec:
     # OIDC discovery and JWKS/token requests through the public issuer URL.
     - fromEndpoints:
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: selfhosted
+            app.kubernetes.io/name: gotosocial
+            app.kubernetes.io/instance: gotosocial
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
             app.kubernetes.io/name: gateway-helm
             app.kubernetes.io/instance: envoy-gateway

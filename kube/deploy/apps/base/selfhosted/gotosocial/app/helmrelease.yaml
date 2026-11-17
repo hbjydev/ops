@@ -15,8 +15,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            instrumentation.opentelemetry.io/inject-sdk: "true"
           labels:
             ingress.netpol.home.arpa/external: allow
             ingress.netpol.home.arpa/o11y: allow
@@ -99,7 +97,8 @@ spec:
               limits:
                 memory: 1Gi
     defaultPodOptions:
-      annotations: {}
+      annotations:
+        instrumentation.opentelemetry.io/inject-sdk: "true"
       labels: {}
       schedulingGates: []
       securityContext:
