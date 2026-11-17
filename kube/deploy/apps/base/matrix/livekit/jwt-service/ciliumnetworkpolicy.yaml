@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-x-a-livekit-jwt-service-peers
+  name: np-e-a-livekit-jwt-service-peers
 spec:
   enableDefaultDeny:
     ingress: false

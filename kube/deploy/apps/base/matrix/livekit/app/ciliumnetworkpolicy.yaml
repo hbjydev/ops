@@ -13,8 +13,7 @@ spec:
       app.kubernetes.io/instance: livekit
   ingress:
     - fromEndpoints:
-        - &id001
-          matchLabels:
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
             stunner.l7mp.io/related-gateway-name: stunner
       toPorts:
@@ -39,7 +38,9 @@ spec:
             - port: '10443'
               protocol: TCP
     - toEndpoints:
-        - *id001
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            stunner.l7mp.io/related-gateway-name: stunner
       toPorts:
         - ports:
             - port: '3478'
