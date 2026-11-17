@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Towonel terminates the public TCP tunnel and connects to the SPT service on 6969.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-spt-from-towonel
+  namespace: gameservers
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: spt
+      app.kubernetes.io/instance: spt
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: towonel-agent
+            app.kubernetes.io/instance: towonel-agent
+      toPorts:
+        - ports:
+            - port: '6969'
+              protocol: TCP

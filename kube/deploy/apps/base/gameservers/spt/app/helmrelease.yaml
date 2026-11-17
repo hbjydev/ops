@@ -79,6 +79,10 @@ spec:
               capabilities: {drop: [ALL]}
               readOnlyRootFilesystem: true
 
+        pod:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            egress.netpol.home.arpa/internet-https: allow
     defaultPodOptions:
       securityContext:
         fsGroup: 1000
