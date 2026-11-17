@@ -10,5 +10,6 @@ resources:
   - ./securitypolicy.yaml
   - ./externalsecret.yaml
   - ./clusterrepository.yaml
+  - ./ciliumnetworkpolicy.yaml
 components:
   - ../../../../../../components/kanidm/private
