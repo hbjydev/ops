@@ -36,6 +36,10 @@ spec:
     usernameExpr: namespace + '-' + policyName
 
   moverDefaults:
+    # Inherited by discovery, backup, restore, maintenance and deletion jobs.
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/internet-https: allow
     securityContext:
       runAsUser: 1000
       runAsGroup: 1000

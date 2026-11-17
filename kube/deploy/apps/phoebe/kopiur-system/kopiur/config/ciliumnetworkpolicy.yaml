@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumclusterwidenetworkpolicy_v2.json
+# Kopiur 0.11.0 browse jobs deliberately ignore moverDefaults.podLabels.
+# ClusterRepository sessions can run in any authorised application namespace.
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: np-e-a-kopiur-hetzner-browse
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/managed-by: kopiur
+      kopiur.home-operations.com/session: browse
+      kopiur.home-operations.com/session-repo: ClusterRepository-hetzner
+  egress:
+    # Same scope as the shared internet-https label; DNS comes from the baseline.
+    - toCIDRSet:
+        - cidr: "0.0.0.0/0"
+          except:
+            - "10.0.0.0/8"
+            - "172.16.0.0/12"
+            - "192.168.0.0/16"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "443"
+              protocol: UDP
