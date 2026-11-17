@@ -130,3 +130,43 @@ spec:
                   groupClaimName: groups
                   provider: openidConnect
                   scopes: profile email groups
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: .*-anubis
+      patch: |
+        apiVersion: helm.toolkit.fluxcd.io/v2
+        kind: HelmRelease
+        metadata:
+          name: anubis
+        spec:
+          values:
+            defaultPodOptions:
+              labels:
+                ingress.netpol.home.arpa/external: allow
+                ingress.netpol.home.arpa/o11y: allow
+    - target:
+        group: helm.toolkit.fluxcd.io
+        kind: HelmRelease
+        name: forgejo
+      patch: |
+        - op: add
+          path: /spec/postRenderers/-
+          value:
+            kustomize:
+              patches:
+                - target:
+                    group: apps
+                    version: v1
+                    kind: Deployment
+                    name: forgejo
+                  patch: |-
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    metadata:
+                      name: forgejo
+                    spec:
+                      template:
+                        metadata:
+                          labels:
+                            ingress.netpol.home.arpa/external: allow

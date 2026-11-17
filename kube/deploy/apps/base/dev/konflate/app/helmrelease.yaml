@@ -28,3 +28,8 @@ spec:
         memory: 2Gi
     httpRoute:
       enabled: false
+    podLabels:
+      egress.netpol.home.arpa/internet-https: allow
+      ingress.netpol.home.arpa/external: allow
+      ingress.netpol.home.arpa/host: allow
+      ingress.netpol.home.arpa/o11y: allow
