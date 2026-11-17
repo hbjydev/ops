@@ -45,6 +45,8 @@ spec:
   workload:
     podLabels:
       trust.home.arpa/inject: "true"
+      ingress.netpol.home.arpa/host: allow
+      egress.netpol.home.arpa/internet-https: allow
     podAnnotations:
       trust.home.arpa/profile: python
       configmap.reloader.stakater.com/reload: trusted-roots
@@ -86,6 +88,7 @@ spec:
   workload:
     podLabels:
       trust.home.arpa/inject: "true"
+      ingress.netpol.home.arpa/host: allow
     podAnnotations:
       configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=jwonder/miniflux-mcp
@@ -135,6 +138,7 @@ spec:
   workload:
     podLabels:
       trust.home.arpa/inject: "true"
+      ingress.netpol.home.arpa/host: allow
     podAnnotations:
       configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victorialogs
@@ -168,6 +172,7 @@ spec:
   workload:
     podLabels:
       trust.home.arpa/inject: "true"
+      ingress.netpol.home.arpa/host: allow
     podAnnotations:
       configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victoriametrics

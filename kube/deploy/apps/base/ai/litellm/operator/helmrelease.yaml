@@ -27,3 +27,9 @@ spec:
         memory: 128Mi
       limits:
         memory: 512Mi
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/host: allow
+      ingress.netpol.home.arpa/o11y: allow
+      egress.netpol.home.arpa/litellm: allow
