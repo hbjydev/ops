@@ -6,3 +6,4 @@ resources:
   - ./cosign-pub.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./ciliumnetworkpolicy.yaml

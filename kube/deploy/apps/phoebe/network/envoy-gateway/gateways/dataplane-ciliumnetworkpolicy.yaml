@@ -1,0 +1,264 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-envoy-external
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: external
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: towonel-agent
+            app.kubernetes.io/instance: towonel-agent
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app.kubernetes.io/name: gatus
+      toPorts:
+        - ports:
+            - port: '10080'
+              protocol: TCP
+            - port: '10443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            tailscale.com/parent-resource: ts-srv-phoebe
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app: grafana
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: continuwuity
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit-jwt-service
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            app.kubernetes.io/component: mcp-server
+            app.kubernetes.io/managed-by: litellm-operator
+            app.kubernetes.io/name: mcp-hass
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            control-plane: envoy-gateway
+      toPorts:
+        - ports:
+            - port: '18000'
+              protocol: TCP
+            - port: '18001'
+              protocol: TCP
+            - port: '18002'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            ingress.netpol.home.arpa/external: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: default
+            app.kubernetes.io/controller: home-assistant
+            app.kubernetes.io/instance: home-assistant
+            app.kubernetes.io/name: home-assistant
+      toPorts:
+        - ports:
+            - port: '8123'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: flux-system
+            app: notification-controller
+      toPorts:
+        - ports:
+            - port: '9292'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kopiur-system
+            app.kubernetes.io/component: ui
+            app.kubernetes.io/instance: kopiur
+            app.kubernetes.io/name: kopiur
+      toPorts:
+        - ports:
+            - port: '8090'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media
+            app.kubernetes.io/controller: plex
+            app.kubernetes.io/instance: plex
+            app.kubernetes.io/name: plex
+      toPorts:
+        - ports:
+            - port: '32400'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+            app.kubernetes.io/instance: kanidm
+            app.kubernetes.io/managed-by: kaniop-kanidm
+            app.kubernetes.io/name: kanidm
+            kanidm.kaniop.rs/cluster: kanidm
+      toPorts:
+        - ports:
+            - port: '8443'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: selfhosted
+            app.kubernetes.io/controller: main
+            app.kubernetes.io/instance: immich
+            app.kubernetes.io/name: server
+      toPorts:
+        - ports:
+            - port: '2283'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-envoy-internal
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: internal
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            control-plane: envoy-gateway
+      toPorts:
+        - ports:
+            - port: '18000'
+              protocol: TCP
+            - port: '18001'
+              protocol: TCP
+            - port: '18002'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            ingress.netpol.home.arpa/internal: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloads
+            app.kubernetes.io/controller: qbittorrent
+            app.kubernetes.io/instance: qbittorrent
+            app.kubernetes.io/name: qbittorrent
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloads
+            app.kubernetes.io/controller: sabnzbd
+            app.kubernetes.io/instance: sabnzbd
+            app.kubernetes.io/name: sabnzbd
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: downloads
+            app.kubernetes.io/controller: slskd
+            app.kubernetes.io/instance: slskd
+            app.kubernetes.io/name: slskd
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kguardian
+            app.kubernetes.io/name: kguardian-frontend
+      toPorts:
+        - ports:
+            - port: '5173'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: hubble-ui
+      toPorts:
+        - ports:
+            - port: '8081'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: media
+            app.kubernetes.io/controller: navidrome
+            app.kubernetes.io/instance: picard
+            app.kubernetes.io/name: picard
+      toPorts:
+        - ports:
+            - port: '5000'
+              protocol: TCP
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app.kubernetes.io/name: gatus
+      toPorts:
+        - ports:
+            - port: '10080'
+              protocol: TCP
+            - port: '10443'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            tailscale.com/parent-resource: ts-srv-phoebe
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app: grafana
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: continuwuity
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit-jwt-service
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP

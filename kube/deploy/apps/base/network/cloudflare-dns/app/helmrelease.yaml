@@ -52,3 +52,8 @@ spec:
       enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/internet-https: allow
+      ingress.netpol.home.arpa/host: allow
+      ingress.netpol.home.arpa/o11y: allow

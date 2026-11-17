@@ -1,0 +1,70 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-tailscale-observability
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      tailscale.com/parent-resource: ts-o11y-proxy
+      tailscale.com/parent-resource-type: proxygroup
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app.kubernetes.io/name: vmsingle
+      toPorts:
+        - ports:
+            - port: '8429'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app.kubernetes.io/name: vlsingle
+      toPorts:
+        - ports:
+            - port: '9428'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app.kubernetes.io/name: vtsingle
+      toPorts:
+        - ports:
+            - port: '10428'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-tailscale-local-peers
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      tailscale.com/managed: 'true'
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            tailscale.com/managed: 'true'
+      toPorts:
+        - ports:
+            - port: '41641'
+              protocol: UDP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            tailscale.com/managed: 'true'
+      toPorts:
+        - ports:
+            - port: '41641'
+              protocol: UDP
