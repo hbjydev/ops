@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Kanidm administration; common traffic uses labels on the rendered operator pod template.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-kaniop
+  namespace: security
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: kaniop
+      app.kubernetes.io/instance: kaniop
+      app.kubernetes.io/component: operator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: kanidm
+            app.kubernetes.io/managed-by: kaniop-kanidm
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '8443'
+              protocol: TCP

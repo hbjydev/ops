@@ -33,6 +33,11 @@ spec:
   values:
     crds:
       create: true
+    podLabels:
+      ingress.netpol.home.arpa/o11y: allow
+      ingress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/host: allow
     monitoring:
       podMonitorEnabled: true
       grafanaDashboard:

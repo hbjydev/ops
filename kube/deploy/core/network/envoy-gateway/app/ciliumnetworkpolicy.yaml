@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Managed Envoy proxies connect to the controller xDS server on 18000.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-envoy-gateway
+  namespace: network
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: gateway-helm
+      app.kubernetes.io/instance: envoy-gateway
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/managed-by: envoy-gateway
+            app.kubernetes.io/name: envoy
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '18000'
+              protocol: TCP

@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Tuppr 0.5.10 generates these job labels without a configurable pod-label field.
+# Keep explicit allowances here; the controller itself uses shared policy labels.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-tuppr-upgrade-jobs
+  namespace: system-upgrade
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: tuppr
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - talos-upgrade
+          - kubernetes-upgrade
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '6443'
+              protocol: TCP
+    - toEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: '50000'
+              protocol: TCP
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+      toPorts:
+        - ports:
+            - port: '443'
+              protocol: TCP

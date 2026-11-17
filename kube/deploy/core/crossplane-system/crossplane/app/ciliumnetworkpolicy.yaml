@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Composition function RPC; common controller traffic uses shared policy labels.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-crossplane
+  namespace: crossplane-system
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: crossplane
+      app.kubernetes.io/instance: crossplane
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: crossplane-system
+          matchExpressions:
+            - key: pkg.crossplane.io/function
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-crossplane-functions
+  namespace: crossplane-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchExpressions:
+      - key: pkg.crossplane.io/function
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: crossplane-system
+            app: crossplane
+            app.kubernetes.io/instance: crossplane
+      toPorts:
+        - ports:
+            - port: '9443'
+              protocol: TCP

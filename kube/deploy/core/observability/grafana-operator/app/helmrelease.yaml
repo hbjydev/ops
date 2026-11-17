@@ -14,3 +14,8 @@ spec:
       enabled: true
     serviceMonitor:
       enabled: true
+    podLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/host: allow
+      ingress.netpol.home.arpa/o11y: allow
+      egress.netpol.home.arpa/internet-https: allow

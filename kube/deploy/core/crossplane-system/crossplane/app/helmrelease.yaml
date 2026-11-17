@@ -24,3 +24,25 @@ spec:
   values:
     metrics:
       enabled: true
+    customLabels:
+      egress.netpol.home.arpa/apiserver: allow
+      ingress.netpol.home.arpa/o11y: allow
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: crossplane
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: crossplane
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      ingress.netpol.home.arpa/apiserver: allow
+                      egress.netpol.home.arpa/internet-https: allow

@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# The plugin controller serves CNPG-I on 9090; it does not upload database backups.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-cloudnative-pg-barman-cloud-plugin
+  namespace: cnpg-system
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: plugin-barman-cloud
+      app.kubernetes.io/instance: cloudnative-pg-barman-cloud-plugin
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: cnpg-system
+            app.kubernetes.io/name: cloudnative-pg
+            app.kubernetes.io/instance: cloudnative-pg
+      toPorts:
+        - ports:
+            - port: '9090'
+              protocol: TCP
