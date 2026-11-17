@@ -74,6 +74,8 @@ spec:
           values:
             agent:
               services:
+                - hostname: hayden.moe
+                  origin: external.network.svc.cluster.local:443
                 - hostname: '*.hayden.moe'
                   origin: external.network.svc.cluster.local:443
                 - hostname: '*.s3.hayden.moe'

@@ -15,4 +15,3 @@ resources:
   - ./observability/opentelemetry-operator/ks.yaml
   - ./network
   - ./system-upgrade
-  - ./website

@@ -19,11 +19,8 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: matrix.hayden.moe
-        port: 443
-  tls:
-    sni: gts.hayden.moe
-    wellKnownCACertificates: System
+        hostname: continuwuity.matrix.svc.cluster.local
+        port: 8008
 
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/backend_v1alpha1.json
@@ -34,8 +31,5 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: gts.hayden.moe
-        port: 443
-  tls:
-    sni: gts.hayden.moe
-    wellKnownCACertificates: System
+        hostname: gotosocial.selfhosted.svc.cluster.local
+        port: 8080

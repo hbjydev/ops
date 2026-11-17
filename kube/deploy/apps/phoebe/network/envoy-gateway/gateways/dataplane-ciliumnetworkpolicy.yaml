@@ -90,6 +90,12 @@ spec:
             - port: '10443'
               protocol: TCP
   egress:
+    - toFQDNs:
+        - matchName: hayden.moe.s3-website.uk.io.cloud.ovh.net
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network

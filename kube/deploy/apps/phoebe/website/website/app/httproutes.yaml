@@ -10,6 +10,7 @@ spec:
   parentRefs:
     - name: external
       namespace: network
+      sectionName: https
   hostnames:
     - hayden.moe
   rules:
@@ -55,6 +56,7 @@ spec:
           name: s3-website
 
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -63,12 +65,9 @@ metadata:
     external-dns.kubernetes.io/controller: none
 spec:
   parentRefs:
-    - name: envoy-external
+    - name: external
       namespace: network
-      sectionName: erwanleboucher
-    - name: envoy-external-na
-      namespace: network
-      sectionName: erwanleboucher
+      sectionName: https
   hostnames:
     - www.hayden.moe
   rules:
