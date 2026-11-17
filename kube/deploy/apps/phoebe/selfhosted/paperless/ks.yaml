@@ -59,17 +59,10 @@ spec:
             strategy:
               name: RemediateOnFailure
             remediation:
-              # Never auto-rollback a failed upgrade. A Helm rollback
-              # restores the previous chart *and* its values, so for
-              # rook-ceph-cluster it silently downgraded Ceph and left
-              # the mon crashlooping against a newer on-disk layout.
-              # A failed upgrade should stay failed and visible.
-              #
-              # This must be set explicitly: Flux defaults it to true
-              # whenever retries > 0, so removing the line would not
-              # change the behaviour.
+              # Database migrations survive a Helm rollback. Keep a failed
+              # upgrade in place instead of restoring an incompatible image.
               remediateLastFailure: false
-              retries: 2
+              retries: 0
       target:
         group: helm.toolkit.fluxcd.io
         kind: HelmRelease
@@ -101,6 +94,32 @@ spec:
               paperless:
                 containers:
                   app:
+                    probes:
+                      startup:
+                        enabled: true
+                        custom: true
+                        spec:
+                          httpGet:
+                            path: /accounts/login/
+                            port: 8000
+                            httpHeaders:
+                              - name: Host
+                                value: paperless.hayden.moe
+                          periodSeconds: 5
+                          timeoutSeconds: 2
+                          failureThreshold: 60
+                      liveness:
+                        spec:
+                          httpGet:
+                            httpHeaders:
+                              - name: Host
+                                value: paperless.hayden.moe
+                      readiness:
+                        spec:
+                          httpGet:
+                            httpHeaders:
+                              - name: Host
+                                value: paperless.hayden.moe
                     env:
                       PAPERLESS_URL: https://paperless.hayden.moe
                       PAPERLESS_SOCIALACCOUNT_PROVIDERS:
