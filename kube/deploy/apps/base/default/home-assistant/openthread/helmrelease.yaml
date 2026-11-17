@@ -69,6 +69,11 @@ spec:
               privileged: true
               capabilities:
                 add: [NET_ADMIN]
+        pod:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            egress.netpol.home.arpa/iot: allow
+            egress.netpol.home.arpa/lan: allow
 
     service:
       otbr:

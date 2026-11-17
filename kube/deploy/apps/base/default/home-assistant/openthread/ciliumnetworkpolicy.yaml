@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# The secondary Multus IoT interface is outside Cilium pod-policy enforcement.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-openthread-from-home-assistant
+  namespace: default
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: openthread
+      app.kubernetes.io/instance: openthread
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: home-assistant
+            app.kubernetes.io/instance: home-assistant
+      toPorts:
+        - ports:
+            - port: '8081'
+              protocol: TCP
