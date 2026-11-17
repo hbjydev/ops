@@ -27,6 +27,12 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
             runAsNonRoot: true
             seccompProfile: {type: RuntimeDefault}
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            egress.netpol.home.arpa/iot: allow
+            egress.netpol.home.arpa/lan: allow
+            ingress.netpol.home.arpa/internal: allow
+            egress.netpol.home.arpa/internet: allow
         # matter.js otherwise joins IPv4 mDNS on the default Cilium interface
         # instead of net1, so OTBR's SRP-proxied operational records are missed.
         initContainers:
