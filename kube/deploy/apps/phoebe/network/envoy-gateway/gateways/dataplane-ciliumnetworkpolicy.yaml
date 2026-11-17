@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: envoy-external
+  name: np-x-a-envoy-external
   namespace: network
 spec:
   endpointSelector:
@@ -114,21 +114,12 @@ spec:
         - ports:
             - port: '2283'
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: dev
-            app.kubernetes.io/instance: forgejo
-            app.kubernetes.io/name: forgejo
-      toPorts:
-        - ports:
-            - port: '2222'
-              protocol: TCP
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: envoy-internal
+  name: np-x-a-envoy-internal
   namespace: network
 spec:
   endpointSelector:

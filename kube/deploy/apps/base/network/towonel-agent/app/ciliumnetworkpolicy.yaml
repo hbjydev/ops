@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: towonel-agent
+  name: np-e-a-towonel-agent
   namespace: network
 spec:
   endpointSelector:

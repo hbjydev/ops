@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: tailscale-observability
+  name: np-e-a-tailscale-observability
   namespace: network
 spec:
   endpointSelector:
@@ -43,7 +43,7 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: tailscale-local-peers
+  name: np-x-a-tailscale-local-peers
   namespace: network
 spec:
   endpointSelector:

@@ -3,7 +3,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: tailscale-nameserver
+  name: np-x-a-tailscale-nameserver
   namespace: network
 spec:
   endpointSelector:
