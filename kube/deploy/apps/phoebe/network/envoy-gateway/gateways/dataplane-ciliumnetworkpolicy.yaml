@@ -69,6 +69,10 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: ai
+            app.kubernetes.io/name: hermes
+            app.kubernetes.io/instance: hermes
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
             app.kubernetes.io/component: mcp-server
             app.kubernetes.io/managed-by: litellm-operator
             app.kubernetes.io/name: mcp-hass
