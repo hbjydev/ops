@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-livekit-peers
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: livekit
+  ingress:
+    - fromEndpoints:
+        - &id001
+          matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            stunner.l7mp.io/related-gateway-name: stunner
+      toPorts:
+        - ports:
+            - port: '7882'
+              protocol: UDP
+            - port: '50000'
+              endPort: 60000
+              protocol: UDP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+          matchExpressions:
+            - key: gateway.networking.k8s.io/gateway-name
+              operator: In
+              values:
+                - internal
+                - external
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+    - toEndpoints:
+        - *id001
+      toPorts:
+        - ports:
+            - port: '3478'
+              protocol: UDP
+            - port: '5349'
+              protocol: TCP
