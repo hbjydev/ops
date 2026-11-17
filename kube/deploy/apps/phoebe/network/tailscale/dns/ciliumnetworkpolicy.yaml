@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: tailscale-nameserver
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nameserver
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEntities:
+        - cluster
+      toPorts:
+        - ports:
+            - port: '1053'
+              protocol: UDP
+            - port: '1053'
+              protocol: TCP
+    - fromEntities:
+        - host
+  egress:
+    - toEntities:
+        - kube-apiserver
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: '6443'
+              protocol: TCP

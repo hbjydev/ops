@@ -1,0 +1,134 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: stunner-operator
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      control-plane: stunner-gateway-operator-controller-manager
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app: stunner
+      toPorts:
+        - ports:
+            - port: '13478'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app: stunner-auth
+      toPorts:
+        - ports:
+            - port: '13478'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: stunner-auth
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      app: stunner-auth
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app: stunner
+      toPorts:
+        - ports:
+            - port: '8088'
+              protocol: TCP
+    - fromEndpoints:
+        - &id001
+          matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            control-plane: stunner-gateway-operator-controller-manager
+      toPorts:
+        - ports:
+            - port: '8088'
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - *id001
+      toPorts:
+        - ports:
+            - port: '13478'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: stunner-dataplane
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      app: stunner
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app.kubernetes.io/name: towonel-agent
+            app.kubernetes.io/instance: towonel-agent
+      toPorts:
+        - ports:
+            - port: '3478'
+              protocol: UDP
+            - port: '5349'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/name: livekit
+      toPorts:
+        - ports:
+            - port: '3478'
+              protocol: UDP
+            - port: '5349'
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            control-plane: stunner-gateway-operator-controller-manager
+      toPorts:
+        - ports:
+            - port: '13478'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app: stunner-auth
+      toPorts:
+        - ports:
+            - port: '8088'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/name: livekit
+      toPorts:
+        - ports:
+            - port: '7882'
+              protocol: UDP
+            - port: '50000'
+              endPort: 60000
+              protocol: UDP

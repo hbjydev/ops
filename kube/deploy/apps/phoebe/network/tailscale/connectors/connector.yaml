@@ -14,3 +14,4 @@ spec:
     advertiseRoutes:
       - "172.18.0.0/16"  # pods
       - "172.19.0.0/16"  # services
+  proxyClass: tailscale-subnet-router

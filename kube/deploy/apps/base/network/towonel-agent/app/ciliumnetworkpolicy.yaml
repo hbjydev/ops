@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: towonel-agent
+  namespace: network
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: towonel-agent
+      app.kubernetes.io/instance: towonel-agent
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.networking.k8s.io/gateway-name: external
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: dev
+            app.kubernetes.io/name: forgejo
+      toPorts:
+        - ports:
+            - port: '2222'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            app: stunner
+      toPorts:
+        - ports:
+            - port: '3478'
+              protocol: UDP
+            - port: '5349'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gameservers
+            app.kubernetes.io/name: spt
+            app.kubernetes.io/instance: spt
+      toPorts:
+        - ports:
+            - port: '6969'
+              protocol: TCP

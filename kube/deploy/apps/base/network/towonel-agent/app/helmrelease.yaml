@@ -16,6 +16,13 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
+        pod:
+          labels:
+            egress.netpol.home.arpa/internet: allow
+            egress.netpol.home.arpa/lan: allow
+            ingress.netpol.home.arpa/internet: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
     agent:
       logLevel: info
       healthPort: 9090

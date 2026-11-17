@@ -34,6 +34,11 @@ spec:
     operatorConfig:
       image:
         repository: ghcr.io/tailscale/k8s-operator
+      podLabels:
+        egress.netpol.home.arpa/apiserver: allow
+        egress.netpol.home.arpa/internet-https: allow
+        ingress.netpol.home.arpa/host: allow
+        ingress.netpol.home.arpa/o11y: allow
     proxyConfig:
       image:
         repository: ghcr.io/tailscale/tailscale

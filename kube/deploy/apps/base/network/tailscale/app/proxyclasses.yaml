@@ -1,0 +1,27 @@
+---
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: tailscale-subnet-router
+spec:
+  statefulSet:
+    pod:
+      labels:
+        egress.netpol.home.arpa/apiserver: allow
+        egress.netpol.home.arpa/world: allow
+        ingress.netpol.home.arpa/world: allow
+        ingress.netpol.home.arpa/host: allow
+        egress.netpol.home.arpa/cluster: allow
+---
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: tailscale-observability
+spec:
+  statefulSet:
+    pod:
+      labels:
+        egress.netpol.home.arpa/apiserver: allow
+        egress.netpol.home.arpa/world: allow
+        ingress.netpol.home.arpa/world: allow
+        ingress.netpol.home.arpa/host: allow

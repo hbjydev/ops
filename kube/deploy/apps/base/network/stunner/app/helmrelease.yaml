@@ -16,3 +16,17 @@ spec:
       dataplane:
         spec:
           enableMetricsEndpoint: true
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
+      deployment:
+        podLabels:
+          egress.netpol.home.arpa/apiserver: allow
+          ingress.netpol.home.arpa/host: allow
+          ingress.netpol.home.arpa/o11y: allow
+    stunnerAuthService:
+      deployment:
+        podLabels:
+          egress.netpol.home.arpa/apiserver: allow
+          ingress.netpol.home.arpa/host: allow
+          ingress.netpol.home.arpa/o11y: allow
