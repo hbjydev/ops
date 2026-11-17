@@ -36,6 +36,23 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
             tailscale.com/parent-resource: ts-srv-phoebe
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app: grafana
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: continuwuity
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit-jwt-service
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:
@@ -218,3 +235,20 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
             tailscale.com/parent-resource: ts-srv-phoebe
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            app: grafana
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: continuwuity
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: matrix
+            app.kubernetes.io/instance: livekit-jwt-service
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
