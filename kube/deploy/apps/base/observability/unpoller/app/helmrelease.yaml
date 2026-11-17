@@ -47,6 +47,11 @@ spec:
                 cpu: 10m
               limits:
                 memory: 128Mi
+        pod:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
+            egress.netpol.home.arpa/lan: allow
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

@@ -7,3 +7,4 @@ resources:
   - ./vmsingle.yaml
   - ./servicemonitor.yaml
   # - ./vmagent.yaml
+  - ./ciliumnetworkpolicy.yaml

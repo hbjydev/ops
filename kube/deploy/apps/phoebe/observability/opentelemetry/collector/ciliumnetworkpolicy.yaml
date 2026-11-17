@@ -54,3 +54,46 @@ spec:
             - # OTLP/HTTP
               protocol: TCP
               port: "4318"
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-otel-gateway-backends
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/instance: observability.otel-gateway
+      app.kubernetes.io/component: opentelemetry-collector
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/component: opentelemetry-targetallocator
+      toPorts:
+        - ports:
+            - port: '8443'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmsingle
+      toPorts:
+        - ports:
+            - port: '8429'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vlsingle
+      toPorts:
+        - ports:
+            - port: '9428'
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vtsingle
+      toPorts:
+        - ports:
+            - port: '10428'
+              protocol: TCP

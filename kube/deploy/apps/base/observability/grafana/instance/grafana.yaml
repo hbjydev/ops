@@ -84,6 +84,12 @@ spec:
               persistentVolumeClaim:
                 claimName: grafana-pvc
 
+        metadata:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
+            ingress.netpol.home.arpa/external: allow
+            egress.netpol.home.arpa/internet-https: allow
   httpRoute:
     spec:
       hostnames: ${GRAFANA_ROUTE_HOSTNAMES}

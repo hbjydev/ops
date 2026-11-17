@@ -6,3 +6,4 @@ resources:
   - ./kopiur.yaml
   - ./grafana.yaml
   - ./servicemonitor.yaml
+  - ./ciliumnetworkpolicy.yaml

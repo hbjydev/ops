@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-victoria-metrics
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmsingle
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: grafana
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            app.kubernetes.io/component: mcp-server
+            app.kubernetes.io/managed-by: litellm-operator
+            app.kubernetes.io/name: mcp-victoriametrics
+      toPorts:
+        - ports:
+            - port: '8429'
+              protocol: TCP

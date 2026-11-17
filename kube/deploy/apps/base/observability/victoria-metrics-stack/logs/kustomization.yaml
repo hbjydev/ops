@@ -6,3 +6,4 @@ resources:
   - ./kopiur.yaml
   - ./vlsingle.yaml
   - ./servicemonitor.yaml
+  - ./ciliumnetworkpolicy.yaml

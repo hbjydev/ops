@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-x-a-alertmanager-peers
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vmalertmanager
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: grafana
+        - matchLabels:
+            app.kubernetes.io/name: vmalert
+      toPorts:
+        - ports:
+            - port: '9093'
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+      toPorts:
+        - ports:
+            - port: '9094'
+              protocol: TCP
+            - port: '9094'
+              protocol: UDP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
+      toPorts:
+        - ports:
+            - port: '9094'
+              protocol: TCP
+            - port: '9094'
+              protocol: UDP
