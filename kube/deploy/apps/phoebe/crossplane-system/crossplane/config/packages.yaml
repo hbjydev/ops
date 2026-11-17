@@ -40,6 +40,13 @@ spec:
                 items:
                   - key: credential-configuration.json
                     path: credential-configuration.json
+        metadata:
+          labels:
+            egress.netpol.home.arpa/apiserver: allow
+            egress.netpol.home.arpa/internet-https: allow
+            ingress.netpol.home.arpa/apiserver: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pkg.crossplane.io/provider_v1.json
 apiVersion: pkg.crossplane.io/v1
@@ -81,6 +88,13 @@ spec:
                 items:
                   - key: credential-configuration.json
                     path: credential-configuration.json
+        metadata:
+          labels:
+            egress.netpol.home.arpa/apiserver: allow
+            egress.netpol.home.arpa/internet-https: allow
+            ingress.netpol.home.arpa/apiserver: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pkg.crossplane.io/provider_v1.json
 apiVersion: pkg.crossplane.io/v1
@@ -122,6 +136,13 @@ spec:
                 items:
                   - key: credential-configuration.json
                     path: credential-configuration.json
+        metadata:
+          labels:
+            egress.netpol.home.arpa/apiserver: allow
+            egress.netpol.home.arpa/internet-https: allow
+            ingress.netpol.home.arpa/apiserver: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pkg.crossplane.io/function_v1.json
 apiVersion: pkg.crossplane.io/v1
@@ -146,3 +167,34 @@ metadata:
   name: function-auto-ready
 spec:
   package: xpkg.crossplane.io/crossplane-contrib/function-auto-ready:v0.6.3
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pkg.crossplane.io/provider_v1.json
+# Manage the existing dependency provider explicitly so it can use its own pod labels.
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: upbound-provider-family-gcp
+spec:
+  package: xpkg.upbound.io/upbound/provider-family-gcp:v3.0.1
+  runtimeConfigRef:
+    name: provider-family-gcp
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/pkg.crossplane.io/deploymentruntimeconfig_v1beta1.json
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-family-gcp
+spec:
+  deploymentTemplate:
+    spec:
+      selector: {}
+      template:
+        metadata:
+          labels:
+            egress.netpol.home.arpa/apiserver: allow
+            ingress.netpol.home.arpa/apiserver: allow
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
+        spec:
+          containers:
+            - name: package-runtime
