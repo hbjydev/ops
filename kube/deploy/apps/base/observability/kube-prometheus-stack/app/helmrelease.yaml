@@ -71,19 +71,32 @@ spec:
                 labels:
                   severity: critical
     prometheusOperator:
-      podLabels:
-        egress.netpol.home.arpa/apiserver: allow
-        ingress.netpol.home.arpa/apiserver: allow
-        ingress.netpol.home.arpa/host: allow
-        ingress.netpol.home.arpa/o11y: allow
-  # Admission hook jobs have no chart-native podLabels setting.
+      enabled: false
+    # OTel owns scraping; there is no Prometheus-managed token Secret.
+    kubeApiServer:
+      serviceMonitor:
+        authorization: null
+    kubeControllerManager:
+      serviceMonitor:
+        authorization: null
+    kubeScheduler:
+      serviceMonitor:
+        authorization: null
+    coreDns:
+      serviceMonitor:
+        authorization: null
+    kubeEtcd:
+      serviceMonitor:
+        authorization: null
+  # Authenticated targets use the collector's rotating service-account token.
   postRenderers:
     - kustomize:
         patches:
           - target:
-              kind: Job
-              labelSelector: app.kubernetes.io/component=prometheus-operator-webhook
+              group: monitoring.coreos.com
+              kind: ServiceMonitor
+              labelSelector: app in (kube-prometheus-stack-apiserver,kube-prometheus-stack-kube-controller-manager,kube-prometheus-stack-kube-scheduler)
             patch: |-
               - op: add
-                path: /spec/template/metadata/labels/egress.netpol.home.arpa~1apiserver
-                value: allow
+                path: /spec/endpoints/0/bearerTokenFile
+                value: /var/run/secrets/kubernetes.io/serviceaccount/token
