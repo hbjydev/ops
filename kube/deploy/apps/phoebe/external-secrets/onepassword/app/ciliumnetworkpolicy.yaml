@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Connect sync uses the shared public HTTPS label; the in-cluster API uses HTTP on port 80.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-onepassword-from-eso
+  namespace: external-secrets
+spec:
+  enableDefaultDeny:
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: onepassword
+      app.kubernetes.io/instance: onepassword
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: external-secrets
+            app.kubernetes.io/instance: external-secrets
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-eso-to-connect
+  namespace: external-secrets
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: external-secrets
+      app.kubernetes.io/instance: external-secrets
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: onepassword
+            app.kubernetes.io/instance: onepassword
+      toPorts:
+        - ports:
+            - port: '80'
+              protocol: TCP

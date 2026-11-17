@@ -101,6 +101,10 @@ spec:
                   failureThreshold: 3
             resources: *resources
             securityContext: *securityContext
+        pod:
+          labels:
+            ingress.netpol.home.arpa/host: allow
+            egress.netpol.home.arpa/internet-https: allow
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
