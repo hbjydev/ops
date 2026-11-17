@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-i-a-victoria-traces
+spec:
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vtsingle
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: grafana
+      toPorts:
+        - ports:
+            - port: '10428'
+              protocol: TCP

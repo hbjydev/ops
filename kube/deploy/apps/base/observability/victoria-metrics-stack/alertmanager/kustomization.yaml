@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./alertmanager.yaml
   - ./servicemonitor.yaml
+  - ./ciliumnetworkpolicy.yaml

@@ -6,6 +6,11 @@ metadata:
   name: otel-gateway
   labels:
     netpol.home.arpa/o11y: "true"
+    # The operator propagates these labels to the collector and target allocator.
+    egress.netpol.home.arpa/apiserver: allow
+    ingress.netpol.home.arpa/host: allow
+    ingress.netpol.home.arpa/o11y: allow
+    ingress.netpol.home.arpa/internal: allow
 spec:
   mode: statefulset
   replicas: 1

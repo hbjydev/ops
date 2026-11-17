@@ -35,3 +35,7 @@ spec:
     limits:
       cpu: 500m
       memory: 512Mi
+  podMetadata:
+    labels:
+      ingress.netpol.home.arpa/host: allow
+      ingress.netpol.home.arpa/o11y: allow

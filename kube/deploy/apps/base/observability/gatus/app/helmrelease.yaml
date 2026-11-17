@@ -28,6 +28,13 @@ spec:
             # v5.38.0 uses Go's system roots (RootCAs unset); keep client.insecure=false.
             # https://github.com/TwiN/gatus/blob/v5.38.0/client/config.go
             trust.home.arpa/inject: "true"
+            ingress.netpol.home.arpa/host: allow
+            ingress.netpol.home.arpa/o11y: allow
+            ingress.netpol.home.arpa/external: allow
+            egress.netpol.home.arpa/apiserver: allow
+            # The sidecar discovers Services and HTTPRoutes across all namespaces.
+            egress.netpol.home.arpa/cluster: allow
+            egress.netpol.home.arpa/internet: allow
         initContainers:
           gatus-sidecar:
             image:
