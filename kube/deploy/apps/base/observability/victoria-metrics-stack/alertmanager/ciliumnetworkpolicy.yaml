@@ -8,7 +8,7 @@ spec:
   enableDefaultDeny:
     ingress: false
     egress: false
-  endpointSelector: &id001
+  endpointSelector:
     matchLabels:
       app.kubernetes.io/name: vmalertmanager
   ingress:
@@ -22,7 +22,8 @@ spec:
             - port: '9093'
               protocol: TCP
     - fromEndpoints:
-        - *id001
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
       toPorts:
         - ports:
             - port: '9094'
@@ -31,7 +32,8 @@ spec:
               protocol: UDP
   egress:
     - toEndpoints:
-        - *id001
+        - matchLabels:
+            app.kubernetes.io/name: vmalertmanager
       toPorts:
         - ports:
             - port: '9094'
