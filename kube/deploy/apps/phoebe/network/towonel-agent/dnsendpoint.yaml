@@ -11,4 +11,4 @@ spec:
     - dnsName: external.hayden.moe
       recordType: CNAME
       targets:
-        - towonel.thighhighs.moe
+        - edge-eu.towonel.dev
