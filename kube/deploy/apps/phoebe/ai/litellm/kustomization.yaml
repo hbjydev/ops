@@ -13,4 +13,3 @@ resources:
   - ./litellmmcpservers.yaml
   - ./servicemonitor.yaml
   - ./targetallocator-rbac.yaml
-  - ./ciliumnetworkpolicy.yaml
