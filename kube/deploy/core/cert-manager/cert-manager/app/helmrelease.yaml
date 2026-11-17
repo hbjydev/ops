@@ -19,6 +19,7 @@ spec:
     podLabels:
       ingress.netpol.home.arpa/o11y: allow
       egress.netpol.home.arpa/apiserver: allow
+      egress.netpol.home.arpa/internet-https: allow
       egress.netpol.home.arpa/cloudflare-dns: allow
     cainjector:
       podLabels:

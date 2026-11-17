@@ -42,6 +42,9 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: flux-system
+            app.kubernetes.io/name: flux-operator
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: flux-system
           matchExpressions:
             - key: app
               operator: In
@@ -49,6 +52,28 @@ spec:
                 - source-controller
                 - helm-controller
                 - kustomize-controller
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+---
+# The operator emits reconciliation events but has different labels to the controllers.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: np-e-a-flux-operator-to-notification
+  namespace: flux-system
+spec:
+  enableDefaultDeny:
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: flux-operator
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: flux-system
+            app: notification-controller
       toPorts:
         - ports:
             - port: "9090"
