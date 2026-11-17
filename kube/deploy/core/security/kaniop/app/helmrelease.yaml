@@ -10,6 +10,9 @@ spec:
     kind: OCIRepository
     name: *app
   values:
+    # The CRD apply hook inherits these labels; the operator pod is patched below.
+    additionalLabels:
+      egress.netpol.home.arpa/apiserver: allow
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"
     metrics:
@@ -20,3 +23,24 @@ spec:
         enabled: true
       dashboards:
         enabled: true
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: kaniop
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: kaniop
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      egress.netpol.home.arpa/apiserver: allow
+                      ingress.netpol.home.arpa/host: allow
+                      ingress.netpol.home.arpa/o11y: allow
+                      egress.netpol.home.arpa/internet-https: allow

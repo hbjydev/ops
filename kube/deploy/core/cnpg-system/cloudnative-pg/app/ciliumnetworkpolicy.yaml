@@ -4,48 +4,16 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-x-a-cloudnative-pg
+  name: np-e-a-cloudnative-pg
   namespace: cnpg-system
 spec:
   enableDefaultDeny:
-    ingress: false
     egress: false
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: cloudnative-pg
       app.kubernetes.io/instance: cloudnative-pg
-  ingress:
-    - fromEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: '9443'
-              protocol: TCP
-    - fromEndpoints:
-        - matchLabels:
-            netpol.home.arpa/o11y: 'true'
-          matchExpressions:
-            - key: k8s:io.kubernetes.pod.namespace
-              operator: Exists
-      toPorts:
-        - ports:
-            - port: '8080'
-              protocol: TCP
-    - fromEntities:
-        - kube-apiserver
-      toPorts:
-        - ports:
-            - port: '9443'
-              protocol: TCP
   egress:
-    - toEntities:
-        - kube-apiserver
-    - toEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: '6443'
-              protocol: TCP
     - toEndpoints:
         - matchExpressions:
             - key: k8s:io.kubernetes.pod.namespace

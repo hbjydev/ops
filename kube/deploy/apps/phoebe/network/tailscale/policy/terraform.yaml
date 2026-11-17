@@ -16,3 +16,8 @@ spec:
   varsFrom:
     - kind: Secret
       name: tailscale-policy-tfvars
+  runnerPodTemplate:
+    metadata:
+      labels:
+        egress.netpol.home.arpa/apiserver: allow
+        egress.netpol.home.arpa/internet-https: allow

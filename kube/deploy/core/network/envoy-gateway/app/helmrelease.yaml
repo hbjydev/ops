@@ -25,6 +25,12 @@ spec:
             memory: 256Mi
           limits:
             memory: 512Mi
+      pod:
+        labels:
+          egress.netpol.home.arpa/apiserver: allow
+          ingress.netpol.home.arpa/host: allow
+          ingress.netpol.home.arpa/o11y: allow
+          ingress.netpol.home.arpa/apiserver: allow
     config:
       envoyGateway:
         extensionApis:
@@ -34,3 +40,8 @@ spec:
           kubernetes:
             deploy:
               type: GatewayNamespace
+    certgen:
+      job:
+        pod:
+          labels:
+            egress.netpol.home.arpa/apiserver: allow

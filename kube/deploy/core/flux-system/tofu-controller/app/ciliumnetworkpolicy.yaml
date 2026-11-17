@@ -1,45 +1,19 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
-# Runner namespaces match allowedNamespaces; public HTTPS covers provider downloads and APIs.
+# Runner RPC and Flux artifact/event traffic have no matching shared label.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: np-x-a-tofu-controller
+  name: np-e-a-tofu-controller
   namespace: flux-system
 spec:
   enableDefaultDeny:
-    ingress: false
     egress: false
   endpointSelector:
     matchLabels:
       app.kubernetes.io/name: tofu-controller
       app.kubernetes.io/instance: tofu-controller
-  ingress:
-    - fromEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: '9440'
-              protocol: TCP
-    - fromEndpoints:
-        - matchLabels:
-            netpol.home.arpa/o11y: 'true'
-          matchExpressions:
-            - key: k8s:io.kubernetes.pod.namespace
-              operator: Exists
-      toPorts:
-        - ports:
-            - port: '8080'
-              protocol: TCP
   egress:
-    - toEntities:
-        - kube-apiserver
-    - toEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: '6443'
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: tf-runner
@@ -101,24 +75,6 @@ spec:
             - port: '30000'
               protocol: TCP
   egress:
-    - toEntities:
-        - kube-apiserver
-    - toEntities:
-        - host
-      toPorts:
-        - ports:
-            - port: '6443'
-              protocol: TCP
-    - toCIDRSet:
-        - cidr: 0.0.0.0/0
-          except:
-            - 10.0.0.0/8
-            - 172.16.0.0/12
-            - 192.168.0.0/16
-      toPorts:
-        - ports:
-            - port: '443'
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: flux-system

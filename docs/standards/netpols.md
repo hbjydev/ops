@@ -58,58 +58,62 @@ keep their policies there until the application itself moves.
 
 ## Core controller allowances
 
-The following applications own explicit policies in their `app` Kustomizations.
-These are staged allowances (`enableDefaultDeny: false`), not a declaration that
-the controllers or their managed applications are fully isolated. Shared DNS
-rules still come from the Cilium baseline.
+Prefer the existing shared policy labels on pod templates. Application policies
+only describe traffic for which no existing label fits, or generated pods whose
+labels cannot be configured. Shared policies and application allowances remain
+staged (`enableDefaultDeny: false`); DNS comes from the Cilium baseline.
 
-Each controller has Kubernetes API access, plus port-specific health probes,
-metrics from `netpol.home.arpa/o11y=true` collectors, and admission webhook
-access where applicable. Additional connections are:
+Core controllers use the `apiserver`, `host`, `o11y`, `internet-https`, and
+`talos-api` labels as needed. These retain the shared policies' scope: host and
+monitoring ingress are not port-limited, public HTTPS includes TCP and UDP 443,
+and Talos API access includes TCP 50000/50001. Grafana dashboard downloads use
+the shared public HTTPS allowance rather than a separate hostname allowlist.
 
-| Namespace | Controller | Additional traffic |
+| Namespace | Application | Explicit policy remaining |
 | --- | --- | --- |
-| `cnpg-system` | `cloudnative-pg` | PostgreSQL instances on TCP 8000/5432; Barman plugin on TCP 9090 |
+| `cnpg-system` | `cloudnative-pg` | Instance status/PostgreSQL on TCP 8000/5432 across managed clusters; Barman plugin RPC on TCP 9090 |
 | `cnpg-system` | `cloudnative-pg-barman-cloud-plugin` | CNPG-I requests from the CNPG controller on TCP 9090 |
-| `crossplane-system` | `crossplane` | Public HTTPS for package registries, authentication and CDNs; composition functions on TCP 9443 |
-| `dragonfly-system` | `dragonfly-operator` | Managed Dragonfly instances on TCP 6379 |
-| `flux-system` | `tofu-controller` | Runners on TCP 30000; Flux artifacts and events on TCP 9090 |
+| `crossplane-system` | `crossplane` | Composition function RPC on TCP 9443, including function-side ingress |
+| `dragonfly-system` | `dragonfly-operator` | None; uses the existing `egress.netpol.home.arpa/dragonfly` allowance owned by the database application |
+| `flux-system` | `tofu-controller` | Runner RPC on TCP 30000; Flux artifact/event traffic on TCP 9090, including receiver-side ingress |
 | `garage-system` | `garage-operator` | Managed Garage admin APIs on TCP 3903 |
 | `network` | `envoy-gateway` | xDS requests from managed Envoy proxies on TCP 18000 |
-| `observability` | `grafana-operator` | Local Grafana on TCP 3000; dashboard downloads from `grafana.com` and `raw.githubusercontent.com` on TCP 443 |
-| `observability` | `victoria-metrics-operator` | Kubernetes API reconciliation only |
-| `security` | `kaniop` | Managed Kanidm APIs on TCP 8443; public HTTPS for configured appearance images and redirects |
-| `system-upgrade` | `tuppr` | Node Talos APIs on TCP 50000; public HTTPS for image checks |
+| `observability` | `grafana-operator` | Local Grafana API on TCP 3000 |
+| `observability` | `victoria-metrics-operator` | None; shared labels cover controller traffic |
+| `security` | `kaniop` | Managed Kanidm APIs on TCP 8443 |
+| `system-upgrade` | `tuppr` | Generated upgrade jobs: Kubernetes API, node Talos APIs and public HTTPS |
 
-Envoy Gateway's certificate-generation hook has a separate API-only policy,
-selected by its pod label and chart-generated service account.
+The PostgreSQL client label only targets the named postgres cluster and does
+not cover instance status on TCP 8000, so it does not replace CNPG's operator
+policy across managed clusters.
 
-Crossplane's RBAC manager has a separate policy without registry or function
-access. Its generated providers still need their own policies for the APIs they
-manage; the controller policy does not select them.
+Most charts expose pod-label values directly. Crossplane's shared `customLabels`
+cover API egress and monitoring on both controllers; a targeted Helm
+post-renderer adds webhook ingress and public HTTPS only to the main controller.
+The RBAC manager does not receive registry or composition-function access.
+Generated providers still need their own allowances for the APIs they manage.
 
-Tofu runner policies select `tf-runner` pods created by `tofu-controller` in
-`flux-system` and `network`, matching the configured runner service-account
-namespaces. They allow the Kubernetes API, Flux artifacts, public HTTPS for
-provider downloads/APIs, and incoming controller RPC. Update the selectors when
-enabling another runner namespace. Flux artifact/event receiver allowances are
-owned by the Tofu application as well.
+Kaniop's chart does not expose operator pod labels, so its Helm post-renderer
+patches the Deployment pod template. The CRD apply hook inherits API egress via
+the chart's `additionalLabels`. Envoy's certificate-generation hook uses its
+native `certgen.job.pod.labels` field for API egress.
 
-Tuppr's `talos-upgrade` and `kubernetes-upgrade` jobs are selected separately using
-their `app.kubernetes.io/part-of=tuppr` label. They can reach the Kubernetes API,
-node Talos APIs and public HTTPS. Arbitrary user-defined hook jobs are outside
-this allowance.
+Tofu runners get API and public HTTPS labels through each Terraform resource's
+`runnerPodTemplate.metadata.labels`. Add those labels to new Terraform resources
+as well. The explicit runner RPC/artifact policies select `tf-runner` pods created
+by `tofu-controller` in `flux-system` and `network`, matching the configured runner
+service-account namespaces; extend the selectors when enabling another namespace.
 
-Public HTTPS allowances use the same IPv4 private-range exclusions as the
-`internet-https` baseline. They deliberately support registry redirects and
-configurable remote APIs rather than pinning CDN IPs. They do not allow private
-HTTPS endpoints or IPv6. Internal operand access uses pod selectors and explicit
-ports; policies for those operands remain owned by their applications.
+Tuppr 0.5.10 does not expose custom pod labels for its generated `talos-upgrade`
+and `kubernetes-upgrade` jobs. Their explicit policy selects both the workload
+name and `app.kubernetes.io/part-of=tuppr`. The controller itself uses shared
+labels. Arbitrary user-defined hook jobs are outside this allowance.
 
 Before enabling default-deny, verify both directions of each connection,
-installation/upgrade hooks, generated workloads, custom ports, and any added
-external endpoints. Schema and selector validation does not establish live
-traffic completeness.
+installation/upgrade hooks, generated workloads, custom ports and added external
+endpoints. Managed application policies remain owned by those applications.
+Schema, chart rendering and selector checks do not establish live traffic
+completeness.
 
 Protocol references: [CloudNativePG ports](https://cloudnative-pg.io/docs/current/security/),
 [CNPG-I transport](https://cloudnative-pg.io/docs/current/cnpg_i/),
