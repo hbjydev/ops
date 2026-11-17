@@ -35,3 +35,7 @@ spec:
   resources:
     cpu: "1"
     memory: 2Gi
+  podLabels:
+    egress.netpol.home.arpa/internet-https: allow
+    ingress.netpol.home.arpa/host: allow
+    ingress.netpol.home.arpa/o11y: allow

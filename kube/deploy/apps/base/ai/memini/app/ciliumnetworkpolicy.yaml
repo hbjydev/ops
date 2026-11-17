@@ -38,13 +38,13 @@ spec:
   egress:
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: qwen3-embedding-0.6b
+            inference.llmkube.dev/service: qwen3-embedding-0.6b
       toPorts:
         - ports:
             - port: "8080"
     - toEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: qwen3-reranker-0.6b
+            inference.llmkube.dev/service: qwen3-reranker-0.6b
       toPorts:
         - ports:
             - port: "8080"
