@@ -74,7 +74,7 @@ spec:
           app:
             image:
               repository: forgejo.ellis.link/continuwuation/continuwuity
-              tag: v26.11.0-alpha.1-maxperf
+              tag: v26.11.0-alpha.2-maxperf@sha256:2a7570577b79bc8b45584758e1f3bf6c0ada889043ca3b052f52fb2b0421cf97
             env:
               CONTINUWUITY_LOG: info
               CONTINUWUITY_ADDRESS: 0.0.0.0
