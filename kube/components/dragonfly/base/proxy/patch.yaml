@@ -20,6 +20,10 @@ spec:
                 name: ignored
               spec:
                 template:
+                  metadata:
+                    labels:
+                      dragonfly.home.arpa/tunnel: ${APP}
+                      ingress.netpol.home.arpa/o11y: allow
                   spec:
                     volumes:
                       - name: dragonfly-certs
@@ -44,6 +48,9 @@ spec:
                         restartPolicy: Always
                         image: ghcr.io/m00nwtchr/dfguard:0.2.9@sha256:2a098b5d81e1dc56cabdd783f901660ffafdc4f4f6b6bc09271c4e926985b0a1
                         args: ["tunnel"]
+                        ports:
+                          - name: dfguard-metrics
+                            containerPort: 10001
                         env:
                           - name: DFGUARD_TUNNEL_CERT
                             value: /var/run/secrets/dragonfly/tls.crt
@@ -55,6 +62,8 @@ spec:
                             value: dfguard.database.svc.cluster.local.:6379
                           - name: DFGUARD_TUNNEL_TCP_NODELAY
                             value: "true"
+                          - name: DFGUARD_TUNNEL_METRICS_LISTEN
+                            value: "0.0.0.0:10001"
                         volumeMounts:
                           - name: dragonfly-certs
                             mountPath: /var/run/secrets/dragonfly
@@ -88,6 +97,10 @@ spec:
                 name: ignored
               spec:
                 template:
+                  metadata:
+                    labels:
+                      dragonfly.home.arpa/tunnel: ${APP}
+                      ingress.netpol.home.arpa/o11y: allow
                   spec:
                     volumes:
                       - name: dragonfly-certs
@@ -112,6 +125,9 @@ spec:
                         restartPolicy: Always
                         image: ghcr.io/m00nwtchr/dfguard:0.2.9@sha256:2a098b5d81e1dc56cabdd783f901660ffafdc4f4f6b6bc09271c4e926985b0a1
                         args: ["tunnel"]
+                        ports:
+                          - name: dfguard-metrics
+                            containerPort: 10001
                         env:
                           - name: DFGUARD_TUNNEL_CERT
                             value: /var/run/secrets/dragonfly/tls.crt
@@ -123,6 +139,8 @@ spec:
                             value: dfguard.database.svc.cluster.local.:6379
                           - name: DFGUARD_TUNNEL_TCP_NODELAY
                             value: "true"
+                          - name: DFGUARD_TUNNEL_METRICS_LISTEN
+                            value: "0.0.0.0:10001"
                         volumeMounts:
                           - name: dragonfly-certs
                             mountPath: /var/run/secrets/dragonfly
