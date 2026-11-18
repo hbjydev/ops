@@ -66,6 +66,12 @@ spec:
                             value: https://otel-gateway-collector.observability.svc.cluster.local:4317
                           - name: OTEL_EXPORTER_OTLP_CERTIFICATE
                             value: /var/run/secrets/root-ca/ca.crt
+                          - name: POD_UID
+                            valueFrom:
+                              fieldRef:
+                                fieldPath: metadata.uid
+                          - name: OTEL_RESOURCE_ATTRIBUTES
+                            value: k8s.pod.uid=$(POD_UID),k8s.container.name=dragonfly-tunnel
                         volumeMounts:
                           - name: dragonfly-certs
                             mountPath: /var/run/secrets/dragonfly
@@ -145,6 +151,12 @@ spec:
                             value: https://otel-gateway-collector.observability.svc.cluster.local:4317
                           - name: OTEL_EXPORTER_OTLP_CERTIFICATE
                             value: /var/run/secrets/root-ca/ca.crt
+                          - name: POD_UID
+                            valueFrom:
+                              fieldRef:
+                                fieldPath: metadata.uid
+                          - name: OTEL_RESOURCE_ATTRIBUTES
+                            value: k8s.pod.uid=$(POD_UID),k8s.container.name=dragonfly-tunnel
                         volumeMounts:
                           - name: dragonfly-certs
                             mountPath: /var/run/secrets/dragonfly
