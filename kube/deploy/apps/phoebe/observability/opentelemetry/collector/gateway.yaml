@@ -222,6 +222,10 @@ spec:
             statements:
               - set(attributes["cluster"], "${CLUSTER}") where attributes["cluster"] == nil
 
+      transform/metric_names:
+        metric_statements:
+          - replace_pattern(metric.name, "[.]", "_")
+
       transform/scrape_labels:
         metric_statements:
           - context: resource
@@ -350,7 +354,7 @@ spec:
 
         metrics/otel:
           receivers: [otlp]
-          processors: [memory_limiter, k8s_attributes, resource, transform/cluster, batch]
+          processors: [memory_limiter, k8s_attributes, resource, transform/cluster, transform/metric_names, batch]
           exporters: [otlp_http/vmetrics]
 
         metrics/ta:
