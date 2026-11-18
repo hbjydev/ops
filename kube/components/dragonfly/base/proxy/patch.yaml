@@ -46,7 +46,7 @@ spec:
                     initContainers:
                       - name: dragonfly-tunnel
                         restartPolicy: Always
-                        image: ghcr.io/hbjydev/dfguard:otel-test
+                        image: ghcr.io/hbjydev/dfguard:otel-test-2
                         args: ["tunnel"]
                         ports:
                           - name: dfguard-metrics
