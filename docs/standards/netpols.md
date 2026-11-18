@@ -74,7 +74,7 @@ the shared public HTTPS allowance rather than a separate hostname allowlist.
 | `cnpg-system` | `cloudnative-pg` | Instance status/PostgreSQL on TCP 8000/5432 across managed clusters; Barman plugin RPC on TCP 9090 |
 | `cnpg-system` | `cloudnative-pg-barman-cloud-plugin` | CNPG-I requests from the CNPG controller on TCP 9090 |
 | `crossplane-system` | `crossplane` | Composition function RPC on TCP 9443, including function-side ingress |
-| `dragonfly-system` | `dragonfly-operator` | None; uses the existing `egress.netpol.home.arpa/dragonfly` allowance owned by the database application |
+| `dragonfly-system` | `dragonfly-operator` | Dragonfly admin TCP 9999; the existing `egress.netpol.home.arpa/dragonfly` allowance covers client TCP 6379 |
 | `flux-system` | `tofu-controller` | Runner RPC on TCP 30000; Flux artifact/event traffic on TCP 9090, including receiver-side ingress |
 | `garage-system` | `garage-operator` | Managed Garage admin APIs on TCP 3903 |
 | `network` | `envoy-gateway` | xDS requests from managed Envoy proxies on TCP 18000 |
