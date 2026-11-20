@@ -46,7 +46,8 @@ spec:
                     initContainers:
                       - name: dragonfly-tunnel
                         restartPolicy: Always
-                        image: ghcr.io/hbjydev/dfguard:otel-test-2
+                        # renovate: datasource=docker depName=ghcr.io/m00nwtchr/dfguard
+                        image: ghcr.io/m00nwtchr/dfguard:rolling@sha256:a3483e958aeb8b97f9a49a774813eba58991a0f28a563f17eeddd86f86714e1e
                         args: ["tunnel"]
                         ports:
                           - name: dfguard-metrics
@@ -131,7 +132,8 @@ spec:
                     initContainers:
                       - name: dragonfly-tunnel
                         restartPolicy: Always
-                        image: ghcr.io/hbjydev/dfguard:otel-test
+                        # renovate: datasource=docker depName=ghcr.io/m00nwtchr/dfguard
+                        image: ghcr.io/m00nwtchr/dfguard:rolling@sha256:a3483e958aeb8b97f9a49a774813eba58991a0f28a563f17eeddd86f86714e1e
                         args: ["tunnel"]
                         ports:
                           - name: dfguard-metrics

@@ -41,8 +41,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/hbjydev/dfguard
-              tag: otel-test-2
+              repository: ghcr.io/m00nwtchr/dfguard
+              tag: rolling@sha256:a3483e958aeb8b97f9a49a774813eba58991a0f28a563f17eeddd86f86714e1e
             env:
               DFGUARD_PROXY_UPSTREAM: dragonfly.database.svc:6379
               DFGUARD_PROXY_SERVER_CERT: /tls/server/tls.crt
