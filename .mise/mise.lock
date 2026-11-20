@@ -179,43 +179,43 @@ url = "https://github.com/postfinance/topf/releases/download/v0.6.2/topf_darwin_
 url_api = "https://api.github.com/repos/postfinance/topf/releases/assets/668624311"
 
 [[tools.aube]]
-version = "2.10.0"
+version = "2.10.1"
 backend = "packslip:github.com/aubepkg/aube"
-specifiers = ["v2.10.0"]
+specifiers = ["v2.10.1"]
 
 [tools.aube."platforms.linux-arm64"]
-checksum = "sha256:cce81d91e7468fc784c15b580320c5f94b4867f41e7e097c4ba23b0587937b7e"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-aarch64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:c64f55a43ee7ca4a19fbbf3be0eed161c24c9858bdcdaea024b69eafbc71ad15"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-aarch64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
 [tools.aube."platforms.linux-arm64-musl"]
-checksum = "sha256:7541658766b989fbb6560c34275b473d7fb96a5d97d21d639e5df7089c1573a5"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:c437e0c446652a32ac367b81c469f0b5aa0a3bee734c7948c18d11f568365db0"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-aarch64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
 [tools.aube."platforms.linux-x64"]
-checksum = "sha256:50d76d216495a9fe28f6cc9817d02f6c080c9c483c9f8c6b29a901bd073488ff"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-x86_64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:2e7206a50cf3dc97b8381ce168a2639f2cf80e17b681a5c47a68ab763fac0b68"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-x86_64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
 [tools.aube."platforms.linux-x64-musl"]
-checksum = "sha256:51c88c48f784aa82ca6f9e2ced73aa9c51e5482a5be0e1670b88cc59769fe2eb"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:00a0bc98003aa1d3b091f08036bb218e26149aed8d02064cf41984f53a4187db"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-x86_64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
 [tools.aube."platforms.macos-arm64"]
-checksum = "sha256:8b403713af1ee52da4a3d9cdbb9f0e3dbdd1247465b49841c4fefd8e2f1bc83f"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:28019c741c28bd90314aa679312d4dc887c2e5a6cb59d018e7624ed9f457f5c8"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-aarch64-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
 [tools.aube."platforms.windows-x64"]
-checksum = "sha256:ff01fc4175d30dc2be40f6145d00decef126a939de0b89522b1178e8cec97c51"
-url = "https://github.com/aubepkg/aube/releases/download/v2.10.0/aube-v2.10.0-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:5b903b6db4ba81cf288e2248426368f31de579e1986e1e0c31f22c3a4c9cd416"
+url = "https://github.com/aubepkg/aube/releases/download/v2.10.1/aube-v2.10.1-x86_64-pc-windows-msvc.zip"
 signer = "sigstore-oidc:https://github.com/aubepkg/aube/.github/workflows/release.yml"
 repository_ids = { repository = "1214542327" }
 
@@ -307,101 +307,101 @@ url = "https://github.com/fluxcd/flux2/releases/download/v2.10.0/flux_2.10.0_win
 url_api = "https://api.github.com/repos/fluxcd/flux2/releases/assets/678609573"
 
 [[tools.fnox]]
-version = "1.48.0"
+version = "1.50.0"
 backend = "packslip:github.com/jdx/fnox"
-specifiers = ["v1.48.0"]
+specifiers = ["v1.50.0"]
 
 [tools.fnox."platforms.linux-arm64"]
-checksum = "sha256:706edaa5293abb9fc9cd8f40c826222fc2f455433c90c36f6dd83f1526a9ef67"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-aarch64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:605b3f5fdd8cf4806d7be63ca4ef52c6fa26d86ac7c97a04a3263daf990233dd"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-aarch64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.linux-arm64-musl"]
-checksum = "sha256:1138ba8b1b51d8a5f842c7f67ecf1f758e4b8be66e296260df9e99e9b466c65f"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:6dd97b15ca535e52813ad01f4e6e14e0b630fcd18cfaf439a8b9dd76ffd74e85"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-aarch64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.linux-x64"]
-checksum = "sha256:4c8ef00618e4ae659b4c9e1d4efd93961c97ebc7723df149234fe38a9dac62fb"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-x86_64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:f08da606e120c676fc3a4f3def970a4ade82e3857841a3961afbdd337a88e30b"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-x86_64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.linux-x64-musl"]
-checksum = "sha256:d9da29473e94a3b9f3b65109657c6980d6a2c7c6fa59e10703dc5b713a5d9ce7"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:3ad4c13244cd9fb6ae45931cc22f876a3ee8608a0fcc7e429c2f890ff6d7da18"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-x86_64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.macos-arm64"]
-checksum = "sha256:1b81153805a485072ecbeb14b2b2aaa24a9bfeb467002a7d725cbfc01cbb1811"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:cf8301a5355c3249284b4102c871b0c4b5e5924cd7b61397f7539f4328041eff"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-aarch64-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.macos-x64"]
-checksum = "sha256:9c6f18cd64036d29d960b076aa635b637260c6b4b21a7bef92fb8ce06c4bc34c"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-x86_64-apple-darwin.tar.gz"
+checksum = "sha256:76bd810eaecdce2e02fcbe51deda070e72dcf85c216d746512c469f4012e7f72"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-x86_64-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [tools.fnox."platforms.windows-x64"]
-checksum = "sha256:49b4024d758630f86bc6f47716088bbebc7e372ae59bc4384b57ba5b9ca41be6"
-url = "https://github.com/jdx/fnox/releases/download/v1.48.0/fnox-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:14ddd4b9d97274e5ec725ff98fbf3145291c94d21ef40c6ffa224900ad6d15e6"
+url = "https://github.com/jdx/fnox/releases/download/v1.50.0/fnox-x86_64-pc-windows-msvc.zip"
 signer = "sigstore-oidc:https://github.com/jdx/fnox/.github/workflows/release.yml"
 repository_ids = { repository = "1078762196" }
 
 [[tools."github:cloudnative-pg/cloudnative-pg"]]
-version = "1.30.1"
+version = "1.30.2"
 backend = "github:cloudnative-pg/cloudnative-pg"
-specifiers = ["1.30.1"]
+specifiers = ["v1.30.2"]
 
 [tools."github:cloudnative-pg/cloudnative-pg".options]
 matching = "kubectl-cnpg_"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.linux-arm64"]
-checksum = "sha256:6ffad753bbbf5d353576967233063f2ba0adb843a4e7ef5ff4cb7384b2716d5e"
+checksum = "sha256:2882241ec1e2ba8ed32a7a3735de278adb34349b570729b8bb867eedc1f57e64"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849045"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814502"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.linux-arm64-musl"]
-checksum = "sha256:6ffad753bbbf5d353576967233063f2ba0adb843a4e7ef5ff4cb7384b2716d5e"
+checksum = "sha256:2882241ec1e2ba8ed32a7a3735de278adb34349b570729b8bb867eedc1f57e64"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_linux_arm64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849045"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814502"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.linux-x64"]
-checksum = "sha256:784bc46f176b24a150d5de84d0691f10ff613b59456af86b1a4868e1bacb9953"
+checksum = "sha256:a926584a2506f2beff624af03d22eb742d6227e259e364e603ea2f88a791a507"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_linux_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849034"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814501"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.linux-x64-musl"]
-checksum = "sha256:784bc46f176b24a150d5de84d0691f10ff613b59456af86b1a4868e1bacb9953"
+checksum = "sha256:a926584a2506f2beff624af03d22eb742d6227e259e364e603ea2f88a791a507"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_linux_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849034"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814501"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.macos-arm64"]
-checksum = "sha256:74836f530b54f060126fc8cf5fd5c27e77801a6d36f61b66f4457218aa11383f"
+checksum = "sha256:0861f0176fef5985765c72c5afd25928b335c6aebd3b8b4afce6fb44f2b2fe16"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_darwin_arm64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849039"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814500"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.macos-x64"]
-checksum = "sha256:165a49352b8a60ba2eb7bf2b56e5388ff678ac5af36dc03129cedeaf3a37aee3"
+checksum = "sha256:2f6d388f8f1df6b8d4dd2504cecb9dc894645c22e8abe79c00a50fe770fcfa8c"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_darwin_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849035"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814503"
 
 [tools."github:cloudnative-pg/cloudnative-pg"."platforms.windows-x64"]
-checksum = "sha256:e0f59fd04d4842d456d8730b656517f37f6cf86862a5ef6506c742ab662391cd"
+checksum = "sha256:3cd6dae07bc9176a1808b86e8e7f06df438d030c4288fc85e352fc67c355612e"
 checksum_source = "mise-versions"
-url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.1/kubectl-cnpg_1.30.1_windows_x86_64.tar.gz"
-url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/583849037"
+url = "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.30.2/kubectl-cnpg_1.30.2_windows_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/releases/assets/758814506"
 
 [[tools."github:kguardian-dev/kguardian"]]
 version = "v1.12.0"
@@ -495,43 +495,43 @@ signer = "sigstore-oidc:https://github.com/helmfile/helmfile/.github/workflows/r
 repository_ids = { repository = "474521466" }
 
 [[tools.hk]]
-version = "2.12.0"
+version = "2.13.0"
 backend = "packslip:github.com/jdx/hk"
-specifiers = ["2.12.0"]
+specifiers = ["2.13.0"]
 
 [tools.hk."platforms.linux-arm64"]
-checksum = "sha256:0f4e44802c3fcf98461b6608281353ae1944b82fd12f4a683f8e2e6683e562f3"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-aarch64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:490196a4e638991c671f42941d72ade4d00b14750145f34fc64377b49fc070bb"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-aarch64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [tools.hk."platforms.linux-arm64-musl"]
-checksum = "sha256:82758b9671b4b3627f126dc8e9803bb156c23893b4f9ec212797f81c4d242e50"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:cff2d433a82104ace7084a23970ff05b0bf3ca529e00c61da20780104106a3dd"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-aarch64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [tools.hk."platforms.linux-x64"]
-checksum = "sha256:db98f893b882f064c1f7abcc96f4ccc31e8154fd1ba0f7f94823d371c2c4fdad"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-x86_64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:8ff0b29c9925d73df9b14af7fc43ace86de03db73eafa3046750fce5c39e1955"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-x86_64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [tools.hk."platforms.linux-x64-musl"]
-checksum = "sha256:cab1ba30c605444112b4499790a97bd28dda83ffc352baa4aa87d5abfb12c668"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:3d5ae62e2befe95fa6fc7ffd63a0876c3efe3409634fbd6561b8bb0be787eeae"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-x86_64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [tools.hk."platforms.macos-arm64"]
-checksum = "sha256:269c17d47e884c19adb77144d5957e854fc5fc6a1a6f9c1a0a5b19431e2fabb8"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:64efc441dc0858a175909fd6253ddd6c540da80e7d1bd2a2ad0ec9c0cdab3d97"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-aarch64-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
 [tools.hk."platforms.windows-x64"]
-checksum = "sha256:052f2ea36dc679cae7fbbd57f75c2b4e5c4cd7bb6711f7bf6b9a147524ffe9f9"
-url = "https://github.com/jdx/hk/releases/download/v2.12.0/hk-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:2908de6281368b8128f1d4d7a03905d3ab0eb86a82641d6055be88806bf9ffac"
+url = "https://github.com/jdx/hk/releases/download/v2.13.0/hk-x86_64-pc-windows-msvc.zip"
 signer = "sigstore-oidc:https://github.com/jdx/hk/.github/workflows/release.yml"
 repository_ids = { repository = "922514152" }
 
@@ -783,97 +783,97 @@ checksum = "sha256:2244b7a379ea8c4b224a2eab411b7288f41ef36316fca27ae4b51b1cf2a53
 url = "https://releases.hashicorp.com/terraform/1.17.2/terraform_1.17.2_windows_amd64.zip"
 
 [[tools.usage]]
-version = "7.3.0"
+version = "7.4.0"
 backend = "packslip:github.com/jdx/usage"
-specifiers = ["7.3.0"]
+specifiers = ["7.4.0"]
 
 [tools.usage."platforms.linux-arm64"]
-checksum = "sha256:b845455e5fda89983fe6860066b2f520ba28cb0a265d64f2fde0e950eb9e0d07"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-aarch64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:63ec67fd6bc8c54ad9e2775e95d6eea565565a30568d65c75be8423b3dd842ea"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-aarch64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.linux-arm64-musl"]
-checksum = "sha256:3bfcf7b5cff0daec5629f54dd15f40001a09bab551663d6e937c99c5716ae094"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-aarch64-unknown-linux-musl.tar.gz"
+checksum = "sha256:2b522480691d6af6bb2a96de28cf9edbd90af3a52195cefe0d19217c18652c4a"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-aarch64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.linux-x64"]
-checksum = "sha256:78d9d765bb87c9377e95fd816ab436a5001d95d28b3b9bf7e405ed3eccfe025c"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-x86_64-unknown-linux-gnu.tar.gz"
+checksum = "sha256:c66011f163619cf3946182498eedd16966bf3d32a6c6cf28c73c8034dfe467d6"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-x86_64-unknown-linux-gnu.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.linux-x64-musl"]
-checksum = "sha256:9af5d220332a0178c38786eac6deb9fa67b767f4c3d4b2e4c8e6bd5659975e86"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-x86_64-unknown-linux-musl.tar.gz"
+checksum = "sha256:223f8819cc26543ffcc11161659497450c6bdbe947ad8580b70183dac4c9d182"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-x86_64-unknown-linux-musl.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.macos-arm64"]
-checksum = "sha256:3201ab26da21e11cbbf3b75f81da65a502e7774e014bd77956cab13e61e73b87"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-universal-apple-darwin.tar.gz"
+checksum = "sha256:606dbdda615111940c6b39e1cb64dbf4871839304146e8e40e7302312be095d6"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-universal-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.macos-x64"]
-checksum = "sha256:3201ab26da21e11cbbf3b75f81da65a502e7774e014bd77956cab13e61e73b87"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-universal-apple-darwin.tar.gz"
+checksum = "sha256:606dbdda615111940c6b39e1cb64dbf4871839304146e8e40e7302312be095d6"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-universal-apple-darwin.tar.gz"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [tools.usage."platforms.windows-x64"]
-checksum = "sha256:0156c5ff413cb49275b109a44b0bb388d8aebf4ce2f47db4902333d3fbee46cc"
-url = "https://github.com/jdx/usage/releases/download/v7.3.0/usage-x86_64-pc-windows-msvc.zip"
+checksum = "sha256:a0bc6718039bbb4289e19981a2cf82a7e1d8509eb426cb27fcb90c0dc34d8b66"
+url = "https://github.com/jdx/usage/releases/download/v7.4.0/usage-x86_64-pc-windows-msvc.zip"
 signer = "sigstore-oidc:https://github.com/jdx/usage/.github/workflows/publish-cli.yml"
 repository_ids = { repository = "677629099" }
 
 [[tools.uv]]
-version = "0.13.8"
+version = "0.13.9"
 backend = "aqua:astral-sh/uv"
-specifiers = ["0.13.8"]
+specifiers = ["0.13.9"]
 
 [tools.uv."platforms.linux-arm64"]
-checksum = "sha256:74f2f5c6024d397481db228db8fc25eed420db192243f88438c118e7e013e585"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313629"
+checksum = "sha256:0797542018e541a9288855df555c8077eed06f7a47d206362030480e8ecc9f3d"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513657"
 provenance = "github-attestations"
 
 [tools.uv."platforms.linux-arm64-musl"]
-checksum = "sha256:0c6f8593fcf1eadfc60e663b685c408267559d7c5d61c689bbb9f3a7e369ba32"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313665"
+checksum = "sha256:37fbb7c5bc66cf99c12aa881949d216181e201dec449772c4329e56487d61179"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513671"
 provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64"]
-checksum = "sha256:5acfd9177cfecf0bf87578f059728215ccc884388988f55f7a65041b57387d91"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313966"
+checksum = "sha256:a7fbaff2b9a271d85c1bdb540941090fd1ce011797b4abeb48e4dcd39c2471d5"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513954"
 provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64-musl"]
-checksum = "sha256:61fb26dabc4f0cf1d050fc6c67d40e43e4fae2994af21ebc1e050b233bf2b5ed"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313983"
+checksum = "sha256:58ccf5f1792b8a5a88d01bc910ea131a8b3db4a319a17ad5fad75e0845a3e271"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513984"
 provenance = "github-attestations"
 
 [tools.uv."platforms.macos-arm64"]
-checksum = "sha256:6b71028a6b904f2ae3340ef52e595512de807d06c0a20eaef2f692581b246558"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313603"
+checksum = "sha256:5aeca67f2283f75235de40d0bd9c0a5bbc5fce23b6d48b3bf9fa1b2db08382ca"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513631"
 provenance = "github-attestations"
 
 [tools.uv."platforms.macos-x64"]
-checksum = "sha256:a04c2ffeac28b2003a2c13caf538ab425fcd7def3e4a41571f4a8fb370a66af3"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313917"
+checksum = "sha256:617a3211261b0fc739562f0071aa34e9739797c510208ede8e2977c30903d041"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513912"
 provenance = "github-attestations"
 
 [tools.uv."platforms.windows-x64"]
-checksum = "sha256:529e78a9cec6cd7e3e014f7ecd8bda0c113969d4ed0f2efeedb85c30943325b8"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313927"
+checksum = "sha256:edd61f7f5728a56cc62455386661860bdfc7bab65872f39b0c25bdcc1d8e1beb"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.9/uv-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/758513940"
 provenance = "github-attestations"
 
 [[tools.uv]]
