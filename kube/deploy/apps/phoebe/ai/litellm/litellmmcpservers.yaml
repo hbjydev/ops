@@ -142,7 +142,7 @@ spec:
     podAnnotations:
       configmap.reloader.stakater.com/reload: trusted-roots
     # renovate: datasource=docker depName=ghcr.io/victoriametrics/mcp-victorialogs
-    image: ghcr.io/victoriametrics/mcp-victorialogs:v1.9.0
+    image: ghcr.io/victoriametrics/mcp-victorialogs:v1.10.0
     port: 8080
     env:
       - name: MCP_SERVER_MODE
