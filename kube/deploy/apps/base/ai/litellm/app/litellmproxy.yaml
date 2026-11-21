@@ -57,6 +57,7 @@ spec:
     egress.netpol.home.arpa/dragonfly: allow
     egress.netpol.home.arpa/cluster: allow
     egress.netpol.home.arpa/internet-https: allow
+    egress.netpol.home.arpa/external-gateway: allow
 
     ingress.netpol.home.arpa/external: allow
     ingress.netpol.home.arpa/o11y: allow

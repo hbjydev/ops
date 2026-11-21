@@ -70,5 +70,6 @@ spec:
           pod:
             labels:
               ingress.netpol.home.arpa/external: allow
+              egress.netpol.home.arpa/external-gateway: allow
     machine-learning:
       enabled: true

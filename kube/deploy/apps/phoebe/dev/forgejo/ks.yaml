@@ -170,3 +170,4 @@ spec:
                         metadata:
                           labels:
                             ingress.netpol.home.arpa/external: allow
+                            egress.netpol.home.arpa/external-gateway: allow

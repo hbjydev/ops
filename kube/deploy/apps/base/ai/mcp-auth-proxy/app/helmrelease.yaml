@@ -89,6 +89,7 @@ spec:
             # https://github.com/sigbit/mcp-auth-proxy/blob/v2.10.2/pkg/backend/transparent.go
             trust.home.arpa/inject: "true"
             egress.netpol.home.arpa/litellm: allow
+            egress.netpol.home.arpa/external-gateway: allow
             ingress.netpol.home.arpa/external: allow
           securityContext:
             fsGroup: 1000

@@ -90,6 +90,7 @@ spec:
             ingress.netpol.home.arpa/o11y: allow
             ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet-https: allow
+            egress.netpol.home.arpa/external-gateway: allow
   httpRoute:
     spec:
       hostnames: ${GRAFANA_ROUTE_HOSTNAMES}

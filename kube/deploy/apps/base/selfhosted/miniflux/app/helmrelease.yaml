@@ -20,6 +20,7 @@ spec:
             trust.home.arpa/inject: "true"
             ingress.netpol.home.arpa/external: allow
             egress.netpol.home.arpa/internet: allow
+            egress.netpol.home.arpa/external-gateway: allow
             egress.netpol.home.arpa/postgres: allow
             ingress.netpol.home.arpa/o11y: allow
         strategy: RollingUpdate

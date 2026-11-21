@@ -20,6 +20,7 @@ spec:
             ingress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/o11y: allow
             egress.netpol.home.arpa/internet: allow
+            egress.netpol.home.arpa/external-gateway: allow
             egress.netpol.home.arpa/smtp-relay: allow
             egress.netpol.home.arpa/postgres: allow
         strategy: RollingUpdate
