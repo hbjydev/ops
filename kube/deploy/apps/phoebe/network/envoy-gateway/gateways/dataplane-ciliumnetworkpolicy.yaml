@@ -13,6 +13,16 @@ spec:
     ingress: false
     egress: false
   ingress:
+    - fromEndpoints:
+        - matchLabels:
+            egress.netpol.home.arpa/external-gateway: allow
+          matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: '10443'
+              protocol: TCP
     # OIDC discovery and JWKS/token requests through the public issuer URL.
     - fromEndpoints:
         - matchLabels:

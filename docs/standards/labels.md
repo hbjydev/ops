@@ -44,6 +44,7 @@ should be documented below.
 | `egress.netpol.home.arpa/world-https` | Allow outgoing TCP and UDP 443 outside the cluster. | Pods | `allow` |
 | `egress.netpol.home.arpa/internet` | Allow outgoing IPv4 traffic except the three private ranges defined in the policy. | Pods | `allow` |
 | `egress.netpol.home.arpa/internet-https` | Allow outgoing TCP and UDP 443 with the same IPv4 exclusions. | Pods | `allow` |
+| `egress.netpol.home.arpa/external-gateway` | Allow outgoing HTTPS to Phoebe’s external Envoy gateway, including the Kanidm OIDC issuer. | Pods on Phoebe | `allow` |
 | `ingress.netpol.home.arpa/apiserver` | Allow incoming traffic from the Kubernetes API server. | Pods | `allow` |
 | `ingress.netpol.home.arpa/cluster` | Allow incoming traffic from all cluster endpoints and nodes. | Pods | `allow` |
 | `ingress.netpol.home.arpa/host` | Allow incoming traffic from the local node. | Pods | `allow` |
