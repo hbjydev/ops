@@ -44,7 +44,7 @@ spec:
           app:
             image:
               repository: norishapp/norish
-              tag: v0.26.1-beta@sha256:fa026262378cf6b0cb855acc4a84ec0e3ca9e8e46531acfaeb49919d0ee7ca3c
+              tag: v0.27.0-beta@sha256:9d53a73da34e3a83b9dd6b3d55da72563add3a4588d25e332fa071c12f104a44
             env:
               PORT: &port 8080
               DATABASE_URL:
