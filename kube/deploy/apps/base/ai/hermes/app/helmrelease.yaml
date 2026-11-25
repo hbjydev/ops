@@ -39,6 +39,7 @@ spec:
                 set -euo pipefail
                 rm -rf /data/config.yaml*
                 cp /etc/hermes/config.yaml /data/config.yaml
+                /opt/hermes/.venv/bin/hermes plugins install claude-subscription-directsdk
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
