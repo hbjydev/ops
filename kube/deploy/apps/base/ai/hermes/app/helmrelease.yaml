@@ -39,7 +39,6 @@ spec:
                 set -euo pipefail
                 rm -rf /data/config.yaml*
                 cp /etc/hermes/config.yaml /data/config.yaml
-                cp /etc/hermes/honcho.json /data/honcho.json
             securityContext:
               allowPrivilegeEscalation: false
               capabilities:
@@ -74,7 +73,6 @@ spec:
             egress.netpol.home.arpa/litellm: allow
             egress.netpol.home.arpa/internet-https: allow
             egress.netpol.home.arpa/external-gateway: allow
-            egress.netpol.home.arpa/honcho: allow
             egress.netpol.home.arpa/seerr: allow
             egress.netpol.home.arpa/searxng: allow
             ingress.netpol.home.arpa/external: allow
@@ -102,8 +100,6 @@ spec:
             envFrom:
               - secretRef:
                   name: hermes-config-env
-              - secretRef:
-                  name: hermes-litellm
             resources:
               requests:
                 cpu: 100m
@@ -169,8 +165,6 @@ spec:
             init:
               - path: /etc/hermes/config.yaml
                 subPath: config.yaml
-              - path: /etc/hermes/honcho.json
-                subPath: honcho.json
       run:
         type: emptyDir
         advancedMounts:
