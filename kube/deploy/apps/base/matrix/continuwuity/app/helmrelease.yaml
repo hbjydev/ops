@@ -118,9 +118,6 @@ spec:
               CONTINUWUITY_WELL_KNOWN__SERVER: matrix.hayden.moe:443
               CONTINUWUITY_WELL_KNOWN__SUPPORT_MXID: "@hayden:hayden.moe"
 
-              CONTINUWUITY_ADMIN_EXECUTE: '["media delete-past-remote-media -b 30d"]'
-              CONTINUWUITY_ADMIN_EXECUTE_ERRORS_IGNORE: true
-
               CONTINUWUITY_NEW_USER_DISPLAYNAME_SUFFIX: ""
               CONTINUWUITY_ALLOW_STICKY_EVENTS: true
 
