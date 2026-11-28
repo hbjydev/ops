@@ -15,7 +15,7 @@ spec:
   mode: statefulset
   replicas: 1
   serviceAccount: otel-gateway
-  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.165.0
+  image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.166.0
 
   targetAllocator:
     enabled: true
